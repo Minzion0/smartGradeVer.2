@@ -1,0 +1,75 @@
+# 토큰의 암호화 복호화를 위한 secret key로서 이후 HS256 알고리즘을 사용하기 위해, 256비트보다 커야한다.
+# 알파벳은 한단어 당 8bit 이므로 32글자 이상이면 된다.
+springboot:
+  jwt:
+    access-secret: DeaguGreenArtAcademyClass502ForJavaSpringBootaaaasdf
+    refresh-secret: HelloWorldRefreshTokenCreateBySecretHaHaaasdfasdf
+    header-scheme-name: Authorization
+    token-type: Bearer
+#DB
+spring:
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 12MB
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://192.168.0.144:3306/team_b?allowMultiQueries=true
+    username: team_b
+    password: green502
+  #mybatisz
+
+
+mybatis:
+  type-aliases-package: com.green.smartGrade
+  mapper-locations: mapper/**/*.xml
+
+#SWAGGER
+springdoc:
+  swagger-ui:
+    path: /swagger.html
+    operations-sorter : method
+
+
+file:
+  dir: /home/smartGradeVer2
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:mariadb://localhost:3306/smart_grade_test?allowMultiQueries=true
+    username: root
+    password: green502
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:init/schema.sql
+      data-locations: classpath:init/data.sql
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+  data:
+    redis:
+      host: 192.168.0.144
+  datasource:
+    url: jdbc:mariadb://192.168.0.144:3306/team_b
+file:
+  dir: /home/smartGrade
+server:
+  port: 8080
