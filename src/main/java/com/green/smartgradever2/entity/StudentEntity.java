@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
@@ -34,13 +35,15 @@ public class StudentEntity extends BaseEntity {
     @ToString.Exclude
     private MajorEntity majorEntity;
 
-    @Column(name = "grade",nullable = false,length = 10,columnDefinition = "DEFAULT 1")
+    @Column(name = "grade",nullable = false,length = 10)
+    @ColumnDefault("1")
     private Integer grade;
 
     @Column(nullable = false,length = 10)
     private String nm;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
 
@@ -59,10 +62,12 @@ public class StudentEntity extends BaseEntity {
     @Column(length = 100)
     private String address;
 
-    @Column(name = "finished_yn",columnDefinition = " DEFAULT 1")
+    @Column(name = "finished_yn")
+    @ColumnDefault("1")
     private Integer finishedYn;
 
-    @Column(columnDefinition = "VARCHAR(30) DEFAULT 'ROLE_STUDENT'")
+    @Column()
+    @ColumnDefault( "'ROLE_STUDENT'")
     private String role;
 
     @Column(name = "secret_key")
