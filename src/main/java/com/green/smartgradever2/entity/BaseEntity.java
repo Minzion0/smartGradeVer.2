@@ -25,7 +25,7 @@ public class BaseEntity {
     @UpdateTimestamp
     @JsonIgnore
     private LocalDateTime updatedAt;
-
+    /** 삭제 여부 **/
     @Column(name = "del_yn",columnDefinition = "0 DEFAULT")
     private int delYn;
 }

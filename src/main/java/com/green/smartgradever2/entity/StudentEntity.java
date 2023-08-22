@@ -32,7 +32,7 @@ public class StudentEntity extends BoardEntity {
     @Column(name = "student_password",nullable = false,length = 100)
     private String studentPassword;
 
-//
+
 //    @Column
 //    private
 
@@ -64,7 +64,11 @@ public class StudentEntity extends BoardEntity {
     @Column(name = "finished_yn",columnDefinition = "1 DEFAULT")
     private Integer finishedYn;
 
+    @Column(columnDefinition = "ROLE_STUDENT DEFAULT")
+    private String role;
 
+    @Column(name = "secret_key")
+    private String secretKey;
 
 
 
