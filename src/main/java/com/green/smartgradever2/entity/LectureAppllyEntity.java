@@ -1,0 +1,60 @@
+package com.green.smartgradever2.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "lecture_applly")
+@Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class LectureAppllyEntity extends BaseEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    private Long ilecture;
+
+    @ManyToOne
+    @JoinColumn(name = "iprofessor", nullable = false)
+    @ToString.Exclude
+    private ProfessorEntity professorEntity;
+
+    @Column(name = "opening_proceudres" ,updatable = false, length = 4)
+    private int openingProceudres;
+
+    @Column(name = "lecture_end_date", updatable = false)
+    private LocalDateTime lectureEndDate;
+
+    @Column(name = "attendance", length = 10)
+    private int attendance;
+
+    @Column(name = "midterm_examination", length = 10)
+    private int midtermExamination;
+
+    @Column(name = "final_examination", length = 10)
+    private int finalExamination;
+
+    @Column(name = "lecture_max_people",nullable = false, length = 10)
+    private int lectureMaxPeople;
+
+    @Column(name = "grade_limit", length = 10, nullable = false)
+    private int gradeLimit;
+
+    @Column(name = "del_yn", length = 10)
+    private int delYn;
+
+    @Column(length = 1000)
+    private String ctnt;
+
+
+
+
+}
