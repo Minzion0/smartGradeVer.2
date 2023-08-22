@@ -27,6 +27,11 @@ public class LectureAppllyEntity extends BaseEntity{
     @ToString.Exclude
     private ProfessorEntity professorEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "isemester", nullable = false)
+    @ToString.Exclude
+    private SemesterEntity semesterEntity;
+
     @Column(name = "opening_proceudres" ,updatable = false, length = 4)
     private int openingProceudres;
 
