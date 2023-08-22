@@ -53,8 +53,6 @@ public class ProfessorEntity extends BaseEntity {
     @Column(length = 100, nullable = true)
     private String address;
 
-    @Column(length = 10, nullable = true, columnDefinition = "int")
-    private int delYn;
     @Column(length = 30, nullable = false)
     private String role;
     @Column(name = "secret_key",length = 100, nullable = true)
