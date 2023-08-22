@@ -35,13 +35,13 @@ public class ProfessorEntity extends BaseEntity {
     @Column(length = 15)
     private String nm;
 
-    @Column(length = 1, columnDefinition = "char")
+    @Column(length = 1, columnDefinition = "char(1)")
     private String gender;
 
     @Column(length = 100, nullable = true)
     private String pic;
 
-    @Column(name = "birthdate", length = 100, columnDefinition = "date")
+    @Column(name = "birthdate", columnDefinition = "date")
     private LocalDate birthDate;
 
     @Column(length = 15, nullable = true)
@@ -53,8 +53,9 @@ public class ProfessorEntity extends BaseEntity {
     @Column(length = 100, nullable = true)
     private String address;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 30, nullable = false,columnDefinition = "VARCHAR(30) DEFAULT 'ROLE_PROFESSOR'")
     private String role;
+
     @Column(name = "secret_key",length = 100, nullable = true)
     private String secretKey;
 }
