@@ -23,7 +23,6 @@ import java.time.LocalDate;
 public class StudentEntity extends BaseEntity {
     @Id
     @Column(updatable = false,nullable = false,columnDefinition = "INT UNSIGNED")
-    @Size(max = 10)
     private int studentNum;
 
     @Column(name = "student_password",nullable = false,length = 100)
@@ -35,7 +34,7 @@ public class StudentEntity extends BaseEntity {
     @ToString.Exclude
     private MajorEntity majorEntity;
 
-    @Column(name = "grade",nullable = false,length = 10,columnDefinition = "1 DEFAULT")
+    @Column(name = "grade",nullable = false,length = 10,columnDefinition = "DEFAULT 1")
     private Integer grade;
 
     @Column(nullable = false,length = 10)
@@ -60,10 +59,10 @@ public class StudentEntity extends BaseEntity {
     @Column(length = 100)
     private String address;
 
-    @Column(name = "finished_yn",columnDefinition = "1 DEFAULT")
+    @Column(name = "finished_yn",columnDefinition = " DEFAULT 1")
     private Integer finishedYn;
 
-    @Column(columnDefinition = "ROLE_STUDENT DEFAULT")
+    @Column(columnDefinition = "VARCHAR(30) DEFAULT 'ROLE_STUDENT'")
     private String role;
 
     @Column(name = "secret_key")

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -26,10 +27,10 @@ public class BaseEntity {
     private LocalDateTime createdAt;
 
     /** 업데이트 날짜 **/
-    @UpdateTimestamp
+    @LastModifiedDate
     @JsonIgnore
     private LocalDateTime updatedAt;
     /** 삭제 여부 **/
-    @Column(name = "del_yn",columnDefinition = "0 DEFAULT")
+    @Column(name = "del_yn",columnDefinition = "DEFAULT 0")
     private int delYn;
 }
