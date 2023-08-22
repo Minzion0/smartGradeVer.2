@@ -2,37 +2,37 @@ package com.green.smartgradever2.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Table (name = "board")
+@Table(name = "admin")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BoardEntity extends BaseEntity{
+public class AdminEntity{
 
-    /** PK **/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Long iboard;
+    private Long iadmin;
 
-    @ManyToOne
-    @JoinColumn(name = "iadmin")
-    @ToString.Exclude
-    private AdminEntity iadmin;
+    @Column(nullable = false, length = 10)
+    private String adminId;
 
     @Column(nullable = false, length = 100)
-    private String title;
-
-    @Column(nullable = false, length = 1000)
-    private String ctnt;
+    private String adminPassword;
 
     @Column(length = 2)
     @Size(min = 0, max = 1)
-    private int importance;
+    private int delYn;
 
-    @Column(columnDefinition = "BIGINT UNSIGNED")
-    private Long boardView;
+    @Column(length = 30)
+    private String role;
+
+    @Column(length = 100)
+    private String secretKey;
 }
