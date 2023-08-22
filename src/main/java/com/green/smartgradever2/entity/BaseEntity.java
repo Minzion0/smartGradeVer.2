@@ -7,6 +7,7 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -31,6 +32,7 @@ public class BaseEntity {
     @JsonIgnore
     private LocalDateTime updatedAt;
     /** 삭제 여부 **/
-    @Column(name = "del_yn",columnDefinition = "DEFAULT 0")
+    @Column(name = "del_yn")
+    @ColumnDefault("0")
     private int delYn;
 }
