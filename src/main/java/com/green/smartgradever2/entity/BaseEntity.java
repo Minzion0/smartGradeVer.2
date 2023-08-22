@@ -1,5 +1,7 @@
 package com.green.smartgradever2.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
@@ -16,9 +18,14 @@ public class BaseEntity {
 
     /** 작성 날짜 **/
     @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     /** 업데이트 날짜 **/
     @UpdateTimestamp
+    @JsonIgnore
     private LocalDateTime updatedAt;
+
+    @Column(name = "del_yn",columnDefinition = "0 DEFAULT")
+    private int delYn;
 }
