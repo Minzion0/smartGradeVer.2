@@ -14,10 +14,17 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class ProfessorEntity {
+public class ProfessorEntity extends BaseEntity {
 
-    @Id
+    @Id  //교수 pk값
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long iprofessor;
+
+    @ManyToOne
+    @JoinColumn(name = "imajor")
+    @ToString.Exclude
+    private
+
+
 }
