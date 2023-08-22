@@ -2,37 +2,33 @@ package com.green.smartgradever2.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Table(name = "admin")
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@ToString(callSuper = true)
 public class AdminEntity{
 
+    /** pk **/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long iadmin;
 
-    @Column(nullable = false, length = 10)
+    /** admin ID **/
+    @Column(nullable = false, length = 10, name = "admin_id")
     private String adminId;
 
-    @Column(nullable = false, length = 100)
+    /** admin password **/
+    @Column(nullable = false, length = 100, name = "admin_password")
     private String adminPassword;
 
-    @Column(length = 2)
-    @Size(min = 0, max = 1)
-    private int delYn;
-
-    @Column(length = 30)
+    /** admin role **/
+    @Column(nullable = false, length = 30)
     private String role;
 
-    @Column(length = 100)
+    /** admin secret_key **/
+    @Column(length = 100, name = "secret_key")
     private String secretKey;
 }

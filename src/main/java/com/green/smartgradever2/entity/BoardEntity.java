@@ -2,14 +2,15 @@ package com.green.smartgradever2.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.groups.Default;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Table (name = "board")
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class BoardEntity extends BaseEntity{
 
     /** PK **/
@@ -30,9 +31,9 @@ public class BoardEntity extends BaseEntity{
     private String ctnt;
 
     @Column(length = 2)
-    @Size(min = 0, max = 1)
+    @ColumnDefault("0")
     private int importance;
 
-    @Column(columnDefinition = "BIGINT UNSIGNED")
+    @Column(columnDefinition = "BIGINT UNSIGNED", name = "board_view")
     private Long boardView;
 }
