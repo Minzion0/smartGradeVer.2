@@ -24,10 +24,10 @@ public class ProfessorEntity extends BaseEntity {
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long iprofessor;
 
-//    @ManyToOne
-//    @JoinColumn(name = "imajor")
-//    @ToString.Exclude
-//    private
+    @ManyToOne
+    @JoinColumn(name = "imajor")
+    @ToString.Exclude
+    private MajorEntity majorEntity;
 
     @Column(name = "professor_password", length = 100)
     private String professorPassword;
