@@ -15,9 +15,10 @@ import org.hibernate.annotations.DynamicInsert;
 @EqualsAndHashCode(callSuper = true)
 @DynamicInsert
 public class LectureRoomEntity extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ilecture_room", updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long ilectureRoom;
 
 
