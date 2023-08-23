@@ -24,9 +24,9 @@ public class LectureConditionEntity extends BaseEntity{
 
     /** lecture_applly 외래키 **/
     @ManyToOne
-    @JoinColumn(name = "iadmin")
+    @JoinColumn(name = "ilecture")
     @ToString.Exclude
-    private AdminEntity iadmin;
+    private LectureAppllyEntity ilecture;
 
     /** 신청반려 내용작성 **/
     @Column(name = "return_ctnt", nullable = false)
