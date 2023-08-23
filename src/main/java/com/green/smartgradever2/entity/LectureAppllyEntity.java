@@ -71,6 +71,9 @@ public class LectureAppllyEntity extends BaseEntity{
     @Column(length = 1000)
     private String ctnt;
 
+    @Column(length = 20,nullable = false)
+    private String textbook;
+
 
 
 
