@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.apache.ibatis.annotations.Many;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
@@ -23,12 +24,22 @@ public class LectureAppllyEntity extends BaseEntity{
     private Long ilecture;
 
     @ManyToOne
-    @JoinColumn(name = "iprofessor", nullable = false)
+    @JoinColumn(name = "ilectureName" )
+    @ToString.Exclude
+    private LectureNameEntity lectureNameEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "ilectureRoom")
+    @ToString.Exclude
+    private LectureRoomEntity lectureRoomEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "iprofessor")
     @ToString.Exclude
     private ProfessorEntity professorEntity;
 
     @ManyToOne
-    @JoinColumn(name = "isemester", nullable = false)
+    @JoinColumn(name = "isemester")
     @ToString.Exclude
     private SemesterEntity semesterEntity;
 
