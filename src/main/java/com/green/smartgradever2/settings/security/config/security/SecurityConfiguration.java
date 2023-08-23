@@ -1,6 +1,7 @@
 package com.green.smartgradever2.settings.security.config.security;
 
-import com.green.smartGrade.security.config.RedisService;
+
+import com.green.smartgradever2.settings.security.config.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

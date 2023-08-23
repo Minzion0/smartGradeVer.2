@@ -1,7 +1,8 @@
 package com.green.smartgradever2.settings.security.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.green.smartGrade.security.config.security.model.EntryPointErrorResponse;
+
+import com.green.smartgradever2.settings.security.config.security.model.EntryPointErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

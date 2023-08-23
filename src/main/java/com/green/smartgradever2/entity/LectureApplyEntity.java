@@ -16,30 +16,36 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class LectureApplyEntity extends BaseEntity{
+    /** PK **/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long ilecture;
 
+    /** FK **/
     @ManyToOne
     @JoinColumn(name = "ilectureName" )
     @ToString.Exclude
     private LectureNameEntity lectureNameEntity;
 
+    /** FK **/
     @ManyToOne
     @JoinColumn(name = "ilectureRoom")
     @ToString.Exclude
     private LectureRoomEntity lectureRoomEntity;
 
+    /** FK **/
     @ManyToOne
     @JoinColumn(name = "iprofessor")
     @ToString.Exclude
     private ProfessorEntity professorEntity;
 
+    /** FK **/
     @ManyToOne
     @JoinColumn(name = "isemester")
     @ToString.Exclude
     private SemesterEntity semesterEntity;
+
 
     @Column(name = "opening_proceudres" ,updatable = false, length = 4)
     private int openingProceudres;

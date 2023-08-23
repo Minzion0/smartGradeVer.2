@@ -1,6 +1,7 @@
 package com.green.smartgradever2.settings.security.config.security;
 
-import com.green.smartGrade.security.config.RedisService;
+
+import com.green.smartgradever2.settings.security.config.RedisService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
