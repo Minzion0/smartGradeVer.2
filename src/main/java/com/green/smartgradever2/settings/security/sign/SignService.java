@@ -3,16 +3,17 @@ package com.green.smartgradever2.settings.security.sign;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.green.smartGrade.security.CommonRes;
-import com.green.smartGrade.security.config.RedisService;
-import com.green.smartGrade.security.config.security.AuthenticationFacade;
-import com.green.smartGrade.security.config.security.JwtTokenProvider;
-import com.green.smartGrade.security.config.security.UserDetailsMapper;
-import com.green.smartGrade.security.config.security.model.*;
-import com.green.smartGrade.security.config.security.otp.OtpRes;
-import com.green.smartGrade.security.config.security.otp.TOTP;
-import com.green.smartGrade.security.config.security.otp.TOTPTokenGenerator;
-import com.green.smartGrade.security.sign.model.*;
+
+import com.green.smartgradever2.settings.security.CommonRes;
+import com.green.smartgradever2.settings.security.config.RedisService;
+import com.green.smartgradever2.settings.security.config.security.AuthenticationFacade;
+import com.green.smartgradever2.settings.security.config.security.JwtTokenProvider;
+import com.green.smartgradever2.settings.security.config.security.UserDetailsMapper;
+import com.green.smartgradever2.settings.security.config.security.model.*;
+import com.green.smartgradever2.settings.security.config.security.otp.OtpRes;
+import com.green.smartgradever2.settings.security.config.security.otp.TOTP;
+import com.green.smartgradever2.settings.security.config.security.otp.TOTPTokenGenerator;
+import com.green.smartgradever2.settings.security.sign.model.*;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

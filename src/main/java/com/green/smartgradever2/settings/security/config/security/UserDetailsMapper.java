@@ -1,12 +1,13 @@
 package com.green.smartgradever2.settings.security.config.security;
 
-import com.green.smartGrade.security.config.security.model.UserEntity;
-import com.green.smartGrade.security.config.security.model.UserSelRoleEmailVo;
-import com.green.smartGrade.security.config.security.model.UserTokenEntity;
-import com.green.smartGrade.security.config.security.model.UserUpdSecretKeyDto;
-import com.green.smartGrade.security.sign.model.SignSelPasswordTrueDto;
-import com.green.smartGrade.security.sign.model.SignSelPasswordTrueVo;
-import com.green.smartGrade.security.sign.model.UpdForgetPasswordDto;
+
+import com.green.smartgradever2.settings.security.config.security.model.UserEntity;
+import com.green.smartgradever2.settings.security.config.security.model.UserSelRoleEmailVo;
+import com.green.smartgradever2.settings.security.config.security.model.UserTokenEntity;
+import com.green.smartgradever2.settings.security.config.security.model.UserUpdSecretKeyDto;
+import com.green.smartgradever2.settings.security.sign.model.SignSelPasswordTrueDto;
+import com.green.smartgradever2.settings.security.sign.model.SignSelPasswordTrueVo;
+import com.green.smartgradever2.settings.security.sign.model.UpdForgetPasswordDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
