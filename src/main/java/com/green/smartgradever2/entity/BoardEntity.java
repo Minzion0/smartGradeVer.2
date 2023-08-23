@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.groups.Default;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Table (name = "board")
 @Entity
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class BoardEntity extends BaseEntity{
