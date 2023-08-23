@@ -15,7 +15,6 @@ import java.time.LocalTime;
 @SuperBuilder
 @AllArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public class LectureScheduleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
