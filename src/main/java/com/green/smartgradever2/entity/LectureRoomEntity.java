@@ -19,7 +19,7 @@ import org.hibernate.annotations.DynamicInsert;
 public class LectureRoomEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lecture_room", updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    @Column(name = "ilecture_room", updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long ilectureRoom;
 
     @Id
