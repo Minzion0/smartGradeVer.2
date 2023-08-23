@@ -15,6 +15,6 @@ public class ProfessorController {
 
     @GetMapping("/list")
     public ProfessorSelRes getProfessorList() {
-        return SERVICE.selPro();
+        return SERVICE.upProfessor();
     }
 }

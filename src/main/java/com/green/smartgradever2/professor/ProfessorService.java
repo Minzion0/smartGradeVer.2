@@ -15,7 +15,7 @@ public class ProfessorService {
     private final ProfessorMapper MAPPER;
     private final ProfesserRepository PROREP;
 
-    public ProfessorSelRes selPro() {
+    public ProfessorSelRes upProfessor() {
         List<ProfessorEntity> professorList = PROREP.findAll();
 
         return ProfessorSelRes.builder()
