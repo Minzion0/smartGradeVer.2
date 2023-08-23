@@ -1,5 +1,6 @@
 package com.green.smartgradever2.entity;
 
+import com.green.smartgradever2.entity.model.GenderEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,8 +36,9 @@ public class ProfessorEntity extends BaseEntity {
     @Column(length = 15)
     private String nm;
 
-    @Column(length = 1, columnDefinition = "char(1)")
-    private String gender;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private GenderEnum gender;
 
     @Column(length = 100, nullable = true)
     private String pic;
