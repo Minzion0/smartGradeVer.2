@@ -13,7 +13,7 @@ public class LectureNameEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ilecture_name", nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    @Column(name = "ilecture_name",updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long ilectureName;
 
     @Column(name = "lecture_name", nullable = false, length = 50)
