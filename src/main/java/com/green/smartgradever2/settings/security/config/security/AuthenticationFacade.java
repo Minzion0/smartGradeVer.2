@@ -1,6 +1,7 @@
 package com.green.smartgradever2.settings.security.config.security;
 
-import com.green.smartGrade.security.config.security.model.MyUserDetails;
+
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

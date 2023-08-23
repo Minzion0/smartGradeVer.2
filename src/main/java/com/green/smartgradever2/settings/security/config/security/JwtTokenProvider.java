@@ -1,6 +1,7 @@
 package com.green.smartgradever2.settings.security.config.security;
 
-import com.green.smartGrade.security.config.security.model.MyUserDetails;
+
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

@@ -1,10 +1,14 @@
 package com.green.smartgradever2.settings.security.sign;
 
 
-import com.green.smartGrade.security.config.security.model.MyUserDetails;
-import com.green.smartGrade.security.config.security.model.OtpValidParam;
-import com.green.smartGrade.security.config.security.otp.OtpRes;
-import com.green.smartGrade.security.sign.model.*;
+
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
+import com.green.smartgradever2.settings.security.config.security.model.OtpValidParam;
+import com.green.smartgradever2.settings.security.config.security.otp.OtpRes;
+import com.green.smartgradever2.settings.security.sign.model.SignInParam;
+import com.green.smartgradever2.settings.security.sign.model.SignInResultDto;
+import com.green.smartgradever2.settings.security.sign.model.SignSelPasswordTrueDto;
+import com.green.smartgradever2.settings.security.sign.model.SignUpResultDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
