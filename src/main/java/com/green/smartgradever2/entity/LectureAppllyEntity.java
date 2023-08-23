@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.apache.ibatis.annotations.Many;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -47,7 +48,7 @@ public class LectureAppllyEntity extends BaseEntity{
     private int openingProceudres;
 
     @Column(name = "lecture_end_date", updatable = false)
-    private LocalDateTime lectureEndDate;
+    private LocalDate lectureEndDate;
 
     @Column(name = "attendance", length = 10)
     private int attendance;
