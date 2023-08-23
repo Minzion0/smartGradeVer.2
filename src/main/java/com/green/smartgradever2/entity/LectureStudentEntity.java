@@ -32,7 +32,7 @@ public class LectureStudentEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "ilecture")
     @ToString.Exclude
-    private LectureAppllyEntity lectureAppllyEntity;
+    private LectureApplyEntity lectureAppllyEntity;
 
     @Column(name = "finished_yn",nullable = false)
     @ColumnDefault("0")

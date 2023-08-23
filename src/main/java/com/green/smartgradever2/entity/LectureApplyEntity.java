@@ -1,24 +1,20 @@
 package com.green.smartgradever2.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.apache.ibatis.annotations.Many;
-import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "lecture_applly")
+@Table(name = "lecture_apply")
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class LectureAppllyEntity extends BaseEntity{
+public class LectureApplyEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
@@ -74,7 +70,8 @@ public class LectureAppllyEntity extends BaseEntity{
     @Column(length = 20,nullable = false)
     private String textbook;
 
-
+    @Column(name = "students_apply_deadline")
+    private LocalDate studentsApplyDeadline;
 
 
 }

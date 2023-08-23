@@ -34,4 +34,7 @@ public class SemesterEntity {
 
     @Column(name = "del_yn", length = 10)
     private int delYn;
+
+    @Column(name = "lecture_apply_deadline", nullable = false)
+    private LocalDate lectureApplyDeadline;
 }
