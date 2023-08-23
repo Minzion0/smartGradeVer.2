@@ -3,6 +3,7 @@ package com.green.smartgradever2.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +35,7 @@ public class LectureConditionEntity extends BaseEntity{
 
     /** 반려일시 **/
     @Column(name = "return_date")
+    @CreationTimestamp
     private LocalDateTime returnDate;
 
 }
