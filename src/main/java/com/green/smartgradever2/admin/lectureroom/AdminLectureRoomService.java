@@ -1,6 +1,7 @@
 package com.green.smartgradever2.admin.lectureroom;
 
 import com.green.smartgradever2.admin.lectureroom.model.AdminLecturRoomFindRes;
+import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomVo;
 import com.green.smartgradever2.entity.LectureRoomEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,16 +15,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminLectureRoomService {
 
-    private final AdminLectureRoomRepository adminLectureroomRep;
+    private final AdminLectureRoomRepository LECTURE_ROOM_REP;
 
-    /** 강의실 리스트 SELECT **/
-    public List<AdminLecturRoomFindRes> selLectureRoom(Pageable pageable) {
-        List<LectureRoomEntity> all = adminLectureroomRep.findAll();
-
-        return AdminLecturRoomFindRes.builder()
-                .lectureRoom()
-                .lectureRoomList()
-                .build();
-
+    /** 강의실 리스트 INSERT **/
+    public Long insLectureRoom(LectureRoomEntity entity) {
+        LectureRoomEntity result = LECTURE_ROOM_REP.save(entity);
+        if (result == null) {
+            return 0L;
+        }
+        return result.getIlectureRoom();
     }
+
+
 }

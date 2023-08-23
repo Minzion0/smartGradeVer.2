@@ -5,9 +5,5 @@ import lombok.Data;
 
 @Data
 public class AdminLectureRoomVo {
-    private Long ilectureRoom;
-    private String lectureRoomName;
     private String buildingName;
-    private int maxCapacity;
-    private int delYn;
 }
