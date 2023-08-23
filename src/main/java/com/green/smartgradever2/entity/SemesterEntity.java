@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 
@@ -33,6 +34,7 @@ public class SemesterEntity {
     private LocalDate semesterEndDate;
 
     @Column(name = "del_yn", length = 10)
+    @ColumnDefault("0")
     private int delYn;
 
     @Column(name = "lecture_apply_deadline", nullable = false)

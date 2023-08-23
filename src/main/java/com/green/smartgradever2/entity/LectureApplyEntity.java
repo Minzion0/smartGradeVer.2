@@ -3,6 +3,7 @@ package com.green.smartgradever2.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 
@@ -62,6 +63,7 @@ public class LectureApplyEntity extends BaseEntity{
     private int gradeLimit;
 
     @Column(name = "del_yn", length = 10)
+    @ColumnDefault("0")
     private int delYn;
 
     @Column(length = 1000)
