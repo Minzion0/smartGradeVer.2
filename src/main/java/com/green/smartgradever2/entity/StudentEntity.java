@@ -24,7 +24,7 @@ import java.time.LocalDate;
 public class StudentEntity extends BaseEntity {
     @Id
     @Column(updatable = false,nullable = false,columnDefinition = "INT UNSIGNED")
-    private int studentNum;
+    private Integer studentNum;
 
     @Column(name = "student_password",nullable = false,length = 100)
     private String studentPassword;
