@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 public class AdminStudentFindVo {
-
     private int studentNum;
     private int grade;
     private String nm;
