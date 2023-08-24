@@ -1,5 +1,6 @@
 package com.green.smartgradever2.professor;
 
+import com.green.smartgradever2.admin.major.MajorRepository;
 import com.green.smartgradever2.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.professor.model.ProfessorLectureDto;
@@ -20,7 +21,7 @@ public class ProfessorService {
 
     private final ProfesserRepository professorRepository;
     private final LectureApplyRepository lectureApplyRepository;
-
+    private final MajorRepository majorRepository;
 
 
     //교수 프로필
