@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.smartgradever2.admin.lectureroom.AdminLectureRoomMapper">
+    <select id="selBuildingName">
+        SELECT distinct(building_name) buildingName
+        from lecture_room
+    </select>
+
+    <select id="selLectureRoom">
+        SELECT ilecture_room ilectureRoom
+        , lecture_room_name lectureRoomName
+        , building_name buildingName ,
+        max_capacity maxCapacity, del_yn delYn
+        from lecture_room
+        <where>
+            <if test="lectureRoomName != null and lectureRoomName != ''">
+                and lecture_room_name = #{lectureRoomName}
+            </if>
+            <if test="buildingName != null and buildingName != ''">
+                and building_name = #{buildingName}
+            </if>
+        </where>
+        LIMIT #{staIdx}, 10
+    </select>
+</mapper>

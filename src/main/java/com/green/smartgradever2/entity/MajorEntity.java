@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "major")
@@ -23,6 +24,7 @@ public class MajorEntity {
     private int graduationScore;
 
     @Column(name = "del_yn", length = 10)
+    @ColumnDefault("0")
     private int delYn;
 
     @Column(name = "remarks", length = 50)
