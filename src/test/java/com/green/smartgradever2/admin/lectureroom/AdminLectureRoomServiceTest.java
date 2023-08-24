@@ -1,17 +1,16 @@
 package com.green.smartgradever2.admin.lectureroom;
 
-import com.green.smartgradever2.admin.lectureroom.model.AdminLecturRoomFindRes;
+import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomFindRes;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomVo;
 import com.green.smartgradever2.entity.LectureRoomEntity;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ class AdminLectureRoomServiceTest {
         when(REP.findAllByLectureRoomNameAndBuildingName(any(),any())).thenReturn(voList);
         when(REP.findByBuildingName(any())).thenReturn(vo);
 
-        AdminLecturRoomFindRes res = SERVICE.selLectureRoom(entity, pageable);
+        AdminLectureRoomFindRes res = SERVICE.selLectureRoom(entity, pageable);
 
         assertEquals(voList.get(0).getIlectureRoom(), res.getLectureRoomList().get(0).getIlectureRoom());
         assertEquals(voList.get(0).getLectureRoomName(), res.getLectureRoomList().get(0).getLectureRoomName());
@@ -72,6 +71,23 @@ class AdminLectureRoomServiceTest {
 
         verify(REP).findAllByLectureRoomNameAndBuildingName(any(),any());
         verify(REP).findByBuildingName(any());
+
+    }
+
+    @Test
+    void delLectureRoom() throws EntityNotFoundException{
+        LectureRoomEntity entity = new LectureRoomEntity();
+        AdminLectureRoomListVo vo = new AdminLectureRoomListVo();
+        entity.setDelYn(1);
+        entity.setIlectureRoom(1L);
+
+        when(REP.save(any())).thenReturn(1);
+
+        AdminLectureRoomListVo res = SERVICE.delLectureRoom(entity);
+
+        assertEquals(res.getDelYn(), entity.getDelYn());
+
+        verify(REP).save(any());
 
     }
 }

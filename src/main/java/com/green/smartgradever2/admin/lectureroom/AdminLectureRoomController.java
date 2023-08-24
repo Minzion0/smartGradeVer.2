@@ -1,6 +1,7 @@
 package com.green.smartgradever2.admin.lectureroom;
 
-import com.green.smartgradever2.admin.lectureroom.model.AdminLecturRoomFindRes;
+import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomFindRes;
+import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
 import com.green.smartgradever2.entity.LectureRoomEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,14 +27,14 @@ public class AdminLectureRoomController {
 
     @GetMapping
     @Operation(summary = "강의실 리스트 보기")
-    public AdminLecturRoomFindRes getLectureRoom(LectureRoomEntity entity,
-                                                 @PageableDefault(sort = "ilectureRoom", direction = Sort.Direction.ASC, size = 20) Pageable pageable) {
+    public AdminLectureRoomFindRes getLectureRoom(LectureRoomEntity entity,
+                                                  @PageableDefault(sort = "ilectureRoom", direction = Sort.Direction.ASC, size = 20) Pageable pageable) {
         return SERVICE.selLectureRoom(entity,pageable);
     }
 
     @DeleteMapping
     @Operation(summary = "강의실 삭제 (delYn 0 1 변경)")
-    public Long delLectureRoom(LectureRoomEntity entity) {
+    public AdminLectureRoomListVo delLectureRoom(LectureRoomEntity entity) {
         return SERVICE.delLectureRoom(entity);
     }
 }
