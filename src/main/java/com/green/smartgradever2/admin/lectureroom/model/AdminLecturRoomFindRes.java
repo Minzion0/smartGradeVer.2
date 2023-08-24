@@ -10,4 +10,6 @@ import java.util.List;
 public class AdminLecturRoomFindRes {
     private List<AdminLectureRoomListVo> lectureRoomList;
     private List<AdminLectureRoomVo> lectureRoom;
+    private int size;
+    private int staIdx;
 }

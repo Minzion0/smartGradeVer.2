@@ -16,29 +16,31 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 public class StudentSemesterScoreEntity extends BaseEntity {
 
+    /** pk값 **/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long grade;
 
-
+    /** 학점 **/
     @Column(nullable = false, length = 10)
     private int score;
 
-
+    /** 평균점수 **/
     @Column(name = "avg_score", updatable = true, nullable = true, length = 10)
     private int avgScore;
 
-
+    /** 평점 **/
     @Column(length = 10)
     private double rating;
 
-
+    /** 학기pk **/
     @ManyToOne
     @JoinColumn(name = "isemester")
     @ToString.Exclude
     private SemesterEntity semesterEntity;
 
+    /** 학생 pk **/
     @ManyToOne
     @JoinColumn(name = "student_num")
     @ToString.Exclude

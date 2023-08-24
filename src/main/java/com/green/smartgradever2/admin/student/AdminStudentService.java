@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AdminStudentService {
-
+    private final AdminStudentRepository ADMIN_STUDENT_RPS;
     private final PasswordEncoder PW_ENCODER;
+
+
+
+
 }
