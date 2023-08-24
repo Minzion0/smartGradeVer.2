@@ -1,5 +1,6 @@
 package com.green.smartgradever2.admin.lectureroom.model;
 
+import com.green.smartgradever2.utils.PagingUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class AdminLectureRoomDto {
     private int maxCapacity;
     private int size;
     private int staIdx;
+    private int page;
+    private PagingUtils paging;
     private List<AdminLectureRoomListVo> lectureRoomList;
     private List<AdminLectureRoomVo> lectureRoom;
     private AdminLectureRoomFindRes findRes;
