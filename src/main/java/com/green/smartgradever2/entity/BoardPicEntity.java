@@ -1,14 +1,18 @@
 package com.green.smartgradever2.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @Table(name = "board_pic")
 @Entity
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
-public class BoardPicEntity {
+@EqualsAndHashCode(callSuper = true)
+public class BoardPicEntity extends BaseEntity{
 
     /** pk **/
     @Id
@@ -24,5 +28,5 @@ public class BoardPicEntity {
     @ManyToOne
     @JoinColumn(name = "iboard")
     @ToString.Exclude
-    private BoardEntity iboard;
+    private BoardEntity boardEntity;
 }
