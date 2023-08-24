@@ -1,6 +1,6 @@
 package com.green.smartgradever2.admin.student;
 
-import com.green.smartgradever2.admin.major.MajorRepository;
+import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.student.model.*;
 import com.green.smartgradever2.entity.MajorEntity;
 import com.green.smartgradever2.entity.StudentEntity;
@@ -24,7 +24,7 @@ import java.util.Optional;
 public class AdminStudentService {
 
     private final AdminStudentRepository RPS;
-    private final MajorRepository MAJOR_RPS;
+    private final AdminMajorRepository MAJOR_RPS;
     private final PasswordEncoder PW_ENCODER;
     private final EntityManager EM;
     private final AdminStudentMapper MAPPER;
