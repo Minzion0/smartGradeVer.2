@@ -1,5 +1,6 @@
 package com.green.smartgradever2.admin.lectureroom;
 
+import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomDto;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomFindRes;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomVo;
@@ -55,22 +56,25 @@ class AdminLectureRoomServiceTest {
 
     @Test
     void selLectureRoom() {
-        LectureRoomEntity entity = new LectureRoomEntity();
-        List<AdminLectureRoomListVo> voList = new ArrayList<>();
-        List<AdminLectureRoomVo> vo = new ArrayList<>();
+        AdminLectureRoomDto dto = new AdminLectureRoomDto();
+
+        List<AdminLectureRoomListVo> voList = MAPPER.selLectureRoom(dto);
         voList.add(new AdminLectureRoomListVo(1L, "502호", "백매관", 30, 0));
 
-        when(REP.findAllByLectureRoomNameAndBuildingName(any(),any())).thenReturn(voList);
-        when(REP.findByBuildingName(any())).thenReturn(vo);
+        List<AdminLectureRoomVo> vo = MAPPER.selBuildingName(dto);
+        vo.add(new AdminLectureRoomVo());
 
-        AdminLectureRoomFindRes res = SERVICE.selLectureRoom(entity, pageable);
+        when(MAPPER.selLectureRoom(any())).thenReturn(voList);
+        when(MAPPER.selBuildingName(any())).thenReturn(vo);
+
+        AdminLectureRoomFindRes res = SERVICE.selLectureRoom(dto, pageable);
 
         assertEquals(voList.get(0).getIlectureRoom(), res.getLectureRoomList().get(0).getIlectureRoom());
         assertEquals(voList.get(0).getLectureRoomName(), res.getLectureRoomList().get(0).getLectureRoomName());
         assertEquals(voList.get(0).getMaxCapacity(), res.getLectureRoomList().get(0).getMaxCapacity());
 
-        verify(REP).findAllByLectureRoomNameAndBuildingName(any(),any());
-        verify(REP).findByBuildingName(any());
+        verify(MAPPER).selBuildingName(any());
+        verify(MAPPER).selLectureRoom(any());
 
     }
 

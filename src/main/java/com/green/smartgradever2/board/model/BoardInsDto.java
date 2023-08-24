@@ -6,8 +6,7 @@ import lombok.Data;
 
 @Data
 public class BoardInsDto {
-    private Long iboard;
-    private AdminEntity iadmin;
+    private Long iadmin;
     private String ctnt;
     private String title;
     private int importance;

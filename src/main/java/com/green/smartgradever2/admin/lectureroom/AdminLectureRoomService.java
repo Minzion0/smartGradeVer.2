@@ -8,6 +8,7 @@ import com.green.smartgradever2.entity.LectureRoomEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +19,10 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AdminLectureRoomService {
 
     private final AdminLectureRoomRepository LECTURE_ROOM_REP;
+    private final AdminLectureRoomMapper MAPPER;
 
 
     /** 강의실 리스트 INSERT **/
@@ -34,14 +35,14 @@ public class AdminLectureRoomService {
     }
 
     /** 강의실 리스트 SELECT **/
-    public AdminLectureRoomFindRes selLectureRoom(LectureRoomEntity entity, Pageable pageable) {
-        List<AdminLectureRoomListVo> list = LECTURE_ROOM_REP.findAllByLectureRoomNameAndBuildingName(entity.getLectureRoomName(), entity.getBuildingName());
-        List<AdminLectureRoomVo> buildingList = LECTURE_ROOM_REP.findByBuildingName(entity.getBuildingName());
+    public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto, Pageable pageable) {
 
+        List<AdminLectureRoomListVo> voList = MAPPER.selLectureRoom(dto);
+        List<AdminLectureRoomVo> vo = MAPPER.selBuildingName(dto);
 
-        AdminLectureRoomDto dto = AdminLectureRoomDto.builder()
-                .lectureRoom(buildingList)
-                .lectureRoomList(list)
+        dto = AdminLectureRoomDto.builder()
+                .lectureRoom(vo)
+                .lectureRoomList(voList)
                 .staIdx((pageable.getPageNumber() - 1) * pageable.getPageSize())
                 .size(pageable.getPageSize())
                 .build();
