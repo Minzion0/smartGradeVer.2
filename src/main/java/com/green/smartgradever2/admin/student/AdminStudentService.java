@@ -88,7 +88,17 @@ public class AdminStudentService {
 
 
     public AdminStudentRes findStudents(AdminStudentFindParam param,Pageable pageable){
+        StudentEntity entity = new StudentEntity();
+        entity.setStudentNum(param.getStudentNum());
+        entity.setFinishedYn(param.getFinishedYn());
+        entity.setNm(param.getNm());
+        if (param.getImajor() > 0){
+            Optional<MajorEntity> majorEntity = MAJOR_RPS.findById(param.getImajor());
+            entity.setMajorEntity(majorEntity.get());
+        }
 
+        RPS.findAll();
+        return null;
     }
 
 
