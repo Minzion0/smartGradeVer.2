@@ -3,10 +3,14 @@ package com.green.smartgradever2.admin.student;
 import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.student.model.AdminInsStudentParam;
 import com.green.smartgradever2.admin.student.model.AdminInsStudentVo;
+import com.green.smartgradever2.admin.student.model.AdminStudentFindParam;
+import com.green.smartgradever2.admin.student.model.AdminStudentRes;
 import com.green.smartgradever2.entity.MajorEntity;
 import com.green.smartgradever2.entity.StudentEntity;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,18 +28,21 @@ public class AdminStudentService {
     private final AdminStudentRepository RPS;
     private final AdminMajorRepository MAJOR_RPS;
     private final PasswordEncoder PW_ENCODER;
-    @Transactional(rollbackFor = Exception.class)
-    public AdminInsStudentVo insStudent(AdminInsStudentParam param){
+    private final EntityManager EM;
+
+
+    //@Transactional(rollbackFor = Exception.class)
+    public AdminInsStudentVo insStudent(AdminInsStudentParam param) {
 
         Optional<MajorEntity> major = MAJOR_RPS.findById(param.getImajor());
 
-        log.info("major : {}",major);
+        log.info("major : {}", major);
 
-//        LocalDate now = LocalDate.now();
-        LocalDate now = LocalDate.of(2023, 1, 1);
-        LocalDateTime startOfDay = now.atStartOfDay();
-        LocalDateTime endOfDay = now.plusYears(1).atStartOfDay().minusNanos(1);
-        String year = now.toString().substring(2, 4);
+        LocalDate now = LocalDate.now();
+        LocalDate setYear = LocalDate.of(now.getYear(), 1, 1);
+        LocalDateTime startOfDay = setYear.atStartOfDay();
+        LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
+        String year = setYear.toString().substring(2, 4);
 
         List<StudentEntity> majorCount = RPS.findByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
 
@@ -59,38 +66,40 @@ public class AdminStudentService {
 
         StudentEntity save = RPS.save(entity);
 
+        EM.detach(save);
 
         Optional<StudentEntity> result = RPS.findById(save.getStudentNum());
         StudentEntity student = result.get();
-     return    AdminInsStudentVo.builder().studentNum(save.getStudentNum())
-                                    .nm(save.getNm())
-                                    .grade(save.getGrade())
-                                    .birthdate(save.getBirthdate())
-                                    .delYn(save.getDelYn())
-                                    .finishedYn(save.getFinishedYn())
-                                    .phone(save.getPhone())
-                                    .gender(save.getGender())
-                                    .imajor(save.getMajorEntity().getImajor())
-                                    .createdAt(save.getCreatedAt())
-                                    .build();
 
+
+        return AdminInsStudentVo.builder().studentNum(student.getStudentNum())
+                                            .nm(student.getNm())
+                                            .grade(student.getGrade())
+                                            .birthdate(student.getBirthdate())
+                                            .delYn(student.getDelYn())
+                                            .finishedYn(student.getFinishedYn())
+                                            .phone(student.getPhone())
+                                            .gender(student.getGender())
+                                            .imajor(student.getMajorEntity().getImajor())
+                                            .createdAt(student.getCreatedAt())
+                                            .build();
 
     }
-//
-//    public AdminStudentVo(AdminInsStudentDto dto) {
-//        this.istudent=dto.getIstudent();
-//        this.studentNum=dto.getStudentNum();
-//        this.imajor = dto.getImajor();
-//        this.nm = dto.getNm();
-//        this.gender = dto.getGender();
-//        this.birthdate = dto.getBirthdate();
-//        this.phone = dto.getPhone();
-//        this.finishedYn = 1;
-//        this.createdAt = LocalDateTime.now();
-//        this.grade = 1;
-//        this.delYn=0;
-//    }
 
+
+    public AdminStudentRes findStudents(AdminStudentFindParam param,Pageable pageable){
+        StudentEntity entity = new StudentEntity();
+        entity.setStudentNum(param.getStudentNum());
+        entity.setFinishedYn(param.getFinishedYn());
+        entity.setNm(param.getNm());
+        if (param.getImajor() > 0){
+            Optional<MajorEntity> majorEntity = MAJOR_RPS.findById(param.getImajor());
+            entity.setMajorEntity(majorEntity.get());
+        }
+
+        RPS.findAll();
+        return null;
+    }
 
 
 }
