@@ -34,10 +34,11 @@ public class AdminLectureRoomController {
                                                        @RequestParam (required = false) String buildingName,
                                                        @RequestParam (required = false) String lectureRoomName) {
         AdminLectureRoomDto dto = new AdminLectureRoomDto();
-        dto.setPage(pageable);
         dto.setLectureRoomName(lectureRoomName);
         dto.setBuildingName(buildingName);
-        return SERVICE.selLectureRoom(dto);
+        dto.setSize(pageable.getPageSize());
+        dto.setPage(pageable.getPageNumber());
+        return SERVICE.selLectureRoom(dto, pageable);
     }
 
     @DeleteMapping
