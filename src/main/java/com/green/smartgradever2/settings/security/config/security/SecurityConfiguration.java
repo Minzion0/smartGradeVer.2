@@ -26,6 +26,7 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(authz ->
                             authz.requestMatchers(
                                     "/"
+                                    ,"/**"
                                     ,"/admin/**"
                                     ,"/professor/**"
                                     ,"/student/**"
