@@ -1,6 +1,6 @@
 package com.green.smartgradever2.professor;
 
-import com.green.smartgradever2.admin.major.MajorRepository;
+
 import com.green.smartgradever2.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.professor.model.*;
@@ -25,7 +25,7 @@ public class ProfessorService {
 
     private final ProfesserRepository professorRepository;
     private final LectureApplyRepository lectureApplyRepository;
-    private final MajorRepository majorRepository;
+
 
     @Value("${file.dir}")
     private String fileDir;
