@@ -12,6 +12,6 @@ import java.util.List;
 public interface AdminLectureRoomMapper {
     List<AdminLectureRoomVo> selBuildingName(AdminLectureRoomDto dto);
     List<AdminLectureRoomListVo> selLectureRoom(AdminLectureRoomDto dto);
-
+    int countLectureRoom();
 
 }

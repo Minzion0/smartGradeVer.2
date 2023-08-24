@@ -5,6 +5,7 @@ import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomDto;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomVo;
 import com.green.smartgradever2.entity.LectureRoomEntity;
+import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class AdminLectureRoomService {
     private final AdminLectureRoomMapper MAPPER;
 
 
-    /** 강의실 리스트 INSERT **/
+    /** 강의실 INSERT **/
     public Long insLectureRoom(LectureRoomEntity entity) {
         LectureRoomEntity result = LECTURE_ROOM_REP.save(entity);
         if (result == null) {
@@ -35,7 +36,10 @@ public class AdminLectureRoomService {
     }
 
     /** 강의실 리스트 SELECT **/
-    public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto, Pageable pageable) {
+    public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto) {
+        int maxPage = MAPPER.countLectureRoom();
+        PagingUtils utils = new PagingUtils(dto.getPage(),maxPage);
+        dto.setStaIdx(utils.getStaIdx());
 
         List<AdminLectureRoomListVo> voList = MAPPER.selLectureRoom(dto);
         List<AdminLectureRoomVo> vo = MAPPER.selBuildingName(dto);
@@ -43,15 +47,13 @@ public class AdminLectureRoomService {
         dto = AdminLectureRoomDto.builder()
                 .lectureRoom(vo)
                 .lectureRoomList(voList)
-                .staIdx((pageable.getPageNumber() - 1) * pageable.getPageSize())
-                .size(pageable.getPageSize())
+                .paging(utils)
                 .build();
 
         return AdminLectureRoomFindRes.builder()
                 .lectureRoomList(dto.getLectureRoomList())
                 .lectureRoom(dto.getLectureRoom())
-                .staIdx(dto.getStaIdx())
-                .size(dto.getSize())
+                .paging(dto.getPaging())
                 .build();
     }
 

@@ -1,15 +1,19 @@
 package com.green.smartgradever2.professor;
 
-import com.green.smartgradever2.admin.major.MajorRepository;
+
 import com.green.smartgradever2.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
-import com.green.smartgradever2.professor.model.ProfessorLectureDto;
-import com.green.smartgradever2.professor.model.ProfessorProfileDto;
-import com.green.smartgradever2.professor.model.ProfessorSelRes;
+import com.green.smartgradever2.professor.model.*;
+import com.green.smartgradever2.utils.FileUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +25,10 @@ public class ProfessorService {
 
     private final ProfesserRepository professorRepository;
     private final LectureApplyRepository lectureApplyRepository;
-    private final MajorRepository majorRepository;
+
+
+    @Value("${file.dir}")
+    private String fileDir;
 
 
     //교수 프로필
@@ -101,6 +108,87 @@ public class ProfessorService {
         lectureDto.setTextbook(lectureEntity.getTextbook());
         lectureDto.setDelYn(lectureEntity.getDelYn());
         return lectureDto;
+    }
+
+
+    @Transactional
+    public ProfessorUpRes upProfessor(MultipartFile pic, ProfessorParam param) {
+        ProfessorEntity professor = professorRepository.findByIprofessor(param.getIprofessor());
+
+        if (professor == null) {
+            // 교수 정보가 없을 경우 처리
+            return null;
+        }
+
+        professor.setAddress(param.getAddress());
+        professor.setPhone(param.getPhone());
+        professor.setEmail(param.getEmail());
+
+        if (pic != null) {
+            String centerPath = String.format("professor/%d", professor.getIprofessor());
+            String dicPath = String.format("%s/%s", FileUtils.getAbsolutePath(fileDir), centerPath);
+            String savedFileName = FileUtils.makeRandomFileNm(pic.getOriginalFilename());
+            String savedFilePath = String.format("%s/%s", centerPath, savedFileName);
+            String targetPath = String.format("%s/%s", FileUtils.getAbsolutePath(fileDir), savedFilePath);
+
+            File dic = new File(dicPath);
+            if (!dic.exists()) {
+                dic.mkdirs();
+            }
+
+            File target = new File(targetPath);
+            try {
+                pic.transferTo(target);
+            } catch (IOException e) {
+                throw new RuntimeException("파일 업로드 실패");
+            }
+
+            professor.setPic(savedFileName);
+        }
+
+        try {
+            professorRepository.save(professor);
+        } catch (Exception e) {
+            // 업로드에 실패한 경우 파일 삭제
+            if (pic != null) {
+                String picFileName = professor.getPic();
+                String picPath = String.format("professor/%d/%s", professor.getIprofessor(), picFileName);
+                String fullPath = String.format("%s/%s", FileUtils.getAbsolutePath(fileDir), picPath);
+
+                File picFile = new File(fullPath);
+                if (picFile.exists()) {
+                    picFile.delete();
+                }
+            }
+            throw new RuntimeException("스티커 사진 불가");
+        }
+
+        return new ProfessorUpRes(professor);
+    }
+
+
+    @Transactional
+    public void processProfessorPicDeletion(Long iprofessor) {
+        ProfessorEntity professor = professorRepository.findByIprofessor(iprofessor);
+
+        if (professor != null && professor.getPic() != null) {
+            // 기존 사진이 있을 경우 삭제
+            String picFileName = professor.getPic();
+            String picPath = String.format("professor/%d/%s", iprofessor, picFileName);
+            String fullPath = String.format("%s/%s", FileUtils.getAbsolutePath(fileDir), picPath);
+
+            File picFile = new File(fullPath);
+            if (picFile.exists()) {
+                picFile.delete();
+            }
+
+            professor.setPic(null);
+            try {
+                professorRepository.save(professor);
+            } catch (Exception e) {
+                throw new RuntimeException("스티커 사진 삭제 실패");
+            }
+        }
     }
 
 

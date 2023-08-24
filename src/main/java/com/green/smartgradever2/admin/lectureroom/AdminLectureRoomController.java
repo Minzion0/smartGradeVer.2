@@ -30,19 +30,19 @@ public class AdminLectureRoomController {
 
     @GetMapping
     @Operation(summary = "강의실 리스트 보기")
-    public AdminLectureRoomFindRes getLectureRoom(@PageableDefault(sort = "ilectureRoom", direction = Sort.Direction.ASC, size = 20) Pageable pageable,
+    public AdminLectureRoomFindRes getLectureRoom(@PageableDefault(sort="ifeed", direction = Sort.Direction.DESC, size=20) Pageable pageable,
                                                        @RequestParam (required = false) String buildingName,
                                                        @RequestParam (required = false) String lectureRoomName) {
         AdminLectureRoomDto dto = new AdminLectureRoomDto();
+        dto.setPage(pageable);
         dto.setLectureRoomName(lectureRoomName);
         dto.setBuildingName(buildingName);
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        return SERVICE.selLectureRoom(dto,pageRequest);
+        return SERVICE.selLectureRoom(dto);
     }
 
     @DeleteMapping
     @Operation(summary = "강의실 삭제 (delYn 0 1 변경)")
-    public AdminLectureRoomListVo delLectureRoom(@RequestParam Long ilectureRoom) {
+    public AdminLectureRoomListVo patchLectureRoom(@RequestParam Long ilectureRoom) {
         LectureRoomEntity entity = new LectureRoomEntity();
         entity.setIlectureRoom(ilectureRoom);
 

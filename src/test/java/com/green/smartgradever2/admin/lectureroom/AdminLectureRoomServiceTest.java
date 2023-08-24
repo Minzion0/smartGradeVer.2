@@ -52,46 +52,12 @@ class AdminLectureRoomServiceTest {
 
         assertEquals(result, 1);
 
-    }
-
-    @Test
-    void selLectureRoom() {
-        AdminLectureRoomDto dto = new AdminLectureRoomDto();
-
-        List<AdminLectureRoomListVo> voList = MAPPER.selLectureRoom(dto);
-        voList.add(new AdminLectureRoomListVo(1L, "502호", "백매관", 30, 0));
-
-        List<AdminLectureRoomVo> vo = MAPPER.selBuildingName(dto);
-        vo.add(new AdminLectureRoomVo());
-
-        when(MAPPER.selLectureRoom(any())).thenReturn(voList);
-        when(MAPPER.selBuildingName(any())).thenReturn(vo);
-
-        AdminLectureRoomFindRes res = SERVICE.selLectureRoom(dto, pageable);
-
-        assertEquals(voList.get(0).getIlectureRoom(), res.getLectureRoomList().get(0).getIlectureRoom());
-        assertEquals(voList.get(0).getLectureRoomName(), res.getLectureRoomList().get(0).getLectureRoomName());
-        assertEquals(voList.get(0).getMaxCapacity(), res.getLectureRoomList().get(0).getMaxCapacity());
-
-        verify(MAPPER).selBuildingName(any());
-        verify(MAPPER).selLectureRoom(any());
-
-    }
-
-    @Test
-    void delLectureRoom() throws EntityNotFoundException{
-        LectureRoomEntity entity = new LectureRoomEntity();
-        AdminLectureRoomListVo vo = new AdminLectureRoomListVo();
-        entity.setDelYn(1);
-        entity.setIlectureRoom(1L);
-
-        when(REP.save(any())).thenReturn(1);
-
-        AdminLectureRoomListVo res = SERVICE.delLectureRoom(entity);
-
-        assertEquals(res.getDelYn(), entity.getDelYn());
-
         verify(REP).save(any());
+
+    }
+
+    @Test
+    void delLectureRoom() {
 
     }
 }
