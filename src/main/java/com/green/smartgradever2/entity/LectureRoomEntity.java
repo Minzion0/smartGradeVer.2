@@ -12,9 +12,8 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 @DynamicInsert
-public class LectureRoomEntity extends BaseEntity {
+public class LectureRoomEntity {
 
     /** pk값 **/
     @Id
@@ -33,4 +32,8 @@ public class LectureRoomEntity extends BaseEntity {
     /** 수용인원 **/
     @Column(name = "max_capacity", length = 10, nullable = false)
     private int maxCapacity;
+
+    /** 삭제 여부 **/
+    @Column(name = "del_yn", length = 10,nullable = false)
+    private int delYn;
 }

@@ -40,7 +40,7 @@ class AdminLectureRoomServiceTest {
     @Test
     void insLectureRoom() {
         LectureRoomEntity entity = new LectureRoomEntity();
-        entity.setLectureRoomName("502호");
+        entity.setLectureRoomName("504호");
         entity.setBuildingName("백매관");
         entity.setMaxCapacity(30);
         entity.setIlectureRoom(1L);
