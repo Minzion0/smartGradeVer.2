@@ -28,7 +28,8 @@ public class BoardController {
 
     /** select **/
     @GetMapping
-    public List<BoardVo> selBoard(@PageableDefault(sort = "createdAt")Pageable page) {
-        return SERVICE.selBoard();
+    public List<BoardVo> selBoard(@PageableDefault(sort = "createdAt",
+            direction = Sort.Direction.DESC, size=10)Pageable page) {
+        return SERVICE.selBoard(page);
     }
 }

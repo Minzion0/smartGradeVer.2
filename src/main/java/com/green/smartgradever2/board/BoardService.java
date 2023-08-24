@@ -12,6 +12,7 @@ import com.green.smartgradever2.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,7 +79,7 @@ public class BoardService {
     }
 
     /** 전체리스트 출력 **/
-    public List<BoardVo> selBoard() {
+    public List<BoardVo> selBoard(Pageable page) {
         List<BoardEntity> list = BOARD_REP.findAll();
         List<BoardVo> voList = new ArrayList<>();
         for (BoardEntity entity : list) {
