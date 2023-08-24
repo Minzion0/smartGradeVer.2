@@ -26,12 +26,12 @@ public  class PagingUtils {
     }
 
     public  void startIdx(int page){
-        int result = page - 1;
+        int result = page;
         this.staIdx =result*ROW;
     }
 
     public  void maxPage(int maxPage){
-        this.maxPage=(int) Math.ceil((double) maxPage / ROW);
+        this.maxPage=((int) Math.ceil((double) maxPage / ROW))-1;
     }
 
     public void isMore(int maxPage,int page){

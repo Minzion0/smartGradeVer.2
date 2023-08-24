@@ -1,12 +1,10 @@
 package com.green.smartgradever2.admin.student;
 
-import com.green.smartgradever2.admin.major.AdminMajorRepository;
-import com.green.smartgradever2.admin.student.model.AdminInsStudentParam;
-import com.green.smartgradever2.admin.student.model.AdminInsStudentVo;
-import com.green.smartgradever2.admin.student.model.AdminStudentFindParam;
-import com.green.smartgradever2.admin.student.model.AdminStudentRes;
+import com.green.smartgradever2.admin.major.MajorRepository;
+import com.green.smartgradever2.admin.student.model.*;
 import com.green.smartgradever2.entity.MajorEntity;
 import com.green.smartgradever2.entity.StudentEntity;
+import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +24,10 @@ import java.util.Optional;
 public class AdminStudentService {
 
     private final AdminStudentRepository RPS;
-    private final AdminMajorRepository MAJOR_RPS;
+    private final MajorRepository MAJOR_RPS;
     private final PasswordEncoder PW_ENCODER;
     private final EntityManager EM;
+    private final AdminStudentMapper MAPPER;
 
 
     //@Transactional(rollbackFor = Exception.class)
@@ -88,17 +87,32 @@ public class AdminStudentService {
 
 
     public AdminStudentRes findStudents(AdminStudentFindParam param,Pageable pageable){
-        StudentEntity entity = new StudentEntity();
-        entity.setStudentNum(param.getStudentNum());
-        entity.setFinishedYn(param.getFinishedYn());
-        entity.setNm(param.getNm());
-        if (param.getImajor() > 0){
-            Optional<MajorEntity> majorEntity = MAJOR_RPS.findById(param.getImajor());
-            entity.setMajorEntity(majorEntity.get());
-        }
 
-        RPS.findAll();
-        return null;
+        pageable.getPageSize();
+        pageable.getOffset();
+        pageable.getPageNumber();
+
+        AdminStudentFindDto dto = new AdminStudentFindDto();
+        dto.setImajor(param.getImajor());
+        dto.setGrade(param.getGrade());
+        dto.setFinishedYn(param.getFinishedYn());
+        dto.setStudentNum(param.getStudentNum());
+        dto.setNm(param.getNm());
+
+
+        int page = MAPPER.countStudents(dto);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(),page);
+
+        dto.setStaIdx(utils.getStaIdx());
+        dto.setRow(utils.getROW());
+
+        List<AdminStudentFindVo> students = MAPPER.findStudents(dto);
+
+        AdminStudentRes res = new AdminStudentRes();
+        res.setPage(utils);
+        res.setStudents(students);
+
+        return res;
     }
 
 

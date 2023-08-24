@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.smartgradever2.admin.student.AdminStudentMapper">
+
+    <select id="findStudents">
+        SELECT A.student_num studentNum
+            ,A.grade,A.nm,C.major_name majorName
+            ,A.gender,A.birthdate,A.phone,DATE(A.created_at) createdAt
+            ,A.finished_yn finishedYn
+            ,SUM(case when B.finished_at IS NULL then 0 ELSE G.score END) score
+        FROM student A
+            LEFT JOIN lecture_student B
+            ON A.student_num = B.student_num
+            INNER JOIN major C
+            ON C.imajor = A.imajor
+            LEFT JOIN lecture_apply D
+            ON D.ilecture = B.ilecture
+            LEFT JOIN lecture_name G
+            ON G.ilecture_name = D.ilecture_name
+        <where>
+
+            <if test="studentNum!='' and studentNum!=null">
+                AND  A.student_num=#{studentNum}
+            </if>
+            <if test="grade != 0 ">
+                AND  A.grade = #{grade}
+            </if>
+            <if test="nm != '' and nm != null ">
+                AND   A.nm=#{nm}
+            </if>
+            <if test="finishedYn>0">
+                AND A.finished_yn=#{finishedYn}
+            </if>
+
+            <if test="imajor > 0">
+                and A.imajor=#{imajor}
+            </if>
+        </where>
+
+        GROUP BY A.student_num
+        ORDER BY A.created_at DESC
+        LIMIT #{staIdx},#{row}
+
+
+
+    </select>
+
+    <select id="countStudents">
+        select count(*)
+        from student
+        <where>
+            <if test="studentNum!='' and studentNum!=null ">
+                and  student_num=#{studentNum}
+            </if>
+            <if test="nm != '' and nm != null ">
+                and  nm=#{nm}
+            </if>
+            <if test="grade >=1  ">
+                and  grade=#{grade}
+            </if>
+            <if test="imajor > 0">
+                and imajor=#{imajor}
+            </if>
+
+
+        </where>
+
+    </select>
+
+</mapper>
