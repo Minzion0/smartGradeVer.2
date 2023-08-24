@@ -2,6 +2,7 @@ package com.green.smartgradever2.board;
 
 import com.green.smartgradever2.admin.AdminRepository;
 import com.green.smartgradever2.board.model.BoardInsDto;
+import com.green.smartgradever2.board.model.BoardVo;
 import com.green.smartgradever2.board.repository.BoardPicRepository;
 import com.green.smartgradever2.board.repository.BoardRepository;
 import com.green.smartgradever2.entity.AdminEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,5 +75,21 @@ public class BoardService {
             }
         }
         return result;
+    }
+
+    /** 전체리스트 출력 **/
+    public List<BoardVo> selBoard() {
+        List<BoardEntity> list = BOARD_REP.findAll();
+        List<BoardVo> voList = new ArrayList<>();
+        for (BoardEntity entity : list) {
+            BoardVo vo = new BoardVo();
+
+            vo.setIboard(entity.getIboard());
+            vo.setTitle(entity.getTitle());
+            vo.setImportance(entity.getImportance());
+            vo.setIadmin(entity.getIadmin());
+            voList.add(vo);
+        }
+        return voList;
     }
 }
