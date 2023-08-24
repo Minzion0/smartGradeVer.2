@@ -7,7 +7,9 @@ import java.util.List;
 
 @Data
 @Builder
-public class AdminLecturRoomFindRes {
+public class AdminLectureRoomFindRes {
     private List<AdminLectureRoomListVo> lectureRoomList;
     private List<AdminLectureRoomVo> lectureRoom;
+    private int size;
+    private int staIdx;
 }

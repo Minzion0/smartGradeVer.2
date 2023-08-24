@@ -35,7 +35,7 @@ public class StudentEntity extends BaseEntity {
     @ToString.Exclude
     private MajorEntity majorEntity;
 
-    @Column(name = "grade",nullable = false,length = 10)
+    @Column(name = "grade",length = 10)
     @ColumnDefault("1")
     private Integer grade;
 
@@ -48,12 +48,14 @@ public class StudentEntity extends BaseEntity {
 
 
     @Column(length = 100)
+
     private String pic;
 
     @Column(nullable = false)
     private LocalDate birthdate;
 
-    @Column
+    @Column(length = 13)
+    @Size(min = 13)
     private String phone;
 
     @Column(length = 50)
