@@ -24,4 +24,9 @@
         </where>
         LIMIT #{staIdx}, 10
     </select>
+
+    <select id="countLectureRoom">
+        SELECT count(*)
+        from lecture_room
+    </select>
 </mapper>

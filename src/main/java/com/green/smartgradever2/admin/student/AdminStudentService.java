@@ -1,6 +1,6 @@
 package com.green.smartgradever2.admin.student;
 
-import com.green.smartgradever2.admin.major.MajorRepository;
+import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.student.model.AdminInsStudentParam;
 import com.green.smartgradever2.admin.student.model.AdminInsStudentVo;
 import com.green.smartgradever2.entity.MajorEntity;
@@ -22,7 +22,7 @@ import java.util.Optional;
 public class AdminStudentService {
 
     private final AdminStudentRepository RPS;
-    private final MajorRepository MAJOR_RPS;
+    private final AdminMajorRepository MAJOR_RPS;
     private final PasswordEncoder PW_ENCODER;
     @Transactional(rollbackFor = Exception.class)
     public AdminInsStudentVo insStudent(AdminInsStudentParam param){
