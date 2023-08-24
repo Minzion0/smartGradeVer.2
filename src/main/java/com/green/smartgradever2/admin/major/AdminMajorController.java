@@ -21,7 +21,7 @@ public class AdminMajorController {
         return SERVICE.insMajor(entity);
     }
 
-    @PatchMapping
+    @DeleteMapping
     @Operation(summary = "전공 삭제 ( del_yn 0 1 변경 )")
     public AdminMajorVo patchMajor(@RequestParam Long imajor) {
         MajorEntity entity = new MajorEntity();
