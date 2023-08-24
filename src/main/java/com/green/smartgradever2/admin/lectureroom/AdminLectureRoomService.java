@@ -38,7 +38,7 @@ public class AdminLectureRoomService {
     /** 강의실 리스트 SELECT **/
     public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto) {
         int maxPage = MAPPER.countLectureRoom();
-        PagingUtils utils = new PagingUtils(dto.getPage(),maxPage);
+        PagingUtils utils = new PagingUtils(dto.getSize(),maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
         List<AdminLectureRoomListVo> voList = MAPPER.selLectureRoom(dto);
