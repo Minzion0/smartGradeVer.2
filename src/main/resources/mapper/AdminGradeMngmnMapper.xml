@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.smartgradever2.admin.grade_mngmn.GradeMngmnMapper">
+
+    <select id="countStudent">
+        SELECT count(*)
+        from student
+    </select>
+
+    <select id="selGradeFindStudent">
+        SELECT A.grade grade, C.semester semester, F.lecture_name lectureName
+        , G.nm professorName, F.score lectureScore
+        , D.total_score totalScore
+        FROM student_semester_score A
+        INNER JOIN student B
+        ON A.student_num = B.student_num
+        INNER JOIN semester C
+        ON A.isemester = C.isemester
+        INNER JOIN lecture_student D
+        ON A.student_num = D.student_num
+        INNER JOIN lecture_apply E
+        ON D.ilecture = E.ilecture
+        INNER JOIN lecture_name F
+        ON E.ilecture_name = F.ilecture_name
+        INNER JOIN professor G
+        ON G.iprofessor = E.iprofessor
+        <where>
+            D.finished_yn = 1
+            <if test="studentNum != null and studentNum != ''">
+                and B.student_num = #{studentNum}
+            </if>
+            <if test="grade > 0">
+                and A.grade = #{grade}
+            </if>
+        </where>
+        LIMIT #{staIdx}, 10
+    </select>
+
+    <select id="GradeMngmnAvg">
+        SELECT DISTINCT C.grade grade , D.semester semester
+        , C.avg_score avgScore, C.rating avgRating
+        FROM student A
+        INNER JOIN lecture_student B
+        ON A.student_num = B.student_num
+        INNER JOIN student_semester_score C
+        ON B.student_num = C.student_num
+        INNER JOIN semester D
+        ON C.isemester = D.isemester
+        <where>
+            <if test="studentNum != null and studentNum != ''">
+                and A.student_num = #{studentNum}
+            </if>
+        </where>
+    </select>
+
+    <select id="selGradeMngmnStudent">
+        SELECT nm name, student_num studentNum
+        FROM student
+        <where>
+            <if test="studentNum != null and studentNum != ''">
+                and student_num = #{studentNum}
+            </if>
+        </where>
+    </select>
+
+</mapper>

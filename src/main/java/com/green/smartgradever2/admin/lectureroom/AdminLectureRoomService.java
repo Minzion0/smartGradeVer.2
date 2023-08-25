@@ -37,7 +37,7 @@ public class AdminLectureRoomService {
     }
 
     /** 강의실 리스트 SELECT **/
-    public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto, Pageable pageable) {
+    public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto) {
         int maxPage = MAPPER.countLectureRoom();
         PagingUtils utils = new PagingUtils(dto.getPage(),maxPage);
         dto.setStaIdx(utils.getStaIdx());
