@@ -27,7 +27,7 @@ public class BoardEntity extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "iadmin")
     @ToString.Exclude
-    private AdminEntity iadmin;
+    private AdminEntity adminEntity;
 
     /** 제목 **/
     @Column(nullable = false, length = 100)

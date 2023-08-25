@@ -2,6 +2,8 @@ package com.green.smartgradever2.board;
 
 import com.green.smartgradever2.admin.AdminRepository;
 import com.green.smartgradever2.board.model.BoardInsDto;
+import com.green.smartgradever2.board.model.BoardRes;
+import com.green.smartgradever2.board.model.BoardUpdDto;
 import com.green.smartgradever2.board.model.BoardVo;
 import com.green.smartgradever2.board.repository.BoardPicRepository;
 import com.green.smartgradever2.board.repository.BoardRepository;
@@ -9,15 +11,20 @@ import com.green.smartgradever2.entity.AdminEntity;
 import com.green.smartgradever2.entity.BoardEntity;
 import com.green.smartgradever2.entity.BoardPicEntity;
 import com.green.smartgradever2.utils.FileUtils;
+import com.green.smartgradever2.utils.PagingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +38,7 @@ public class BoardService {
     private String fileDir;
 
     private final AdminRepository ADMIN_REP;
-    private final BoardRepository BOARD_REP;
+    private final BoardRepository  BOARD_REP;
     private final BoardPicRepository BOARD_PIC_REP;
 
     /** insert with pics **/
@@ -40,7 +47,7 @@ public class BoardService {
         BoardPicEntity picResult = new BoardPicEntity();
 
         Optional<AdminEntity> adminOpt = ADMIN_REP.findById(dto.getIadmin());
-        entity.setIadmin(adminOpt.get());
+        entity.setAdminEntity(adminOpt.get());
         entity.setTitle(dto.getTitle());
         entity.setCtnt(dto.getCtnt());
         entity.setImportance(dto.getImportance());
@@ -78,19 +85,71 @@ public class BoardService {
         return result;
     }
 
-    /** 전체리스트 출력 **/
-    public List<BoardVo> selBoard(Pageable page) {
-        List<BoardEntity> list = BOARD_REP.findAll();
-        List<BoardVo> voList = new ArrayList<>();
-        for (BoardEntity entity : list) {
-            BoardVo vo = new BoardVo();
+    int delYn = 0;
+    int importance = 0;
 
-            vo.setIboard(entity.getIboard());
-            vo.setTitle(entity.getTitle());
-            vo.setImportance(entity.getImportance());
-            vo.setIadmin(entity.getIadmin());
-            voList.add(vo);
+    /** 전체리스트 출력  및 제목 검색 **/
+    public BoardRes selBoard(Pageable page, String title) {
+        int row = 10;
+        int importanceRow = 3;
+
+        Page<BoardEntity> list;
+
+        if (title == null){
+           if (selImportanceBoard().size() < importanceRow) {
+               page.withPage(row - selImportanceBoard().size());
+               list = BOARD_REP.findByImportance(page, importance,delYn);
+           } else {
+               page.withPage(7);
+               list = BOARD_REP.findByImportance(page, importance,delYn);
+           }
+        } else {
+            page.withPage(10);
+            list = BOARD_REP.findByTitleContaining(title, page, importance,delYn);
         }
-        return voList;
+
+       List<BoardVo> result = list.stream().map(item -> BoardVo.builder()
+                .title(item.getTitle())
+                .importance(item.getImportance())
+                .boardView(item.getBoardView())
+                .iboard(item.getIboard())
+                .createdAt(item.getCreatedAt())
+                .iadmin(item.getAdminEntity().getIadmin())
+                .build()
+        ).toList();
+
+        return BoardRes.builder()
+                .list(result)
+                .page(page)
+                .build();
+    }
+
+    /** 중요공지 리스트 출력 **/
+    public List<BoardVo> selImportanceBoard() {
+        importance = 1;
+       List<BoardEntity> list = BOARD_REP.findAllByImportance(importance, Sort.by(Sort.Direction.DESC, "createdAt"), delYn);
+
+        return list.stream().map(item -> BoardVo.builder()
+                .title(item.getTitle())
+                .importance(item.getImportance())
+                .boardView(item.getBoardView())
+                .iboard(item.getIboard())
+                .createdAt(item.getCreatedAt())
+                .iadmin(item.getAdminEntity().getIadmin())
+                .build()
+        ).toList();
+    }
+
+    /** 공지사항 삭제(del_yn) **/
+
+
+    /** 공지사항 수정 **/
+    public BoardEntity updBoard (BoardUpdDto dto) {
+        BoardEntity entity = BOARD_REP.getReferenceById(dto.getIboard());
+        entity.setTitle(dto.getTitle());
+        entity.setCtnt(dto.getCtnt());
+        entity.setImportance(dto.getImportance());
+        entity.setUpdatedAt(LocalDateTime.now());
+        return entity;
     }
 }

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Table(name = "admin")
 @Entity
@@ -31,4 +34,7 @@ public class AdminEntity{
     /** admin secret_key **/
     @Column(length = 100, name = "secret_key")
     private String secretKey;
+
+    @OneToMany(mappedBy = "adminEntity")
+    private List<BoardEntity> articles = new ArrayList<>();
 }
