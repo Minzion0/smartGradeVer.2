@@ -19,7 +19,13 @@ public class ProfessorController {
     public ProfessorProfileDto getProfessorProfile(@PathVariable Long iprofessor) {
         return SERVICE.getProfessorProfile(iprofessor);
     }
-
+    @GetMapping
+    @Operation(summary = "교수프로필 본인 강의까지 출력")
+    public ProfessorSelRes getProfessorWithLectures(@RequestParam Long iprofessor) {
+        ProfessorProfileDto dto = new ProfessorProfileDto();
+        dto.setIprofessor(iprofessor);
+        return SERVICE.getProfessorLectures(dto);
+    }
 
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "교수 프로필 수정")
@@ -44,6 +50,17 @@ public class ProfessorController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+    @GetMapping("/lecture-List")
+    @Operation(summary = "본인의 강의 조회")
+    public ProfessorLctureSelRes getLecturePro(@RequestParam Long iprofessor
+            ,@RequestParam (defaultValue = "1") int page
+            ,@RequestParam(required = false ) String openingProcedures) {
+        ProfessorSelLectureDto dto = new ProfessorSelLectureDto();
+        dto.setIprofessor(iprofessor);
+        dto.setPage(page);
+        dto.setOpeningProcedures(openingProcedures);
+        return SERVICE.selProfessorLecture(dto);
     }
 
 
