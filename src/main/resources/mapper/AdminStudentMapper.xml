@@ -28,7 +28,7 @@
                 AND  A.grade = #{grade}
             </if>
             <if test="nm != '' and nm != null ">
-                AND   A.nm=#{nm}
+                AND   A.nm REGEXP #{nm}
             </if>
             <if test="finishedYn>0">
                 AND A.finished_yn=#{finishedYn}
@@ -67,6 +67,39 @@
 
         </where>
 
+    </select>
+
+    <select id="studentProfile" >
+        SELECT A.student_num studentNum
+            ,A.grade,A.nm 'name',A.imajor,A.pic,A.email
+            ,A.gender,A.birthdate,A.phone,A.address
+            ,A.finished_yn finishedYn,SUM(CASE WHEN B.finished_at IS NULL THEN 0 ELSE G.score END) score
+        FROM student A
+            LEFT JOIN lecture_student B
+            ON A.student_num=B.student_num
+            INNER JOIN major C
+            ON C.imajor=A.imajor
+            LEFT JOIN lecture_apply D
+            ON D.ilecture=B.ilecture
+            LEFT JOIN lecture_name G
+            ON G.ilecture_name=D.ilecture_name
+        WHERE A.student_num = #{studentNum}
+    </select>
+
+    <select id="studentLectures" >
+        SELECT A.ilecture,D.semester_str_date lectureStrDate
+            ,D.semester_end_date lectureEndDate,DATE_FORMAT(E.lecture_str_time,'%h:%i') lectureStrTime
+            ,DATE_FORMAT(E.lecture_end_time,'%h:%i') lectureEndTime,C.lecture_name lectureName
+        FROM lecture_student A
+            INNER JOIN lecture_apply B
+            ON A.ilecture=B.ilecture
+            INNER JOIN lecture_name C
+            ON C.ilecture_name=B.ilecture_name
+            INNER JOIN semester D
+            ON D.isemester=B.isemester
+            INNER JOIN lecture_schedule E
+            ON A.ilecture = E.ilecture
+        WHERE A.student_num =  = #{studentNum} AND B.isemester=(SELECT isemester FROM semester ORDER BY isemester DESC LIMIT 1)
     </select>
 
 </mapper>
