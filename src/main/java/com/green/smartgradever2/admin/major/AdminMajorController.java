@@ -1,9 +1,6 @@
 package com.green.smartgradever2.admin.major;
 
-import com.green.smartgradever2.admin.major.model.AdminMajorDto;
-import com.green.smartgradever2.admin.major.model.AdminMajorPatchDto;
-import com.green.smartgradever2.admin.major.model.AdminMajorSaveDto;
-import com.green.smartgradever2.admin.major.model.AdminMajorVo;
+import com.green.smartgradever2.admin.major.model.*;
 import com.green.smartgradever2.entity.MajorEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +21,7 @@ public class AdminMajorController {
     private final AdminMajorService SERVICE;
 
     @PostMapping
-    @Operation(summary = "전공 추가")
+    @Operation(summary = "전공 INSERT")
     public Long postMajor(@RequestBody AdminMajorSaveDto dto) {
         MajorEntity entity = new MajorEntity();
         entity.setMajorName(dto.getMajorName());
@@ -34,15 +31,16 @@ public class AdminMajorController {
     }
 
     @GetMapping
-    public List<AdminMajorVo> getMajor(@PageableDefault(sort = "imajor", direction = Sort.Direction.DESC, size = 20) Pageable pageable,
-                                       @RequestParam (required = false) String majorName,
-                                       @RequestParam (required = false, defaultValue = "0") int delYn) {
+    @Operation(summary = "전공 리스트 SELECT")
+    public AdminMajorFindRes getMajor(@PageableDefault(sort = "imajor", direction = Sort.Direction.DESC, size = 20) Pageable pageable,
+                                      @RequestParam (required = false) String majorName,
+                                      @RequestParam (required = false, defaultValue = "0") int delYn) {
         AdminMajorDto dto = new AdminMajorDto();
         dto.setMajorName(majorName);
         dto.setDelYn(delYn);
         dto.setPage(pageable.getPageNumber());
         dto.setSize(pageable.getPageSize());
-        return SERVICE.selMajor(dto,pageable);
+        return SERVICE.selMajor(dto);
     }
 
 
@@ -54,13 +52,13 @@ public class AdminMajorController {
         return SERVICE.delMajor(entity);
     }
 
-//    @PatchMapping
-//    @Operation(summary = "전공 이름 수정")
-//    public AdminMajorVo patchMajor(@RequestBody AdminMajorPatchDto dto) {
-//        MajorEntity entity = new MajorEntity();
-//        entity.setMajorName(dto.getMajorName());
-//        entity.setImajor(dto.getImajor());
-//        entity.setGraduationScore(dto.getGraduationScore());
-//        return SERVICE.updMajor(entity);
-//    }
+    @PatchMapping
+    @Operation(summary = "전공 이름 수정")
+    public AdminMajorVo patchMajor(@RequestBody AdminMajorPatchDto dto) {
+        MajorEntity entity = new MajorEntity();
+        entity.setMajorName(dto.getMajorName());
+        entity.setImajor(dto.getImajor());
+        entity.setGraduationScore(dto.getGraduationScore());
+        return SERVICE.updMajor(entity);
+    }
 }
