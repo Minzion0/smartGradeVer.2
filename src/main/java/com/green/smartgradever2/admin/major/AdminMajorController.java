@@ -1,6 +1,7 @@
 package com.green.smartgradever2.admin.major;
 
 import com.green.smartgradever2.admin.major.model.AdminMajorDto;
+import com.green.smartgradever2.admin.major.model.AdminMajorPatchDto;
 import com.green.smartgradever2.admin.major.model.AdminMajorSaveDto;
 import com.green.smartgradever2.admin.major.model.AdminMajorVo;
 import com.green.smartgradever2.entity.MajorEntity;
@@ -53,9 +54,13 @@ public class AdminMajorController {
         return SERVICE.delMajor(entity);
     }
 
-    @PatchMapping
-    @Operation(summary = "전공 이름 수정")
-    public AdminMajorVo patchMajor(@RequestBody MajorEntity entity) {
-        return SERVICE.updMajor(entity);
-    }
+//    @PatchMapping
+//    @Operation(summary = "전공 이름 수정")
+//    public AdminMajorVo patchMajor(@RequestBody AdminMajorPatchDto dto) {
+//        MajorEntity entity = new MajorEntity();
+//        entity.setMajorName(dto.getMajorName());
+//        entity.setImajor(dto.getImajor());
+//        entity.setGraduationScore(dto.getGraduationScore());
+//        return SERVICE.updMajor(entity);
+//    }
 }

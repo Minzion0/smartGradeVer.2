@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.jpa.repository.Temporal;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -22,8 +23,8 @@ public class SemesterEntity {
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long isemester;
 
-    @Column(name = "year")
-    private Year year;
+    @Column(name = "year", columnDefinition = "YEAR")
+    private LocalDate year;
 
     @Column(name = "semester",length = 10, nullable = false)
     private int semester;
