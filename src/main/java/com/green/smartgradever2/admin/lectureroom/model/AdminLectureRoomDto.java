@@ -21,8 +21,9 @@ public class AdminLectureRoomDto {
     private int maxCapacity;
     private int size;
     private int staIdx;
-    private Pageable page;
+    private int page;
     private PagingUtils paging;
+    private Pageable pageable;
     private List<AdminLectureRoomListVo> lectureRoomList;
     private List<AdminLectureRoomVo> lectureRoom;
     private AdminLectureRoomFindRes findRes;
