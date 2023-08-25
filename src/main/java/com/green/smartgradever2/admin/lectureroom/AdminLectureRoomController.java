@@ -38,7 +38,7 @@ public class AdminLectureRoomController {
         dto.setBuildingName(buildingName);
         dto.setSize(pageable.getPageSize());
         dto.setPage(pageable.getPageNumber());
-        return SERVICE.selLectureRoom(dto, pageable);
+        return SERVICE.selLectureRoom(dto);
     }
 
     @DeleteMapping

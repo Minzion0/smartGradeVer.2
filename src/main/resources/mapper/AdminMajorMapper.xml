@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.smartgradever2.admin.major.AdminMajorMapper">
+    <select id="countMajor">
+        SELECT count(*)
+        from major
+        <where>
+            <if test="majorName != null and majorName != ''">
+                and major_name = #{majorName}
+            </if>
+            <if test="delYn != null">
+                and del_yn = #{delYn}
+            </if>
+        </where>
+    </select>
+    <select id="selMajor">
+        SELECT imajor, major_name majorName
+        , graduation_score graduationScore, del_yn delYn, remarks remarks
+        from major
+        <where>
+            <if test="majorName != null and majorName != ''">
+                and major_name = #{majorName}
+            </if>
+            <if test="delYn != null">
+                and del_yn =#{delYn}
+            </if>
+        </where>
+        LIMIT #{staIdx}, 10
+    </select>
+
+</mapper>
