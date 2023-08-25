@@ -19,5 +19,6 @@ public interface AdminStudentMapper {
 
    List<AdminStudentLectureVo>studentLectures(int studentNum);
 
+    int promotionGrade();
 
 }

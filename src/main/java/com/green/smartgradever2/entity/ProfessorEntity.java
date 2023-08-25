@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.orm.jpa.vendor.Database;
 
 import java.time.LocalDate;
@@ -67,7 +68,7 @@ public class ProfessorEntity extends BaseEntity {
     private String address;
 
     //** 롤값 ROLE_PROFESSOR **/
-    @Column(length = 30, nullable = false,columnDefinition = "VARCHAR(30) DEFAULT 'ROLE_PROFESSOR'")
+    @Column(length = 30, columnDefinition = "VARCHAR(30) DEFAULT 'ROLE_PROFESSOR'")
     private String role;
 
     /** 시크릿키 **/

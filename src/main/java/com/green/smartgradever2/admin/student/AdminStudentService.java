@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -151,6 +152,12 @@ public class AdminStudentService {
         return AdminStudentDetailRes.builder().profile(profileVo).lectureList(lectureVos).build();
     }
 
+    /**매년 말에 학생 진급 **/
+    @Scheduled(cron = "0 59 23 31 12 ?")
+    public void grade() {
+        int result = MAPPER.promotionGrade();
+        log.info("{}년도 진학한 학생의수 : {}", LocalDateTime.now().plusYears(1).getYear(), result);
 
+    }
 
 }
