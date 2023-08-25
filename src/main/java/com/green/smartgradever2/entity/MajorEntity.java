@@ -17,7 +17,7 @@ public class MajorEntity {
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long imajor;
 
-    @Column(name = "major_name", nullable = false, length = 50)
+    @Column(name = "major_name", nullable = false, length = 50, unique = true)
     private String majorName;
 
     @Column(name = "graduation_score", nullable = false, length = 10)
