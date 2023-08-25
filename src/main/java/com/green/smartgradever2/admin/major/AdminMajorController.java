@@ -32,7 +32,7 @@ public class AdminMajorController {
 
     @GetMapping
     @Operation(summary = "전공 리스트 SELECT")
-    public AdminMajorFindRes getMajor(@PageableDefault(sort = "imajor", direction = Sort.Direction.DESC, size = 20) Pageable pageable,
+    public AdminMajorFindRes getMajor(@PageableDefault(sort = "imajor", direction = Sort.Direction.DESC) Pageable pageable,
                                       @RequestParam (required = false) String majorName,
                                       @RequestParam (required = false, defaultValue = "0") int delYn) {
         AdminMajorDto dto = new AdminMajorDto();

@@ -23,9 +23,9 @@ public class GradeMngmnController {
     private final GradeMngmnService SERVICE;
 
     @GetMapping
-    public GradeMngmnRes getGradeMngmn(@PageableDefault(sort="student_num", direction = Sort.Direction.DESC, size=20) Pageable pageable,
+    public GradeMngmnRes getGradeMngmn(@PageableDefault(sort="student_num", direction = Sort.Direction.DESC) Pageable pageable,
                                        @RequestParam(required = false, defaultValue = "0") int grade,
-                                       @RequestParam Long studentNum) {
+                                       @RequestParam Integer studentNum) {
         GradeMngmnDto dto = new GradeMngmnDto();
         dto.setStudentNum(studentNum);
         dto.setGrade(grade);
@@ -34,10 +34,10 @@ public class GradeMngmnController {
         return SERVICE.selGradeMngmn(dto);
     }
 
-    @GetMapping
-    public GradeMngmnRes getGradeMngmnDetail(@PathVariable Integer studentNum) {
-        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
-        entity.setStudentEntity(StudentEntity.builder().studentNum(studentNum).build());
-        return null;
-    }
+//    @GetMapping
+//    public GradeMngmnRes getGradeMngmnDetail(@PathVariable Integer studentNum) {
+//        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
+//        entity.setStudentEntity(StudentEntity.builder().studentNum(studentNum).build());
+//        return null;
+//    }
 }

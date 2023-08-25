@@ -10,4 +10,6 @@ import java.util.List;
 public interface AdminMajorRepository extends JpaRepository<MajorEntity, Long> {
     List<MajorEntity> findAllByDelYnAndMajorName(int delYn, String majorName);
 
+    MajorEntity findByStudentNum(Integer studentNum);
+
 }

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public class GradeMngmnDto {
     private Long isemester;
     private Long ilectureName;
-    private Long studentNum;
+    private Integer studentNum;
     private int grade;
     private int semester;
     private int size;

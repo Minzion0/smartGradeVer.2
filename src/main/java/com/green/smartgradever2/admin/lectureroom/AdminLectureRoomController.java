@@ -30,7 +30,7 @@ public class AdminLectureRoomController {
 
     @GetMapping
     @Operation(summary = "강의실 리스트 보기")
-    public AdminLectureRoomFindRes getLectureRoom(@PageableDefault(sort="ifeed", direction = Sort.Direction.DESC, size=20) Pageable pageable,
+    public AdminLectureRoomFindRes getLectureRoom(@PageableDefault(sort="ifeed", direction = Sort.Direction.DESC) Pageable pageable,
                                                        @RequestParam (required = false) String buildingName,
                                                        @RequestParam (required = false) String lectureRoomName) {
         AdminLectureRoomDto dto = new AdminLectureRoomDto();
