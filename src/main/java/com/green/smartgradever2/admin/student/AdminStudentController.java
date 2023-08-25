@@ -1,9 +1,6 @@
 package com.green.smartgradever2.admin.student;
 
-import com.green.smartgradever2.admin.student.model.AdminInsStudentParam;
-import com.green.smartgradever2.admin.student.model.AdminInsStudentVo;
-import com.green.smartgradever2.admin.student.model.AdminStudentFindParam;
-import com.green.smartgradever2.admin.student.model.AdminStudentRes;
+import com.green.smartgradever2.admin.student.model.*;
 import com.green.smartgradever2.entity.StudentEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +40,12 @@ public class AdminStudentController {
 
         return ResponseEntity.ok().body(SERVICE.findStudents(param,page));
     }
-//
-//    @GetMapping("/students/{istudent}")
-//    @Operation(summary = "학생 디테일")
-//    public AdminStudentDetalRes studentDet(@PathVariable Long istudent){
-//        return SERVICE.studentDet(istudent);
-//    }
-//
+
+    @GetMapping("/students/{studentNum}")
+    @Operation(summary = "학생 디테일")
+    public ResponseEntity<AdminStudentDetailRes> studentDet(@PathVariable int studentNum){
+        return ResponseEntity.ok().body(SERVICE.studentDet(studentNum));
+    }
+
 
 }

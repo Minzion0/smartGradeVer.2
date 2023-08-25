@@ -3,7 +3,6 @@ package com.green.smartgradever2.admin.student;
 import com.green.smartgradever2.entity.MajorEntity;
 import com.green.smartgradever2.entity.StudentEntity;
 import com.green.smartgradever2.entity.model.GenderEnum;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -33,14 +30,14 @@ class AdminStudentRepositoryTest {
         LocalDate year = LocalDate.of(2023, 1, 1);
         LocalDateTime startOfYear = year.atStartOfDay(); // 해당 년도의 첫째 날의 00:00:00
         LocalDateTime endOfYear = year.plusYears(1).atStartOfDay().minusNanos(1); // 해당 년도의 마지막 날의 23:59:59.999999999
-      List<StudentEntity>byMajorEntity = RPS.findByMajorEntityAndCreatedAtBetween(major,startOfYear,endOfYear);
+      List<StudentEntity>byMajorEntity = RPS.findAllByMajorEntityAndCreatedAtBetween(major,startOfYear,endOfYear);
         List<StudentEntity> all = RPS.findAll();
 
         log.info("Entity : {}",byMajorEntity.size());
         log.info("all : {}",all.size());
 
         major.setImajor(20L);
-        List<StudentEntity> rps = RPS.findByMajorEntityAndCreatedAtBetween(major, startOfYear, endOfYear);
+        List<StudentEntity> rps = RPS.findAllByMajorEntityAndCreatedAtBetween(major, startOfYear, endOfYear);
 
         log.info("res : {}",rps.get(0).getMajorEntity().getImajor());
         String substring = year.toString().substring(2,4);
