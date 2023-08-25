@@ -6,9 +6,12 @@ import com.green.smartgradever2.entity.MajorEntity;
 import com.green.smartgradever2.entity.StudentEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +29,12 @@ public class AdminStudentService {
     private final AdminStudentRepository RPS;
     private final AdminMajorRepository MAJOR_RPS;
     private final PasswordEncoder PW_ENCODER;
+    @PersistenceContext
     private final EntityManager EM;
     private final AdminStudentMapper MAPPER;
 
 
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional
     public AdminInsStudentVo insStudent(AdminInsStudentParam param) {
 
         Optional<MajorEntity> major = MAJOR_RPS.findById(param.getImajor());
@@ -43,7 +47,7 @@ public class AdminStudentService {
         LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
         String year = setYear.toString().substring(2, 4);
 
-        List<StudentEntity> majorCount = RPS.findByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
+        List<StudentEntity> majorCount = RPS.findAllByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
 
         String password = param.getBirthdate().toString().replaceAll("-", "");
 
@@ -63,12 +67,11 @@ public class AdminStudentService {
         entity.setPhone(param.getPhone());
 
 
-        StudentEntity save = RPS.save(entity);
+        RPS.saveAndFlush(entity);
 
-        EM.detach(save);
+        EM.clear();
 
-        Optional<StudentEntity> result = RPS.findById(save.getStudentNum());
-        StudentEntity student = result.get();
+        StudentEntity student = RPS.findById(entity.getStudentNum()).get();
 
 
         return AdminInsStudentVo.builder().studentNum(student.getStudentNum())
@@ -88,16 +91,43 @@ public class AdminStudentService {
 
     public AdminStudentRes findStudents(AdminStudentFindParam param,Pageable pageable){
 
-        pageable.getPageSize();
-        pageable.getOffset();
-        pageable.getPageNumber();
+
+        //jpa 좀더 학습후 컨버팅 실시
+//        Page<StudentEntity> all = RPS.findAll(pageable);
+//
+//        all.stream().map(student->AdminStudentFindVo.builder()
+//                .studentNum(student.getStudentNum())
+//                .birthdate(student.getBirthdate())
+//                .majorName(student.getMajorEntity().getMajorName())
+//                .nm(student.getNm())
+//                .phone(student.getPhone())
+//                .gender(student.getGender())
+//                .createdAt(student.getCreatedAt().toLocalDate())
+//                .finishedYn(student.getFinishedYn())
+//                .build()).toList();
 
         AdminStudentFindDto dto = new AdminStudentFindDto();
         dto.setImajor(param.getImajor());
         dto.setGrade(param.getGrade());
         dto.setFinishedYn(param.getFinishedYn());
         dto.setStudentNum(param.getStudentNum());
-        dto.setNm(param.getNm());
+
+        if (param.getNm()!=null){
+            // 이름에서 성만 검색한 경우
+            if (param.getNm().length()==1){
+                String format = String.format("^[%s]", param.getNm());
+                dto.setNm(format);
+            }
+            if (param.getNm().length()==2){
+                //성 빼고 이름만 검색한 경우
+                String format = String.format("[_%s]$", param.getNm());
+                dto.setNm(format);
+            }
+            if (param.getNm().length()>=3){
+                String format = String.format("^[%s]", param.getNm());
+                dto.setNm(format);
+            }
+        }
 
 
         int page = MAPPER.countStudents(dto);
@@ -115,5 +145,19 @@ public class AdminStudentService {
         return res;
     }
 
+    public AdminStudentDetailRes studentDet(int studentNum){
+        AdminStudentProfileVo profileVo = MAPPER.studentProfile(studentNum);
+        List<AdminStudentLectureVo> lectureVos = MAPPER.studentLectures(studentNum);
+
+        return AdminStudentDetailRes.builder().profile(profileVo).lectureList(lectureVos).build();
+    }
+
+    /**매년 말에 학생 진급 **/
+    @Scheduled(cron = "0 59 23 31 12 ?")
+    public void grade() {
+        int result = MAPPER.promotionGrade();
+        log.info("{}년도 진학한 학생의수 : {}", LocalDateTime.now().plusYears(1).getYear(), result);
+
+    }
 
 }

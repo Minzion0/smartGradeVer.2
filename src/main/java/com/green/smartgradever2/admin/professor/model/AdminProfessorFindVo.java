@@ -1,4 +1,4 @@
-package com.green.smartgradever2.admin.student.model;
+package com.green.smartgradever2.admin.professor.model;
 
 import com.green.smartgradever2.entity.model.GenderEnum;
 import lombok.Builder;
@@ -9,15 +9,15 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class AdminStudentFindVo {
-    private int studentNum;
-    private int grade;
-    private String nm;
+public class AdminProfessorFindVo {
+    private Long iprofessor;
     private String majorName;
+    private String nm;
     private GenderEnum gender;
     private LocalDate birthdate;
     private String phone;
-    private LocalDate createdAt;
-    private int finishedYn;
-    private int score;
+    private String email;
+    private String address;
+    private LocalDateTime createdAt;
+    private int delYn;
 }

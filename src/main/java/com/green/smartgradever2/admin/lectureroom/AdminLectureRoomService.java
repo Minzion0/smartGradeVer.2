@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,22 +39,16 @@ public class AdminLectureRoomService {
     /** 강의실 리스트 SELECT **/
     public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto) {
         int maxPage = MAPPER.countLectureRoom();
-        PagingUtils utils = new PagingUtils(dto.getSize(),maxPage);
+        PagingUtils utils = new PagingUtils(dto.getPage(),maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
         List<AdminLectureRoomListVo> voList = MAPPER.selLectureRoom(dto);
         List<AdminLectureRoomVo> vo = MAPPER.selBuildingName(dto);
 
-        dto = AdminLectureRoomDto.builder()
-                .lectureRoom(vo)
-                .lectureRoomList(voList)
-                .paging(utils)
-                .build();
-
         return AdminLectureRoomFindRes.builder()
-                .lectureRoomList(dto.getLectureRoomList())
-                .lectureRoom(dto.getLectureRoom())
-                .paging(dto.getPaging())
+                .lectureRoomList(voList)
+                .lectureRoom(vo)
+                .paging(utils)
                 .build();
     }
 

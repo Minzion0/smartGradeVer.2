@@ -3,10 +3,7 @@ package com.green.smartgradever2.entity;
 import com.green.smartgradever2.entity.model.GenderEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -18,6 +15,7 @@ import java.time.LocalDate;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @DynamicInsert
@@ -74,6 +72,7 @@ public class StudentEntity extends BaseEntity {
 
     @Column(name = "secret_key")
     private String secretKey;
+
 
 
 

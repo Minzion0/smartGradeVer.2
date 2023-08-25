@@ -13,6 +13,4 @@ public class AdminLectureRoomFindRes {
     private PagingUtils paging;
     private List<AdminLectureRoomVo> lectureRoom;
     private List<AdminLectureRoomListVo> lectureRoomList;
-    private int size;
-    private int staIdx;
 }
