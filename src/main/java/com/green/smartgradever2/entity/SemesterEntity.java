@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
+import java.time.Year;
 
 @Entity
 @Table(name = "semester")
@@ -22,7 +23,7 @@ public class SemesterEntity {
     private Long isemester;
 
     @Column(name = "year")
-    private LocalDate year;
+    private Year year;
 
     @Column(name = "semester",length = 10, nullable = false)
     private int semester;
