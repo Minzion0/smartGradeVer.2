@@ -19,13 +19,12 @@ public class LectureConditionEntity extends BaseEntity{
 
     /** PK **/
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long icodition;
 
     /** lecture_applly 외래키 **/
-    @ManyToOne
-    @JoinColumn(name = "ilecture")
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "ilecture", columnDefinition = "BIGINT UNSIGNED")
     @ToString.Exclude
     private LectureApplyEntity ilecture;
 

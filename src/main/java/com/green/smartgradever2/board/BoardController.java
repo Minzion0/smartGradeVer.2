@@ -1,9 +1,6 @@
 package com.green.smartgradever2.board;
 
-import com.green.smartgradever2.board.model.BoardInsDto;
-import com.green.smartgradever2.board.model.BoardRes;
-import com.green.smartgradever2.board.model.BoardUpdDto;
-import com.green.smartgradever2.board.model.BoardVo;
+import com.green.smartgradever2.board.model.*;
 import com.green.smartgradever2.entity.BoardEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,16 +39,30 @@ public class BoardController {
     }
 
     /** select **/
-    @GetMapping
-    @Operation(summary = "중요공지리스트 출력")
-    public  List<BoardVo> selBoard() {
-        return SERVICE.selImportanceBoard();
-    }
+//    @GetMapping
+//    @Operation(summary = "중요공지리스트 출력")
+//    public  List<BoardVo> selBoard() {
+//        return SERVICE.selImportanceBoard();
+//    }
 
     /** update **/
     @PutMapping
-    @Operation(summary = "중요공지 수정")
+    @Operation(summary = "공지 수정")
     public BoardEntity updBoard(@RequestBody BoardUpdDto dto) {
         return SERVICE.updBoard(dto);
+    }
+
+    /** update DelYn **/
+    @DeleteMapping
+    @Operation(summary = "공지삭제", description = "ibaord : pk값 , 1 = 삭제")
+    public BoardEntity delBoardYn (BoardDelYnDto dto){
+        return SERVICE.delBoardYn(dto);
+    }
+
+    /** detail select Board **/
+    @GetMapping("/{iboard}")
+    @Operation(summary = "디테일 공지사항 보기")
+    public BoardDetailVo selDetailBoard(BoardDetailDto dto) {
+        return SERVICE.selDetailBoard(dto);
     }
 }

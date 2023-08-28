@@ -1,10 +1,7 @@
 package com.green.smartgradever2.board;
 
 import com.green.smartgradever2.admin.AdminRepository;
-import com.green.smartgradever2.board.model.BoardInsDto;
-import com.green.smartgradever2.board.model.BoardRes;
-import com.green.smartgradever2.board.model.BoardUpdDto;
-import com.green.smartgradever2.board.model.BoardVo;
+import com.green.smartgradever2.board.model.*;
 import com.green.smartgradever2.board.repository.BoardPicRepository;
 import com.green.smartgradever2.board.repository.BoardRepository;
 import com.green.smartgradever2.entity.AdminEntity;
@@ -98,14 +95,14 @@ public class BoardService {
         if (title == null){
            if (selImportanceBoard().size() < importanceRow) {
                page.withPage(row - selImportanceBoard().size());
-               list = BOARD_REP.findByImportance(page, importance,delYn);
+               list = BOARD_REP.findByImportanceAndDelYn(0,0,page);
            } else {
                page.withPage(7);
-               list = BOARD_REP.findByImportance(page, importance,delYn);
+               list = BOARD_REP.findByImportanceAndDelYn( 0,0,page);
            }
         } else {
             page.withPage(10);
-            list = BOARD_REP.findByTitleContaining(title, page, importance,delYn);
+            list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, importance,delYn,page);
         }
 
        List<BoardVo> result = list.stream().map(item -> BoardVo.builder()
@@ -127,7 +124,7 @@ public class BoardService {
     /** 중요공지 리스트 출력 **/
     public List<BoardVo> selImportanceBoard() {
         importance = 1;
-       List<BoardEntity> list = BOARD_REP.findAllByImportance(importance, Sort.by(Sort.Direction.DESC, "createdAt"), delYn);
+       List<BoardEntity> list = BOARD_REP.findAllByImportanceAndDelYn(1,0, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         return list.stream().map(item -> BoardVo.builder()
                 .title(item.getTitle())
@@ -141,10 +138,12 @@ public class BoardService {
     }
 
     /** 공지사항 삭제(del_yn) **/
-    public int delBoardYn() {
-        return 1;
-    }
+    public BoardEntity delBoardYn(BoardDelYnDto dto) {
+        BoardEntity entity = BOARD_REP.findById(dto.getIboard()).get();
+        entity.setDelYn(1);
+        return BOARD_REP.save(entity);
 
+    }
 
     /** 공지사항 수정 **/
     public BoardEntity updBoard (BoardUpdDto dto) {
@@ -153,6 +152,27 @@ public class BoardService {
         entity.setCtnt(dto.getCtnt());
         entity.setImportance(dto.getImportance());
         entity.setUpdatedAt(LocalDateTime.now());
-        return entity;
+        return BOARD_REP.save(entity);
+    }
+
+    /** 공지사항 디테일 및 조회수 업로드 **/
+    public BoardDetailVo selDetailBoard (BoardDetailDto dto) {
+        BoardEntity entity = BOARD_REP.findById(dto.getIboard()).get();
+        List<BoardPicEntity> picEntity = BOARD_PIC_REP.findByPic(dto.getIboard());
+
+        List<String> picList = new ArrayList<>();
+        for (BoardPicEntity pic : picEntity) {
+            picList.add(pic.getPic());
+        }
+
+        BoardDetailVo vo = BoardDetailVo.builder()
+                .iboard(entity.getIboard())
+                .iadmin(entity.getAdminEntity().getIadmin())
+                .title(entity.getTitle())
+                .ctnt(entity.getCtnt())
+                .pisc(picList)
+                .importance(entity.getImportance())
+                .build();
+        return vo;
     }
 }
