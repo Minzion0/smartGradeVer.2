@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Locale;
 
 public interface BoardPicRepository extends JpaRepository<BoardPicEntity, Long> {
-    List<BoardPicEntity> findByPic(Long iboard);
+//    List<BoardPicEntity> findByPic(Long iboard);
 }
