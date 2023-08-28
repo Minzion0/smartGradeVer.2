@@ -1,5 +1,7 @@
 package com.green.smartgradever2.admin.grade_mngmn;
 
+import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnDetailSelDto;
+import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnDetailVo;
 import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnDto;
 import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnRes;
 import com.green.smartgradever2.admin.major.AdminMajorService;
@@ -34,10 +36,10 @@ public class GradeMngmnController {
         return SERVICE.selGradeMngmn(dto);
     }
 
-//    @GetMapping
-//    public GradeMngmnRes getGradeMngmnDetail(@PathVariable Integer studentNum) {
-//        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
-//        entity.setStudentEntity(StudentEntity.builder().studentNum(studentNum).build());
-//        return null;
-//    }
+    @GetMapping("/{studentNum}")
+    public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable Integer studentNum) {
+        GradeMngmnDetailSelDto dto = new GradeMngmnDetailSelDto();
+        dto.setStudentNum(studentNum);
+        return SERVICE.selStudentDetail(dto);
+    }
 }

@@ -3,15 +3,16 @@ package com.green.smartgradever2.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(
-        name="student_semester_score",
+        name = "student_semester_score",
 
-        uniqueConstraints={
+        uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uniqu",
+                        name = "unique",
                         columnNames = {
                                 "isemester",
                                 "student_num"
@@ -23,9 +24,8 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 @DynamicInsert
-public class StudentSemesterScoreEntity extends BaseEntity {
+public class StudentSemesterScoreEntity {
 
     /**
      * pk값
@@ -72,4 +72,8 @@ public class StudentSemesterScoreEntity extends BaseEntity {
 
     @Column(length = 10, nullable = false)
     private Long grade;
+
+    @Column(name = "del_yn",length = 10)
+    @ColumnDefault("0")
+    private int delYn;
 }

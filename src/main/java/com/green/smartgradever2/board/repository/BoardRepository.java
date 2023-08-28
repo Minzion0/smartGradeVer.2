@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
-    Page<BoardEntity> findByTitleContaining(String keyword, Pageable page, int importance, int delYn);
-    Page<BoardEntity> findByImportance(Pageable page, int importance, int delYn);
-    List<BoardEntity> findAllByImportance(int importance, Sort sort, int delYn);
+    Page<BoardEntity> findByTitleContainingAndImportanceAndDelYn(String keyword, int importance, int delYn, Pageable page);
+    Page<BoardEntity> findByImportanceAndDelYn( int importance, int delYn, Pageable page);
+    List<BoardEntity> findAllByImportanceAndDelYn(int importance,int delYn, Sort sort );
 }
