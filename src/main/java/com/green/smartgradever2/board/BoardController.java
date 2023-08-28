@@ -60,9 +60,9 @@ public class BoardController {
     }
 
     /** detail select Board **/
-    @GetMapping("/{ibaord}")
-    @Operation(summary = "디테일 공지사항 보기")
-    public BoardDetailVo selDetailBoard(@PathVariable Long iboard) {
-        return SERVICE.selDetailBoard(iboard);
-    }
+//    @GetMapping("/{ibaord}")
+//    @Operation(summary = "디테일 공지사항 보기")
+//    public BoardDetailVo selDetailBoard(@PathVariable Long iboard) {
+//        return SERVICE.selDetailBoard(iboard);
+//    }
 }
