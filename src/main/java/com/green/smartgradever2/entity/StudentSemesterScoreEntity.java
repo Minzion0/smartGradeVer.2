@@ -12,7 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "unique",
+                        name = "uniqu",
                         columnNames = {
                                 "isemester",
                                 "student_num"
@@ -71,7 +71,7 @@ public class StudentSemesterScoreEntity {
     private StudentEntity studentEntity;
 
     @Column(length = 10, nullable = false)
-    private Long grade;
+    private int grade;
 
     @Column(name = "del_yn",length = 10)
     @ColumnDefault("0")
