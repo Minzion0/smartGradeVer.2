@@ -50,18 +50,25 @@ public class GradeMngmnService {
         return null;
     }
 
+    // todo 수정이 필요함
+    public GradeMngmnRes updGradeMngmn(GradeMngmnUpdDto dto) {
+        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
+        List<StudentSemesterScoreEntity> all = GM_REP.findAll();
 
-//    public GradeMngmnRes updGradeMngmn(GradeMngmnUpdDto dto) {
-////        List<StudentSemesterScoreEntity> all = GM_REP.findAll();
-////        for (StudentSemesterScoreEntity a : all) {
-////            GradeUtils utils = new GradeUtils();
-////            int avgScore = a.getAvgScore();
-////            double v = utils.totalScore2(avgScore);
-////            entity.setRating(v);
-////        StudentSemesterScoreEntity save = GM_REP.save(entity);
-//        return null;
-//    }
-//        return null;
+        for (StudentSemesterScoreEntity scoreEntity : all) {
+            entity.setScore(scoreEntity.getScore());
+            entity.setAvgScore(dto.getAvgScore());
+            entity.setRating(dto.getAvgRating());
+
+        }
+        StudentSemesterScoreEntity save = GM_REP.save(entity);
+        return GradeMngmnRes.builder()
+                .grade(save.getGrade())
+                .studentNum(save.getStudentEntity().getStudentNum())
+                .avgScore(save.getAvgScore())
+                .rating(save.getRating())
+                .build();
+    }
 
 
     public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {

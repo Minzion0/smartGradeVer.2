@@ -28,11 +28,19 @@ public class GradeMngmnController {
         return SERVICE.postGradeMngmn(dto);
     }
 
+    @PutMapping
+    @Operation(summary = "SEMESTER_SCORE_PUT")
+    public GradeMngmnRes putGradeMngmn() {
+        GradeMngmnUpdDto dto = new GradeMngmnUpdDto();
+        return SERVICE.updGradeMngmn(dto);
+    }
+
     @GetMapping
     @Operation(summary = " 학번으로 조회")
-    public GradeMngmnFindRes getGradeMngmn(@PageableDefault(sort="student_num", direction = Sort.Direction.DESC) Pageable pageable,
+    public GradeMngmnFindRes getGradeMngmn(@PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
                                            @RequestParam(required = false, defaultValue = "0") int grade,
                                            @RequestParam Integer studentNum) {
+
         GradeMngmnDto dto = new GradeMngmnDto();
         dto.setStudentNum(studentNum);
         dto.setGrade(grade);
