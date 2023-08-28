@@ -128,6 +128,7 @@ public class AdminService {
 
     public ResponseEntity<?> findLectureStudent(Long ilecture){
         LectureApplyEntity apply = new LectureApplyEntity();
+        apply.setIlecture(ilecture);
         List<LectureStudentEntity> appllyEntity = LECTURE_STUDENT_RPS.findByLectureAppllyEntity(apply);
 
         if (appllyEntity.get(0).getLectureAppllyEntity().getOpeningProceudres()==0){
