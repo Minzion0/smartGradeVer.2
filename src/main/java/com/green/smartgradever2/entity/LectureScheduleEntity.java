@@ -19,8 +19,11 @@ public class LectureScheduleEntity {
 
     //todo pk 수정이 필요함
     @Id
+    private Long ilectuer;
+
+    @MapsId
     @OneToOne
-    @JoinColumn(name = "ilectuer")
+    @JoinColumn(name = "ilectuer",updatable = false,columnDefinition = "BIGINT UNSIGNED")
     @ToString.Exclude
     private LectureApplyEntity lectureApplyEntity;
 
