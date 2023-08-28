@@ -39,11 +39,11 @@ public class BoardController {
     }
 
     /** select **/
-//    @GetMapping
-//    @Operation(summary = "중요공지리스트 출력")
-//    public  List<BoardVo> selBoard() {
-//        return SERVICE.selImportanceBoard();
-//    }
+    @GetMapping
+    @Operation(summary = "중요공지리스트 출력")
+    public  List<BoardVo> selBoard() {
+        return SERVICE.selImportanceBoard();
+    }
 
     /** update **/
     @PutMapping
@@ -60,9 +60,9 @@ public class BoardController {
     }
 
     /** detail select Board **/
-    @GetMapping("/{iboard}")
-    @Operation(summary = "디테일 공지사항 보기")
-    public BoardDetailVo selDetailBoard(BoardDetailDto dto) {
-        return SERVICE.selDetailBoard(dto);
-    }
+//    @GetMapping("/{ibaord}")
+//    @Operation(summary = "디테일 공지사항 보기")
+//    public BoardDetailVo selDetailBoard(@PathVariable Long iboard) {
+//        return SERVICE.selDetailBoard(iboard);
+//    }
 }

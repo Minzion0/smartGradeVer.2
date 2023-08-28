@@ -5,13 +5,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GradeMngmnRes {
+public class GradeMngmnUpdRes {
     private Integer studentNum;
-    private Long isemester;
     private int grade;
-    private int score;
-    private int avgScore;
-    private double rating;
-    private Long ilectureName;
     private int semester;
+    private int avgScore;
+    private double avgRating;
 }
