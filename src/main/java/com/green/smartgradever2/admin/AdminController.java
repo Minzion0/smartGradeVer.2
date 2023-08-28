@@ -3,6 +3,7 @@ package com.green.smartgradever2.admin;
 import com.green.smartgradever2.admin.model.AdminInsSemesterParam;
 import com.green.smartgradever2.admin.model.AdminInsSemesterVo;
 import com.green.smartgradever2.admin.model.AdminLectureInsNameParam;
+import com.green.smartgradever2.admin.model.AdminLectureInsNameVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,12 +30,12 @@ public class AdminController {
         return ResponseEntity.ok().body(SERVICE.semesterIns(param));
     }
 
-//    @PostMapping("/lecture-name")
-//    @Operation(summary = "강의명 등록",description = "강의명 등록과 필요 학점 꼭 등록해야함")
-//    public ResponseEntity<AdminInsLectureNameRes> insLectureName(@RequestBody AdminLectureInsNameParam param)/**throws AdminException**/{
-//        AdminInsLectureNameRes res = SERVICE.insLectureName(param);
-//        return ResponseEntity.ok().body(res);
-//    }
+    @PostMapping("/lecture-name")
+    @Operation(summary = "강의명 등록",description = "강의명 등록과 필요 학점 꼭 등록해야함")
+    public ResponseEntity<AdminLectureInsNameVo> insLectureName(@RequestBody AdminLectureInsNameParam param)throws Exception /**AdminException**/{
+        AdminLectureInsNameVo vo = SERVICE.insLectureName(param);
+        return ResponseEntity.ok().body(vo);
+    }
 //
 //    @GetMapping("/lecture-name")
 //    @Operation(summary = "강의명 검색")

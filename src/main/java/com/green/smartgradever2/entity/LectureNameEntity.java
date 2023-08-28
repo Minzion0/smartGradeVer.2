@@ -17,7 +17,7 @@ public class LectureNameEntity {
     @Column(name = "ilecture_name",updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long ilectureName;
 
-    @Column(name = "lecture_name", nullable = false, length = 50)
+    @Column(name = "lecture_name", nullable = false, length = 50,unique = true)
     private String lectureName;
 
     @Column(nullable = false, length = 10)

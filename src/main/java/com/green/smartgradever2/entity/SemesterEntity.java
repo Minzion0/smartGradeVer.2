@@ -24,7 +24,7 @@ public class SemesterEntity {
     private Long isemester;
 
     @Column(name = "year", columnDefinition = "YEAR")
-    private LocalDate year;
+    private int year;
 
     @Column(name = "semester",length = 10, nullable = false)
     private int semester;
