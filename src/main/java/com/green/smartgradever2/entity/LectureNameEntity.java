@@ -2,6 +2,7 @@ package com.green.smartgradever2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "lecture_name")
@@ -23,6 +24,7 @@ public class LectureNameEntity {
     private int score;
 
     @Column(name = "del_yn", length = 10)
+    @ColumnDefault("0")
     private int delYn;
 
 

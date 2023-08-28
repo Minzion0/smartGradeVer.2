@@ -16,10 +16,20 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @ToString(callSuper = true)
 public class LectureScheduleEntity {
+
+    //todo pk 수정이 필요함
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Long ilecture;
+    @OneToOne
+    @JoinColumn(name = "ilectuer")
+    @ToString.Exclude
+    private LectureApplyEntity lectureApplyEntity;
+
+
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(nullable = false, updatable = false, columnDefinition = "BIGINT UNSIGNED")
+//    private Long ilecture;
 
     @ManyToOne
     @JoinColumn(name = "isemester")

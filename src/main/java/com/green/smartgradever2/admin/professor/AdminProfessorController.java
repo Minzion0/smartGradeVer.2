@@ -1,9 +1,6 @@
 package com.green.smartgradever2.admin.professor;
 
-import com.green.smartgradever2.admin.professor.model.AdminProfessorFindParam;
-import com.green.smartgradever2.admin.professor.model.AdminProfessorFindRes;
-import com.green.smartgradever2.admin.professor.model.AdminProfessorInsParam;
-import com.green.smartgradever2.admin.professor.model.AdminProfessorInsVo;
+import com.green.smartgradever2.admin.professor.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +37,13 @@ public class AdminProfessorController {
         AdminProfessorFindRes res = SERVICE.findProfessors(page, param);
 
         return ResponseEntity.ok().body(res);
+    }
+
+    @GetMapping("/professor/{iprofessor}")
+    @Operation(summary = "교수 상세보기")
+    public AdminProfessorDetailRes findProfessorDetail(@PathVariable Long iprofessor) {
+
+        return SERVICE.findProfessorDetail(iprofessor);
     }
 
 

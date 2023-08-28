@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface AdminMajorRepository extends JpaRepository<MajorEntity, Long> {
     List<MajorEntity> findAllByDelYnAndMajorName(int delYn, String majorName);
-
-    MajorEntity findByStudentNum(Integer studentNum);
+//todo 이게 왜 필요한건가?? 알려주세용
+//    MajorEntity findByStudentNum(Integer studentNum);
 
 }

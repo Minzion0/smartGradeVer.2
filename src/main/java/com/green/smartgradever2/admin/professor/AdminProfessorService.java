@@ -1,8 +1,10 @@
 package com.green.smartgradever2.admin.professor;
 
 import com.green.smartgradever2.admin.professor.model.*;
+import com.green.smartgradever2.entity.LectureApplyEntity;
 import com.green.smartgradever2.entity.MajorEntity;
 import com.green.smartgradever2.entity.ProfessorEntity;
+import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class AdminProfessorService {
 
     private final AdminProfessorRepository RPS;
+    private final LectureApplyRepository LECTURE_RPS;
     private final AdminProfessorMapper MAPPER;
     private final PasswordEncoder PW_ENCODER;
     private final EntityManager EM;
@@ -100,21 +103,31 @@ public class AdminProfessorService {
 
     public AdminProfessorDetailRes findProfessorDetail(Long iprofessor){
         ProfessorEntity entity = RPS.findById(iprofessor).get();
-        AdminProfessorProfileVo vo = new AdminProfessorProfileVo();
-            vo.setIprofessor(entity.getIprofessor());
-            vo.setName(entity.getNm());
-            vo.setGender(entity.getGender());
-            vo.setBirthdate(entity.getBirthDate());
-            vo.setPhone(entity.getPhone());
-            vo.setPic(entity.getPic());
-            vo.setAddress(entity.getAddress());
-            vo.setEmail(entity.getEmail());
-            vo.setImajor(entity.getMajorEntity().getImajor());
-            vo.setCreatedAt(entity.getCreatedAt());
-            vo.setDelYn(entity.getDelYn());
-        //todo 교수 프로필은 불로오기 ok 이제 수업 불러오기 해야함 apply
+        AdminProfessorProfileVo profile = new AdminProfessorProfileVo();
+            profile.setIprofessor(entity.getIprofessor());
+            profile.setName(entity.getNm());
+            profile.setGender(entity.getGender());
+            profile.setBirthdate(entity.getBirthDate());
+            profile.setPhone(entity.getPhone());
+            profile.setPic(entity.getPic());
+            profile.setAddress(entity.getAddress());
+            profile.setEmail(entity.getEmail());
+            profile.setImajor(entity.getMajorEntity().getImajor());
+            profile.setCreatedAt(entity.getCreatedAt());
+            profile.setDelYn(entity.getDelYn());
 
-            return null;
+        List<LectureApplyEntity> lectureEntityList = LECTURE_RPS.findByProfessorEntity(entity);
+
+        List<AdminProfessorLectureVo> lectureList = lectureEntityList.stream().map(lecture -> AdminProfessorLectureVo.builder()
+            .ilecture(lecture.getIlecture())
+            .lectureStrTime(lecture.getLectureScheduleEntity().getLectureStrTime())
+            .lectureEndTime(lecture.getLectureScheduleEntity().getLectureEndTime())
+            .lectureStrDate(lecture.getSemesterEntity().getSemesterStrDate())
+            .lectureEndDate(lecture.getSemesterEntity().getSemesterEndDate())
+            .lectureName(lecture.getLectureNameEntity().getLectureName()).build()).toList();
+
+       return AdminProfessorDetailRes.builder().lectureList(lectureList).profile(profile).build();
+
     }
 
 
