@@ -7,6 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface GradeMngmnRepository extends JpaRepository<StudentSemesterScoreEntity, Long> {
-//    StudentSemesterScoreEntity findByStudentNum(Integer StudentNum);
-//    LectureStudentEntity findByStudentEntityInStudentNum(Integer StudentEntity);
+
 }
