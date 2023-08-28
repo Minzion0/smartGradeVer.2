@@ -141,6 +141,9 @@ public class BoardService {
     }
 
     /** 공지사항 삭제(del_yn) **/
+    public int delBoardYn() {
+        return 1;
+    }
 
 
     /** 공지사항 수정 **/
