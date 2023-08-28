@@ -83,4 +83,21 @@
         WHERE A.student_num = #{studentNum};
     </select>
 
+    <insert id="insGradeMngmn">
+        INSERT INTO student_semester_score (student_num , isemester, grade, score, avg_score, rating)
+        SELECT
+        #{studentNum}, #{isemester}, A.grade,
+        B.score, AVG(C.total_score), #{rating}
+        FROM student A
+        INNER JOIN lecture_name B
+        ON B.ilecture_name = #{ilectureName}
+        INNER JOIN lecture_student C
+        ON A.student_num = C.student_num
+        INNER JOIN student_semester_score D
+        ON A.student_num = D.student_num
+        INNER JOIN semester E
+        ON D.isemester = E.isemester
+        WHERE A.student_num = #{studentNum}
+        AND E.semester = #{semester};
+    </insert>
 </mapper>
