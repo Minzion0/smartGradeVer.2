@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +26,7 @@ public class BoardController {
     /** insert **/
     @PostMapping(value = "/pics", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
-    public BoardEntity insBoard(@RequestPart BoardInsDto dto,
+    public BoardInsRes insBoard(@RequestPart BoardInsDto dto,
                                 @RequestPart List<MultipartFile> pics) {
         return SERVICE.insBoard(dto, pics);
     }
@@ -60,9 +61,10 @@ public class BoardController {
     }
 
     /** detail select Board **/
-//    @GetMapping("/{ibaord}")
-//    @Operation(summary = "디테일 공지사항 보기")
-//    public BoardDetailVo selDetailBoard(@PathVariable Long iboard) {
-//        return SERVICE.selDetailBoard(iboard);
-//    }
+    @Transactional
+    @GetMapping("/{iboard}")
+    @Operation(summary = "디테일 공지사항 보기")
+    public BoardDetailVo selDetailBoard(@PathVariable Long iboard) {
+        return SERVICE.selDetailBoard(iboard);
+    }
 }

@@ -1,19 +1,18 @@
 package com.green.smartgradever2.board.model;
 
-import com.green.smartgradever2.entity.BoardPicEntity;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
-public class BoardDetailVo {
-    private Long iboard;
+public class BoardInsRes {
     private Long iadmin;
-    private String title;
     private String ctnt;
+    private String title;
     private int importance;
-    private List<String> pisc;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private int boardView;
 }
