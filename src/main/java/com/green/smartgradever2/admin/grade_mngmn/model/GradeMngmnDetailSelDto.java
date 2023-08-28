@@ -6,7 +6,7 @@ import lombok.Data;
 public class GradeMngmnDetailSelDto {
     private int totalScore;
     private int score;
-    private Integer studentNum;
+    private int studentNum;
     private String name;
     private String rating;
 }

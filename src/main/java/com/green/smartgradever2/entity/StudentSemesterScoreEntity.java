@@ -12,7 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "unique",
+                        name = "uniqu",
                         columnNames = {
                                 "isemester",
                                 "student_num"
@@ -32,8 +32,8 @@ public class StudentSemesterScoreEntity {
      **/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "istmester_score", updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Long ismesterScore;
+    @Column(name = "isemester_score", updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    private Long isemesterScore;
 
     /**
      * 학점
@@ -59,7 +59,6 @@ public class StudentSemesterScoreEntity {
     @ManyToOne
     @JoinColumn(name = "isemester")
     @ToString.Exclude
-
     private SemesterEntity semesterEntity;
 
     /**
@@ -71,7 +70,7 @@ public class StudentSemesterScoreEntity {
     private StudentEntity studentEntity;
 
     @Column(length = 10, nullable = false)
-    private Long grade;
+    private int grade;
 
     @Column(name = "del_yn",length = 10)
     @ColumnDefault("0")

@@ -16,4 +16,6 @@ public interface GradeMngmnMapper {
     GradeMngmnStudentVo selGradeMngmnStudent(GradeMngmnDto dto);
 
     GradeMngmnDetailVo selGradeFindStudentDetail(GradeMngmnDetailSelDto dto);
+
+    int insGradeMngmn(GradeMngmnInsDto dto);
 }
