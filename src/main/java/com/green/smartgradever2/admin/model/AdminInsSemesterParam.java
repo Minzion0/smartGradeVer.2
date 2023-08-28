@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class AdminInsSemesterParam {
-    private String year;
+   // private String year;
     private int semester;
     private LocalDate semesterStrDate;
     private LocalDate semesterEndDate;

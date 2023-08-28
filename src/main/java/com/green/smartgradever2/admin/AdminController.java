@@ -1,9 +1,6 @@
 package com.green.smartgradever2.admin;
 
-import com.green.smartgradever2.admin.model.AdminInsSemesterParam;
-import com.green.smartgradever2.admin.model.AdminInsSemesterVo;
-import com.green.smartgradever2.admin.model.AdminLectureInsNameParam;
-import com.green.smartgradever2.admin.model.AdminLectureInsNameVo;
+import com.green.smartgradever2.admin.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +23,7 @@ public class AdminController {
 
     @PostMapping("/semester")
     @Operation(summary = "학기 등록", description = "semester = 학기 1~2만 ")
-    public ResponseEntity<AdminInsSemesterVo> semesterIns(@RequestBody AdminInsSemesterParam param)  {
+    public ResponseEntity<AdminInsSemesterVo> semesterIns(@RequestBody AdminInsSemesterParam param)throws Exception  {
         return ResponseEntity.ok().body(SERVICE.semesterIns(param));
     }
 
@@ -36,27 +33,27 @@ public class AdminController {
         AdminLectureInsNameVo vo = SERVICE.insLectureName(param);
         return ResponseEntity.ok().body(vo);
     }
-//
-//    @GetMapping("/lecture-name")
-//    @Operation(summary = "강의명 검색")
-//    public ResponseEntity<AdminFindLectureNameRes>findLectureName(@RequestParam (required = false)String lectureName  ){
-//        AdminFindLectureNameRes res = SERVICE.findLectureName(lectureName);
-//        return ResponseEntity.ok().body(res);
-//    }
-//
-//
-//    @GetMapping("/semester")
-//    @Operation(summary = "학기 확인")
-//    public List<AdminGetSemesterVo> getSemester(@RequestParam(required = false) String year){
-//        return SERVICE.getSemester(year);
-//    }
-//
-//    @GetMapping("/lecture/{ilecture}")
-//    @Operation(summary = "해당 강의 수강학생 리스트")
-//    public ResponseEntity<?> findProfessors(@PathVariable Long ilecture){
-//
-//        return SERVICE.findLectureStudent(ilecture);
-//    }
+
+    @GetMapping("/lecture-name")
+    @Operation(summary = "강의명 검색")
+    public ResponseEntity<List<AdminLectureNameFindVo>>findLectureName(@RequestParam (required = false)String lectureName  ){
+        List<AdminLectureNameFindVo> vos = SERVICE.findLectureName(lectureName);
+        return ResponseEntity.ok().body(vos);
+    }
+
+
+    @GetMapping("/semester")
+    @Operation(summary = "학기 확인")
+    public List<AdminSemesterFindVo> getSemester(@RequestParam(required = false) Integer year){
+        return SERVICE.findSemester(year);
+    }
+
+    @GetMapping("/lecture/{ilecture}")
+    @Operation(summary = "해당 강의 수강학생 리스트")
+    public ResponseEntity<?> findProfessors(@PathVariable Long ilecture){
+
+        return SERVICE.findLectureStudent(ilecture);
+    }
 //
 //    @GetMapping("/lecture")
 //    @Operation(summary = "강의 리스트" ,
