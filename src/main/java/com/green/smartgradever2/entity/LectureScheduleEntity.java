@@ -19,7 +19,7 @@ public class LectureScheduleEntity {
 
     //todo pk 수정이 필요함
     @Id
-    private Long ilectuer;
+    private Long ilecture;
 
     @MapsId
     @OneToOne

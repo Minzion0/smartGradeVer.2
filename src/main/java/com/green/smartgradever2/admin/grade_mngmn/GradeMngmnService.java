@@ -53,12 +53,7 @@ public class GradeMngmnService {
                 .build();
     }
 
-//    public GradeMngmnDetailVo selStudentDetail(StudentSemesterScoreEntity entity) {
-//        GradeMngmnDto dto = new GradeMngmnDto();
-//        dto.setStudentNum(entity.getStudentEntity().getStudentNum());
-//        Optional<StudentSemesterScoreEntity> byStudentNum = GM_REP.findByStudentNum(dto.getStudentNum());
-//        return GradeMngmnDetailVo.builder()
-//                .studentNum(byStudentNum.get().getStudentEntity().getStudentNum())
-//                .build();
-//    }
+    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
+        return MAPPER.selGradeFindStudentDetail(dto);
+    }
 }

@@ -16,6 +16,7 @@ public class ProfessorController {
 
 
     @GetMapping("/{iprofessor}")
+    @Operation(summary = "교수 프로필")
     public ProfessorProfileDto getProfessorProfile(@PathVariable Long iprofessor) {
         return SERVICE.getProfessorProfile(iprofessor);
     }
