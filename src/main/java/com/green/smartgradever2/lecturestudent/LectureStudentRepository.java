@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface LectureStudentRepository extends JpaRepository<LectureStudentEntity,Long> {
+    List<LectureStudentEntity> findByLectureAppllyEntity ( LectureApplyEntity entity);
     long countByLectureAppllyEntity(LectureApplyEntity lectureApply);
-    List<LectureStudentEntity>findByLectureAppllyEntity(LectureApplyEntity entity);
+    List<LectureStudentEntity> findByStudentEntity(StudentEntity student);
 }
