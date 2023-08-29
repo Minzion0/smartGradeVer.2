@@ -10,14 +10,10 @@ import com.green.smartgradever2.utils.GradeUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -129,9 +125,9 @@ public class AdminService {
     public ResponseEntity<?> findLectureStudent(Long ilecture){
         LectureApplyEntity apply = new LectureApplyEntity();
         apply.setIlecture(ilecture);
-        List<LectureStudentEntity> appllyEntity = LECTURE_STUDENT_RPS.findByLectureAppllyEntity(apply);
+        List<LectureStudentEntity> appllyEntity = LECTURE_STUDENT_RPS.findByLectureApplyEntity(apply);
 
-        if (appllyEntity.get(0).getLectureAppllyEntity().getOpeningProceudres()==0){
+        if (appllyEntity.get(0).getLectureApplyEntity().getOpeningProceudres()==0){
             LectureConditionEntity entity = LECTURE_CONDITION_RPS.findById(ilecture).get();
             AdminLectureConditionVo vo = new AdminLectureConditionVo();
             vo.setIlecture(entity.getIlecture().getIlecture());
