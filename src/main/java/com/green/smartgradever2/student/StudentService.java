@@ -292,7 +292,7 @@ public class StudentService {
         int totalCredit = 0;
 
         for (LectureStudentEntity lectureStudent : finishedLectures) {
-            totalCredit += lectureStudent.getLectureAppllyEntity().getLectureNameEntity().getScore();
+            totalCredit += lectureStudent.getLectureApplyEntity().getLectureNameEntity().getScore();
         }
 
         return totalCredit;
