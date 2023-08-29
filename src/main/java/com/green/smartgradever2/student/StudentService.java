@@ -12,7 +12,6 @@ import com.green.smartgradever2.utils.FileUtils;
 import com.green.smartgradever2.utils.GradeUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -135,7 +134,7 @@ public class StudentService {
                 .orElseThrow(() -> new EntityNotFoundException("강의를 찾을수 없습니다."));
 
         // 해당 강의의 수강 인원 확인
-        if (lectureApply.getLectureMaxPeople() <= lectureStudentRep.countByLectureAppllyEntity(lectureApply)) {
+        if (lectureApply.getLectureMaxPeople() <= lectureStudentRep.countByLectureApplyEntity(lectureApply)) {
             response.setSuccess(false);
             response.setMessage("강의 등록이 가득찼습니다.");
             return response;
@@ -145,7 +144,7 @@ public class StudentService {
         LectureStudentEntity lectureStudent = LectureStudentEntity.builder()
                 .studentEntity(studentRep.findById(studentNum)
                         .orElseThrow(() -> new EntityNotFoundException("학생을 찾을수 없습니다.")))
-                .lectureAppllyEntity(lectureApply)
+                .lectureApplyEntity(lectureApply)
                 .build();
         lectureStudentRep.save(lectureStudent);
 
@@ -210,7 +209,7 @@ public class StudentService {
         for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
             StudentLectureDto studentLectureDto = new StudentLectureDto();
             studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
-            studentLectureDto.setIlecture(lectureStudentEntity.getLectureAppllyEntity().getIlecture());
+            studentLectureDto.setIlecture(lectureStudentEntity.getLectureApplyEntity().getIlecture());
             studentLectureDto.setFinishedYn(lectureStudentEntity.getFinishedYn());
             studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
             studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
@@ -218,9 +217,9 @@ public class StudentService {
             studentLectureDto.setTotalScore(lectureStudentEntity.getTotalScore());
             studentLectureDto.setFinishedAt(lectureStudentEntity.getFinishedAt());
             studentLectureDto.setCorrectionAt(lectureStudentEntity.getCorrectionAt());
-            studentLectureDto.setDayWeek(lectureStudentEntity.getLectureAppllyEntity().getLectureScheduleEntity().getDayWeek());
-            studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureAppllyEntity().getLectureScheduleEntity().getLectureStrTime());
-            studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureAppllyEntity().getLectureScheduleEntity().getLectureEndTime());
+            studentLectureDto.setDayWeek(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
+            studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
+            studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
             studentLectures.add(studentLectureDto);
         }
 
@@ -242,7 +241,7 @@ public class StudentService {
             // 강의별 성적 정보를 각각의 필드에 설정
             vo.setStudentNum(studentEntity.getStudentNum());
             vo.setIlectureStudent(lectureGrade.getIlectureStudent());
-            vo.setIlecture(lectureGrade.getLectureAppllyEntity().getIlecture());
+            vo.setIlecture(lectureGrade.getLectureApplyEntity().getIlecture());
             vo.setFinishedYn(lectureGrade.getFinishedYn());
             vo.setAttendance(lectureGrade.getAttendance());
             vo.setMidtermExamination(lectureGrade.getMidtermExamination());
