@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface LectureStudentRepository extends JpaRepository<LectureStudentEntity,Long> {
+    List<LectureStudentEntity> findByLectureAppllyEntity ( LectureApplyEntity entity);
     long countByLectureAppllyEntity(LectureApplyEntity lectureApply);
     List<LectureStudentEntity> findByStudentEntity(StudentEntity student);
 }
