@@ -125,9 +125,9 @@ public class AdminService {
     public ResponseEntity<?> findLectureStudent(Long ilecture){
         LectureApplyEntity apply = new LectureApplyEntity();
         apply.setIlecture(ilecture);
-        List<LectureStudentEntity> appllyEntity = LECTURE_STUDENT_RPS.findByLectureApplyEntity(apply);
+        List<LectureStudentEntity> applyEntity = LECTURE_STUDENT_RPS.findByLectureApplyEntity(apply);
 
-        if (appllyEntity.get(0).getLectureApplyEntity().getOpeningProceudres()==0){
+        if (applyEntity.get(0).getLectureApplyEntity().getOpeningProceudres()==0){
             LectureConditionEntity entity = LECTURE_CONDITION_RPS.findById(ilecture).get();
             AdminLectureConditionVo vo = new AdminLectureConditionVo();
             vo.setIlecture(entity.getIlecture().getIlecture());
@@ -135,7 +135,7 @@ public class AdminService {
             vo.setReturnDate(entity.getReturnDate());
             return ResponseEntity.ok().body(entity);
         }
-        List<AdminLectureStudentVo> vo = appllyEntity.stream().map(student -> {
+        List<AdminLectureStudentVo> vo = applyEntity.stream().map(student -> {
                     GradeUtils gradeUtils = new GradeUtils(student.getTotalScore());
                     double score = gradeUtils.totalScore();
                     String rating = gradeUtils.totalRating(score);
