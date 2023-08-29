@@ -30,9 +30,11 @@ public class GradeMngmnController {
 
     @PutMapping
     @Operation(summary = "SEMESTER_SCORE_PUT")
-    public GradeMngmnRes putGradeMngmn() {
-        GradeMngmnUpdDto dto = new GradeMngmnUpdDto();
-        return SERVICE.updGradeMngmn(dto);
+    public GradeMngmnUpdRes putGradeMngmn(@RequestParam Integer studentNum, @RequestParam int semester) {
+        GradeMngmnUpdParam p = new GradeMngmnUpdParam();
+        p.setSemester(semester);
+        p.setStudentNum(studentNum);
+        return SERVICE.updGradeMngmn(p);
     }
 
     @GetMapping

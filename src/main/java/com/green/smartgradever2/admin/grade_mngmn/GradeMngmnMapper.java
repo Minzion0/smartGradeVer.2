@@ -18,4 +18,8 @@ public interface GradeMngmnMapper {
     GradeMngmnDetailVo selGradeFindStudentDetail(GradeMngmnDetailSelDto dto);
 
     int insGradeMngmn(GradeMngmnInsDto dto);
+
+    int updAvgScore(GradeMngmnUpdDto dto);
+
+    GradeAvgVo selAvgScore(GradeMngmnUpdDto dto);
 }

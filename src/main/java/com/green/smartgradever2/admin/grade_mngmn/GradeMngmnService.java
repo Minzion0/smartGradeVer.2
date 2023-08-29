@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -51,22 +52,31 @@ public class GradeMngmnService {
     }
 
     // todo 수정이 필요함
-    public GradeMngmnRes updGradeMngmn(GradeMngmnUpdDto dto) {
-        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
-        List<StudentSemesterScoreEntity> all = GM_REP.findAll();
+    public GradeMngmnUpdRes updGradeMngmn(GradeMngmnUpdParam p) {
+        GradeMngmnUpdDto dto = new GradeMngmnUpdDto();
+        dto.setSemester(p.getSemester());
+        dto.setStudentNum(p.getStudentNum());
 
-        for (StudentSemesterScoreEntity scoreEntity : all) {
-            entity.setScore(scoreEntity.getScore());
-            entity.setAvgScore(dto.getAvgScore());
-            entity.setRating(dto.getAvgRating());
-
+        GradeAvgVo vo = MAPPER.selAvgScore(dto);
+        if (vo == null) {
+            throw new RuntimeException("불러올 데이터가 존재하지 않습니다.");
+        } else {
+            dto.setAvgScore(vo.getAvgScore());
         }
-        StudentSemesterScoreEntity save = GM_REP.save(entity);
-        return GradeMngmnRes.builder()
-                .grade(save.getGrade())
-                .studentNum(save.getStudentEntity().getStudentNum())
-                .avgScore(save.getAvgScore())
-                .rating(save.getRating())
+
+        GradeUtils utils = new GradeUtils();
+        int score = vo.getAvgScore();
+        double v = utils.totalScore2(score);
+        p.setAvgScore(score);
+
+        dto.setAvgRating(v);
+        int result = MAPPER.updAvgScore(dto);
+
+        return GradeMngmnUpdRes.builder()
+                .studentNum(p.getStudentNum())
+                .semester(p.getSemester())
+                .avgScore(p.getAvgScore())
+                .avgRating(p.getAvgRating())
                 .build();
     }
 

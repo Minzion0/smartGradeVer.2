@@ -4,6 +4,7 @@ import com.green.smartgradever2.entity.LectureApplyEntity;
 import com.green.smartgradever2.entity.LectureStudentEntity;
 import com.green.smartgradever2.entity.StudentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 

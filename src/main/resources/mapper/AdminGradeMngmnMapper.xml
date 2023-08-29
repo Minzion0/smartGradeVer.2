@@ -100,4 +100,25 @@
         WHERE A.student_num = #{studentNum}
         AND E.semester = #{semester};
     </insert>
+
+    <select id="selAvgScore">
+        SELECT AVG(C.total_score) avgScore
+        FROM lecture_student C
+        INNER JOIN student_semester_score D
+        ON C.student_num = D.student_num
+        INNER JOIN semester E
+        ON D.isemester = E.isemester
+        WHERE C.student_num = #{studentNum}
+        AND E.semester = #{semester}
+    </select>
+
+    <update id="updAvgScore">
+        UPDATE student_semester_score A
+        INNER JOIN semester B
+        ON A.isemester = B.isemester
+        SET A.avg_score = #{avgScore}
+        ,A.rating = #{avgRating}
+        WHERE A.student_num = #{studentNum}
+        AND B.semester = #{semester}
+    </update>
 </mapper>
