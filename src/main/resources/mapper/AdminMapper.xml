@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.smartgradever2.admin.AdminMapper">
+    <select id="selLecture">
+        SELECT A.ilecture,D.lecture_name lectureNm,F.semester,G.major_name majorName,C.nm,B.lecture_room_name
+            lectureRoomNm,B.building_name buildingNm,A.grade_limit gradeLimit,D.score,F.semester_str_date strDate
+            ,F.semester_end_date endDate,DATE_FORMAT(H.lecture_str_time ,'%H:%i')strTime
+            ,DATE_FORMAT(H.lecture_end_time,'%H:%i' )endTime
+            ,lecture_max_people maxPeople,A.opening_proceudres procedures,A.del_yn delYn,COUNT(E.ilecture) currentPeople
+        FROM lecture_apply A
+            INNER JOIN lecture_room B
+            ON A.ilecture_room=B.ilecture_room
+            INNER JOIN professor C
+            ON A.iprofessor=C.iprofessor
+            INNER JOIN lecture_name D
+            ON A.ilecture_name=D.ilecture_name
+            LEFT JOIN lecture_student E
+            ON E.ilecture=A.ilecture
+            inner JOIN semester F
+            ON F.isemester= A.isemester
+            INNER JOIN major G
+            ON G.imajor= C.imajor
+            INNER JOIN lecture_schedule H
+            ON H.ilectuer = A.ilecture
+
+    <where>
+        <if test="procedures==-2">
+            and A.opening_procedures BETWEEN 0 AND 2
+        </if>
+        <if test="procedures>=0">
+            and A.opening_procedures=#{procedures}
+        </if>
+
+        <if test="nm!=null">
+            and C.nm like CONCAT('%', #{nm}, '%')
+        </if>
+        <if test="ilectureName != 0">
+            and D.ilecture_name = #{ilectureName}
+        </if>
+
+    </where>
+        GROUP BY A.ilecture
+        LIMIT #{strIdx},10
+    </select>
+
+    <select id="countLceture">
+        select count(*)
+        from lecture_apply A
+        inner join professor B
+        on A.iprofessor=B.iprofessor
+        <where>
+            <if test="procedures>=0">
+                and A.opening_procedures=#{procedures}
+            </if>
+            <if test="procedures==-2">
+                and A.opening_procedures BETWEEN 0 AND 2
+            </if>
+
+
+            <if test="nm!=null">
+                and B.nm in (#{nm})
+            </if>
+
+        </where>
+    </select>
+
+</mapper>

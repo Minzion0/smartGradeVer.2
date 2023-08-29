@@ -1,6 +1,6 @@
 package com.green.smartgradever2.admin.professor.model;
 
-import com.green.smartgradever2.entity.model.GenderEnum;
+import com.green.smartgradever2.config.entity.model.GenderEnum;
 import lombok.Builder;
 import lombok.Data;
 

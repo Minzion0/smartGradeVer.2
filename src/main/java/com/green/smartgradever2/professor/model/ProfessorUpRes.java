@@ -1,6 +1,6 @@
 package com.green.smartgradever2.professor.model;
 
-import com.green.smartgradever2.entity.ProfessorEntity;
+import com.green.smartgradever2.config.entity.ProfessorEntity;
 import lombok.Data;
 
 @Data

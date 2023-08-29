@@ -1,11 +1,8 @@
 package com.green.smartgradever2.admin.grade_mngmn;
 
 import com.green.smartgradever2.admin.grade_mngmn.model.*;
-import com.green.smartgradever2.entity.StudentEntity;
-import com.green.smartgradever2.entity.StudentSemesterScoreEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
