@@ -39,7 +39,7 @@ public class BoardService {
     private final BoardPicRepository BOARD_PIC_REP;
 
     /** insert with pics **/
-    public BoardEntity insBoard (BoardInsDto dto, List<MultipartFile> pics) {
+    public BoardInsRes insBoard (BoardInsDto dto, List<MultipartFile> pics) {
         BoardEntity entity = new BoardEntity();
         BoardPicEntity picResult = new BoardPicEntity();
 
@@ -79,7 +79,15 @@ public class BoardService {
                 }
             }
         }
-        return result;
+        return BoardInsRes.builder()
+                .iadmin(result.getAdminEntity().getIadmin())
+                .ctnt(result.getCtnt())
+                .title(result.getTitle())
+                .importance(result.getImportance())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .boardView(0)
+                .build();
     }
 
     int delYn = 0;
@@ -156,23 +164,25 @@ public class BoardService {
     }
 
     /** 공지사항 디테일 및 조회수 업로드 **/
-//    public BoardDetailVo selDetailBoard (Long iboard) {
-//        BoardEntity entity = BOARD_REP.findById(iboard).get();
-//        List<BoardPicEntity> picEntity = BOARD_PIC_REP.findByPic(iboard);
-//
-//        List<String> picList = new ArrayList<>();
-//        for (BoardPicEntity pic : picEntity) {
-//            picList.add(pic.getPic());
-//        }
-//
-//        BoardDetailVo vo = BoardDetailVo.builder()
-//                .iboard(entity.getIboard())
-//                .iadmin(entity.getAdminEntity().getIadmin())
-//                .title(entity.getTitle())
-//                .ctnt(entity.getCtnt())
-//                .pisc(picList)
-//                .importance(entity.getImportance())
-//                .build();
-//        return vo;
-//    }
+    public BoardDetailVo selDetailBoard (Long iboard) {
+        BoardEntity entity = BOARD_REP.findById(iboard).get();
+        List<BoardPicEntity> picEntity = BOARD_PIC_REP.findByBoardEntity(entity);
+
+        List<String> picList = new ArrayList<>();
+        for (BoardPicEntity pic : picEntity) {
+            picList.add(pic.getPic());
+        }
+
+        BOARD_REP.updateView(entity.getIboard());
+
+        BoardDetailVo vo = BoardDetailVo.builder()
+                .iboard(entity.getIboard())
+                .iadmin(entity.getAdminEntity().getIadmin())
+                .title(entity.getTitle())
+                .ctnt(entity.getCtnt())
+                .importance(entity.getImportance())
+                .pisc(picList)
+                .build();
+        return vo;
+    }
 }

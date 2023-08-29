@@ -32,8 +32,8 @@ public class StudentSemesterScoreEntity {
      **/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "istmester_score", updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Long ismesterScore;
+    @Column(name = "isemester_score", updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    private Long isemesterScore;
 
     /**
      * 학점
@@ -59,7 +59,6 @@ public class StudentSemesterScoreEntity {
     @ManyToOne
     @JoinColumn(name = "isemester")
     @ToString.Exclude
-
     private SemesterEntity semesterEntity;
 
     /**

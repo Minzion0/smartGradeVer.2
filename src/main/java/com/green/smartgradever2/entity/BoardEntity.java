@@ -43,6 +43,6 @@ public class BoardEntity extends BaseEntity{
     private int importance;
 
     /** 조회수 **/
-    @Column(columnDefinition = "BIGINT UNSIGNED", name = "board_view")
+    @Column(columnDefinition = "BIGINT UNSIGNED, integer default 0", name = "board_view")
     private Long boardView;
 }

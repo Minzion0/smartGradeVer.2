@@ -1,21 +1,24 @@
 package com.green.smartgradever2.admin;
 
+import com.green.smartgradever2.admin.lecturecondition.LectureConditionRepository;
 import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
-import com.green.smartgradever2.admin.model.AdminInsSemesterParam;
-import com.green.smartgradever2.admin.model.AdminInsSemesterVo;
-import com.green.smartgradever2.admin.model.AdminLectureInsNameParam;
-import com.green.smartgradever2.admin.model.AdminLectureInsNameVo;
+import com.green.smartgradever2.admin.model.*;
 import com.green.smartgradever2.admin.semester.SemesterRepository;
-import com.green.smartgradever2.entity.LectureNameEntity;
-import com.green.smartgradever2.entity.SemesterEntity;
+import com.green.smartgradever2.entity.*;
+import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
+import com.green.smartgradever2.utils.GradeUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -27,10 +30,11 @@ public class AdminService {
     private final AdminMapper MAPPER;
     private final EntityManager EM;
     private final LectureNameRepository LECTURE_NM_RPS;
+    private final LectureStudentRepository LECTURE_STUDENT_RPS;
+    private final LectureConditionRepository LECTURE_CONDITION_RPS;
 
     @Transactional(rollbackFor = Exception.class)
-    public AdminInsSemesterVo semesterIns(AdminInsSemesterParam param){
-        DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("yyyy");
+    public AdminInsSemesterVo semesterIns(AdminInsSemesterParam param)throws Exception{
         SemesterEntity semesterEntity = new SemesterEntity();
             semesterEntity.setSemester(param.getSemester());
             semesterEntity.setSemesterStrDate(param.getSemesterStrDate());
@@ -38,8 +42,12 @@ public class AdminService {
 
             semesterEntity.setYear(param.getSemesterStrDate().getYear());
             semesterEntity.setLectureApplyDeadline(param.getLectureApplyDeadline());
+        try {
 
-        SEMESTER_RPS.save(semesterEntity);
+            SEMESTER_RPS.save(semesterEntity);
+        }catch (Exception e){
+            throw new Exception("중복 학기 입니다");
+        }
 
         EM.clear();
 
@@ -51,6 +59,7 @@ public class AdminService {
             vo.setSemesterStrDate(semester.getSemesterStrDate());
             vo.setSemesterEndDate(semester.getSemesterEndDate());
             vo.setDelYn(semester.getDelYn());
+            vo.setYear(semester.getYear());
             vo.setLectureApplyDeadline(semester.getLectureApplyDeadline());
         return vo;
     }
@@ -80,6 +89,77 @@ public class AdminService {
         vo.setLectureName(nameEntity.getLectureName());
 
         return vo;
+
+    }
+
+    public List<AdminLectureNameFindVo> findLectureName(String lectureName){
+        List<LectureNameEntity> regex=null;
+        if (lectureName != null){
+             regex = LECTURE_NM_RPS.findByLectureNameContains(lectureName);
+        }
+        if (lectureName == null){
+            regex=LECTURE_NM_RPS.findAll();
+        }
+
+        return regex.stream().map(entity -> AdminLectureNameFindVo.builder()
+                .ilectureName(entity.getIlectureName())
+                .score(entity.getScore())
+                .delYn(entity.getDelYn())
+                .lectureName(entity.getLectureName()).build()).toList();
+    }
+
+    public List<AdminSemesterFindVo> findSemester(Integer year){
+        List<SemesterEntity> list=null;
+        if (year!=null){
+             list = SEMESTER_RPS.findByYear(year);
+        }
+        if (year==null){
+            list=SEMESTER_RPS.findAll();
+        }
+
+      return   list.stream().map(semesterEntity -> AdminSemesterFindVo.builder()
+                .isemester(semesterEntity.getIsemester())
+                .semesterStrDate(semesterEntity.getSemesterStrDate())
+                .semesterEndDate(semesterEntity.getSemesterEndDate())
+                .semester(semesterEntity.getSemester())
+                .year(semesterEntity.getYear())
+                .lectureApplyDeadline(semesterEntity.getLectureApplyDeadline()).build()).toList();
+    }
+
+    public ResponseEntity<?> findLectureStudent(Long ilecture){
+        LectureApplyEntity apply = new LectureApplyEntity();
+        apply.setIlecture(ilecture);
+        List<LectureStudentEntity> appllyEntity = LECTURE_STUDENT_RPS.findByLectureAppllyEntity(apply);
+
+        if (appllyEntity.get(0).getLectureAppllyEntity().getOpeningProceudres()==0){
+            LectureConditionEntity entity = LECTURE_CONDITION_RPS.findById(ilecture).get();
+            AdminLectureConditionVo vo = new AdminLectureConditionVo();
+            vo.setIlecture(entity.getIlecture().getIlecture());
+            vo.setReturnCtnt(entity.getReturnCtnt());
+            vo.setReturnDate(entity.getReturnDate());
+            return ResponseEntity.ok().body(entity);
+        }
+        List<AdminLectureStudentVo> vo = appllyEntity.stream().map(student -> {
+                    GradeUtils gradeUtils = new GradeUtils(student.getTotalScore());
+                    double score = gradeUtils.totalScore();
+                    String rating = gradeUtils.totalRating(score);
+                    return AdminLectureStudentVo.builder()
+                            .istudent(student.getStudentEntity().getStudentNum())
+                            .nm(student.getStudentEntity().getNm())
+                            .gread(rating)
+                            .majorNm(student.getStudentEntity().getMajorEntity().getMajorName())
+                            .attendance(student.getAttendance())
+                            .minEx(student.getMidtermExamination())
+                            .finEx(student.getFinalExamination())
+                            .totalScore(student.getTotalScore())
+                            .avg(score).build()
+                            ;
+                }
+        ).toList();
+
+      return ResponseEntity.ok().body(vo);
+
+
 
     }
 }

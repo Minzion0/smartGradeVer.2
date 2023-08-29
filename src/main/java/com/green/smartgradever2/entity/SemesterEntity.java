@@ -12,7 +12,14 @@ import java.time.LocalDate;
 import java.time.Year;
 
 @Entity
-@Table(name = "semester")
+@Table(name = "semester"
+        , uniqueConstraints = {@UniqueConstraint(
+                name = "uniqu"
+                , columnNames = {
+                    "year"
+                , "semester"
+        })
+})
 @Data
 @NoArgsConstructor
 @ToString(callSuper = true)
@@ -26,7 +33,7 @@ public class SemesterEntity {
     @Column(name = "year", columnDefinition = "YEAR")
     private int year;
 
-    @Column(name = "semester",length = 10, nullable = false)
+    @Column(name = "semester", length = 10, nullable = false)
     private int semester;
 
     @Column(name = "semester_str_date", nullable = false)
