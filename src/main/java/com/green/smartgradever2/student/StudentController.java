@@ -75,6 +75,11 @@ public class StudentController {
     }
 
 
+    @GetMapping("/{studentNum}/info")
+    @Operation(summary = "학점 조회")
+    public StudentInfoDto getStudentInfo(@PathVariable Integer studentNum) {
+        return SERVICE.getStudentInfo(studentNum);
+    }
 
 
 }

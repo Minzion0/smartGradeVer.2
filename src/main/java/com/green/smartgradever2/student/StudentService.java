@@ -270,6 +270,34 @@ public class StudentService {
         return studentRep.findByStudentNum(studentNum);
     }
 
+    // 학생 학점 조회
+    public StudentInfoDto getStudentInfo(Integer studentNum) {
+        StudentEntity student = studentRep.findByStudentNum(studentNum);
+        int selfStudyCredit = calculateSelfStudyCredit(studentNum);
+        String majorName = student.getMajorEntity().getMajorName();
+        int graduationScore = student.getMajorEntity().getGraduationScore();
+        int remainingPoints = graduationScore - selfStudyCredit;
+
+        StudentInfoDto studentInfoDTO = new StudentInfoDto();
+        studentInfoDTO.setStudentNum(studentNum);
+        studentInfoDTO.setSelfStudyCredit(selfStudyCredit);
+        studentInfoDTO.setGraduationScore(graduationScore);
+        studentInfoDTO.setRemainingPoints(remainingPoints);
+        studentInfoDTO.setMajorName(majorName);
+
+        return studentInfoDTO;
+    }
+
+    public int calculateSelfStudyCredit(Integer studentNum) {
+        List<LectureStudentEntity> finishedLectures = lectureStudentRep.findByStudentEntityStudentNumAndFinishedYn(studentNum, 1);
+        int totalCredit = 0;
+
+        for (LectureStudentEntity lectureStudent : finishedLectures) {
+            totalCredit += lectureStudent.getLectureAppllyEntity().getLectureNameEntity().getScore();
+        }
+
+        return totalCredit;
+    }
 
 
 
