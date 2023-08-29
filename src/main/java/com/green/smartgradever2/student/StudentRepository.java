@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentRepository extends JpaRepository<StudentEntity,Long> {
     StudentEntity findBystudentNum(int studentNum);
-
+    StudentEntity findByStudentNum(Integer studentNum);
 }

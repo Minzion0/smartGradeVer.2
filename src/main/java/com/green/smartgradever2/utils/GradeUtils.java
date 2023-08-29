@@ -13,7 +13,10 @@ public class GradeUtils {
     public GradeUtils() {
 
     }
-
+    public String totalGradeFromScore(int score) {
+        double rating = totalScore2(score);
+        return String.format("%.1f", rating);
+    }
 
     public String totalRating(double rating) {
         if (rating == 4.5) {

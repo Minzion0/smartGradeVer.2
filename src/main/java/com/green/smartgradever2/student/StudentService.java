@@ -7,10 +7,9 @@ import com.green.smartgradever2.entity.StudentEntity;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
-import com.green.smartgradever2.student.model.StudentParam;
-import com.green.smartgradever2.student.model.StudentRegisterRes;
-import com.green.smartgradever2.student.model.StudentUpRes;
+import com.green.smartgradever2.student.model.*;
 import com.green.smartgradever2.utils.FileUtils;
+import com.green.smartgradever2.utils.GradeUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -22,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -178,7 +179,96 @@ public class StudentService {
         return response;
     }
 
+    //학생프로필 디데일
+    public StudentProfileDto getStudentProfileWithLectures(int studentNum) {
+        StudentEntity student = studentRep.findBystudentNum(studentNum);
+        if (student == null) {
+            log.error("Student not found with studentNum: {}", studentNum);
+            return null;
+        }
 
+        // 학생이 수강 중인 강의 정보
+        List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByStudentEntity(student);
+
+        StudentProfileDto studentProfileDto = new StudentProfileDto();
+        studentProfileDto.setStudentNum(Long.valueOf(student.getStudentNum()));
+        studentProfileDto.setImajor(student.getMajorEntity().getImajor());
+        studentProfileDto.setIsemester(student.getSemesterEntity().getIsemester());
+        studentProfileDto.setNm(student.getNm());
+        studentProfileDto.setGrade(student.getGrade());
+        studentProfileDto.setGender(student.getGender());
+        studentProfileDto.setAddress(student.getAddress());
+        studentProfileDto.setPhone(student.getPhone());
+        studentProfileDto.setBirthDate(student.getBirthdate());
+        studentProfileDto.setEmail(student.getEmail());
+        studentProfileDto.setPic(student.getPic());
+        studentProfileDto.setFinishedYn(student.getFinishedYn());
+        studentProfileDto.setRole(student.getRole());
+
+        // 수강 중인 강의 정보를 가져와서 StudentLectureDto 리스트로 변환
+        List<StudentLectureDto> studentLectures = new ArrayList<>();
+        for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
+            StudentLectureDto studentLectureDto = new StudentLectureDto();
+            studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
+            studentLectureDto.setIlecture(lectureStudentEntity.getLectureAppllyEntity().getIlecture());
+            studentLectureDto.setFinishedYn(lectureStudentEntity.getFinishedYn());
+            studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
+            studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
+            studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
+            studentLectureDto.setTotalScore(lectureStudentEntity.getTotalScore());
+            studentLectureDto.setFinishedAt(lectureStudentEntity.getFinishedAt());
+            studentLectureDto.setCorrectionAt(lectureStudentEntity.getCorrectionAt());
+            studentLectureDto.setDayWeek(lectureStudentEntity.getLectureAppllyEntity().getLectureScheduleEntity().getDayWeek());
+            studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureAppllyEntity().getLectureScheduleEntity().getLectureStrTime());
+            studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureAppllyEntity().getLectureScheduleEntity().getLectureEndTime());
+            studentLectures.add(studentLectureDto);
+        }
+
+        studentProfileDto.setAttendedLectures(studentLectures);
+
+        return studentProfileDto;
+    }
+
+
+
+    // 학생 강의별 성적
+    public List<StudentSelVo> getStudentLectureGrades(StudentEntity studentEntity) {
+        List<LectureStudentEntity> lectureGrades = lectureStudentRep.findByStudentEntity(studentEntity);
+        List<StudentSelVo> studentSelVos = new ArrayList<>(); // 각 강의별 성적 정보를 담을 리스트
+
+        for (LectureStudentEntity lectureGrade : lectureGrades) {
+            StudentSelVo vo = new StudentSelVo(); // 새로운 StudentSelVo 객체 생성
+
+            // 강의별 성적 정보를 각각의 필드에 설정
+            vo.setStudentNum(studentEntity.getStudentNum());
+            vo.setIlectureStudent(lectureGrade.getIlectureStudent());
+            vo.setIlecture(lectureGrade.getLectureAppllyEntity().getIlecture());
+            vo.setFinishedYn(lectureGrade.getFinishedYn());
+            vo.setAttendance(lectureGrade.getAttendance());
+            vo.setMidtermExamination(lectureGrade.getMidtermExamination());
+            vo.setFinalExamination(lectureGrade.getFinalExamination());
+            vo.setTotalScore(lectureGrade.getTotalScore());
+
+
+            GradeUtils gradeUtils = new GradeUtils();
+            String grade = gradeUtils.totalGradeFromScore(lectureGrade.getTotalScore());
+            vo.setGrade(grade); // 점수를 소수점 형태의 평점 문자열로 설정
+
+            // 학점 계산 및 설정
+            double score = gradeUtils.totalScore();
+            String rating = gradeUtils.totalRating(score);
+            vo.setRating(rating);
+
+            studentSelVos.add(vo); // 각각의 강의별 성적 정보를 리스트에 추가
+        }
+
+        return studentSelVos;  // 강의별 성적 정보 리스트 반환
+    }
+
+    public StudentEntity getStudentById(Integer studentNum) {
+
+        return studentRep.findByStudentNum(studentNum);
+    }
 
 
 

@@ -33,6 +33,12 @@ public class StudentEntity extends BaseEntity {
     @ToString.Exclude
     private MajorEntity majorEntity;
 
+    @JoinColumn(name = "isemester")
+    @ManyToOne
+    @ToString.Exclude
+    private SemesterEntity semesterEntity;
+
+
     @Column(name = "grade",length = 10)
     @ColumnDefault("1")
     private Integer grade;
