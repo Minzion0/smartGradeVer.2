@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -201,8 +202,12 @@ public class AdminService {
             LectureConditionEntity save = LECTURE_CONDITION_RPS.save(entity);
             return AdminUpdLectureRes.builder().ilecture(save.getIlecture().getIlecture()).ctnt(save.getReturnCtnt()).procedures(save.getIlecture().getOpeningProceudres()).build();
         }
+        if (dto.getProcedures()==2){
+            LocalDate lectureApplyDeadline = applyEntity.getSemesterEntity().getLectureApplyDeadline();
+            LocalDate applyDeadline = lectureApplyDeadline.plusWeeks(2);
+            applyEntity.setStudentsApplyDeadline(applyDeadline);
+        }
 
-        applyEntity.setOpeningProceudres(dto.getProcedures());
         APPLY_RPS.save(applyEntity);
 
         return AdminUpdLectureRes.builder().ilecture(applyEntity.getIlecture()).ctnt(applyEntity.getCtnt()).procedures(applyEntity.getOpeningProceudres()).build();

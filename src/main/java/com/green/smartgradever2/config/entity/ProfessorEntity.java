@@ -75,4 +75,8 @@ public class ProfessorEntity extends BaseEntity {
     /** 시크릿키 **/
     @Column(name = "secret_key",length = 100, nullable = true)
     private String secretKey;
+
+    /** Opt QR URL 저장 **/
+    @Column(name = "otp_url")
+    private String otpUrl;
 }

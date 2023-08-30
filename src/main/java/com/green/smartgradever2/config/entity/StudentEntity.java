@@ -79,8 +79,7 @@ public class StudentEntity extends BaseEntity {
     @Column(name = "secret_key")
     private String secretKey;
 
-
-
-
-
+    /** Opt QR URL 저장 **/
+    @Column(name = "otp_url")
+    private String otpUrl;
 }

@@ -34,12 +34,6 @@ public class AdminProfessorService {
     @Transactional
     public AdminProfessorInsVo insProfessor(AdminProfessorInsParam param){
 
-        LocalDate now = LocalDate.now();
-        LocalDate setYear = LocalDate.of(now.getYear(), 1, 1);
-        LocalDateTime startOfDay = setYear.atStartOfDay();
-        LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
-        String year = setYear.toString().substring(2, 4);
-
         MajorEntity major = new MajorEntity();
         major.setImajor(param.getImajor());
 
