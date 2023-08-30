@@ -2,6 +2,7 @@ package com.green.smartgradever2.board;
 
 import com.green.smartgradever2.board.model.*;
 import com.green.smartgradever2.config.entity.BoardEntity;
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +28,14 @@ public class BoardController {
     @PostMapping(value = "/pics", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
-    public BoardInsRes insBoard(@RequestPart BoardInsDto dto,
-                                @RequestPart(required = false) List<MultipartFile> pics) {
+    public BoardInsRes insBoard(@RequestPart BoardInsParam param,
+                                @RequestPart(required = false) List<MultipartFile> pics,
+                                @AuthenticationPrincipal MyUserDetails details) {
+        BoardInsDto dto = new BoardInsDto();
+        dto.setCtnt(param.getCtnt());
+        dto.setIadmin(details.getIuser());
+        dto.setImportance(dto.getImportance());
+        dto.setTitle(dto.getTitle());
         return SERVICE.insBoard(dto, pics);
     }
 
