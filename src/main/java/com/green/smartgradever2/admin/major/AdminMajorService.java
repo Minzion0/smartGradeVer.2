@@ -2,14 +2,12 @@ package com.green.smartgradever2.admin.major;
 
 import com.green.smartgradever2.admin.major.model.AdminMajorDto;
 import com.green.smartgradever2.admin.major.model.AdminMajorFindRes;
-import com.green.smartgradever2.admin.major.model.AdminMajorSaveDto;
 import com.green.smartgradever2.admin.major.model.AdminMajorVo;
-import com.green.smartgradever2.entity.MajorEntity;
+import com.green.smartgradever2.config.entity.MajorEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

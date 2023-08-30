@@ -1,14 +1,12 @@
-package com.green.smartgradever2.entity;
+package com.green.smartgradever2.config.entity;
 
-import com.green.smartgradever2.entity.model.GenderEnum;
+import com.green.smartgradever2.config.entity.model.GenderEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.orm.jpa.vendor.Database;
 
 import java.time.LocalDate;
 

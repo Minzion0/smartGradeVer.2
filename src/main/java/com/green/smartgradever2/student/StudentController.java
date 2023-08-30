@@ -1,6 +1,6 @@
 package com.green.smartgradever2.student;
 
-import com.green.smartgradever2.entity.StudentEntity;
+import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.student.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -75,6 +75,11 @@ public class StudentController {
     }
 
 
+    @GetMapping("/{studentNum}/info")
+    @Operation(summary = "학점 조회")
+    public StudentInfoDto getStudentInfo(@PathVariable Integer studentNum) {
+        return SERVICE.getStudentInfo(studentNum);
+    }
 
 
 }

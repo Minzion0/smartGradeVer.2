@@ -1,9 +1,9 @@
 package com.green.smartgradever2.student;
 
-import com.green.smartgradever2.entity.LectureApplyEntity;
-import com.green.smartgradever2.entity.LectureScheduleEntity;
-import com.green.smartgradever2.entity.LectureStudentEntity;
-import com.green.smartgradever2.entity.StudentEntity;
+import com.green.smartgradever2.config.entity.LectureApplyEntity;
+import com.green.smartgradever2.config.entity.LectureScheduleEntity;
+import com.green.smartgradever2.config.entity.LectureStudentEntity;
+import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
@@ -207,27 +207,25 @@ public class StudentService {
         // 수강 중인 강의 정보를 가져와서 StudentLectureDto 리스트로 변환
         List<StudentLectureDto> studentLectures = new ArrayList<>();
         for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
-            StudentLectureDto studentLectureDto = new StudentLectureDto();
-            studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
-            studentLectureDto.setIlecture(lectureStudentEntity.getLectureApplyEntity().getIlecture());
-            studentLectureDto.setFinishedYn(lectureStudentEntity.getFinishedYn());
-            studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
-            studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
-            studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
-            studentLectureDto.setTotalScore(lectureStudentEntity.getTotalScore());
-            studentLectureDto.setFinishedAt(lectureStudentEntity.getFinishedAt());
-            studentLectureDto.setCorrectionAt(lectureStudentEntity.getCorrectionAt());
-            studentLectureDto.setDayWeek(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
-            studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
-            studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
-            studentLectures.add(studentLectureDto);
+            if (lectureStudentEntity.getFinishedYn() == 0){
+                StudentLectureDto studentLectureDto = new StudentLectureDto();
+                studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
+                studentLectureDto.setIlecture(lectureStudentEntity.getLectureApplyEntity().getIlecture());
+                studentLectureDto.setFinishedYn(lectureStudentEntity.getFinishedYn());
+                studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
+                studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
+                studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
+                studentLectureDto.setDayWeek(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
+                studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
+                studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
+                studentLectures.add(studentLectureDto);
+            }
         }
 
         studentProfileDto.setAttendedLectures(studentLectures);
 
         return studentProfileDto;
     }
-
 
 
     // 학생 강의별 성적
@@ -269,6 +267,34 @@ public class StudentService {
         return studentRep.findByStudentNum(studentNum);
     }
 
+    // 학생 학점 조회
+    public StudentInfoDto getStudentInfo(Integer studentNum) {
+        StudentEntity student = studentRep.findByStudentNum(studentNum);
+        int selfStudyCredit = calculateSelfStudyCredit(studentNum);
+        String majorName = student.getMajorEntity().getMajorName();
+        int graduationScore = student.getMajorEntity().getGraduationScore();
+        int remainingPoints = graduationScore - selfStudyCredit;
+
+        StudentInfoDto studentInfoDTO = new StudentInfoDto();
+        studentInfoDTO.setStudentNum(studentNum);
+        studentInfoDTO.setSelfStudyCredit(selfStudyCredit);
+        studentInfoDTO.setGraduationScore(graduationScore);
+        studentInfoDTO.setRemainingPoints(remainingPoints);
+        studentInfoDTO.setMajorName(majorName);
+
+        return studentInfoDTO;
+    }
+
+    public int calculateSelfStudyCredit(Integer studentNum) {
+        List<LectureStudentEntity> finishedLectures = lectureStudentRep.findByStudentEntityStudentNumAndFinishedYn(studentNum, 1);
+        int totalCredit = 0;
+
+        for (LectureStudentEntity lectureStudent : finishedLectures) {
+            totalCredit += lectureStudent.getLectureApplyEntity().getLectureNameEntity().getScore();
+        }
+
+        return totalCredit;
+    }
 
 
 

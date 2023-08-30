@@ -1,8 +1,6 @@
 package com.green.smartgradever2.board.model;
 
-import com.green.smartgradever2.entity.AdminEntity;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

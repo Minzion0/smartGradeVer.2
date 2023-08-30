@@ -1,7 +1,5 @@
 package com.green.smartgradever2.admin.grade_mngmn.model;
 
-import com.green.smartgradever2.entity.SemesterEntity;
-import com.green.smartgradever2.entity.StudentEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import lombok.Data;
 import org.springframework.data.domain.Pageable;

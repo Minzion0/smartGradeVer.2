@@ -1,6 +1,7 @@
 package com.green.smartgradever2.professor;
 
 
+import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.professor.model.*;

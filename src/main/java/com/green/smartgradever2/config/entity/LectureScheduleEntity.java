@@ -1,11 +1,10 @@
-package com.green.smartgradever2.entity;
+package com.green.smartgradever2.config.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.sql.Time;
 import java.time.LocalTime;
 
 @Entity
