@@ -152,13 +152,23 @@ public class BoardService {
     }
 
     /** 공지사항 수정 **/
-    public BoardEntity updBoard (BoardUpdDto dto) {
+    public BoardInsVo updBoard (BoardUpdDto dto) {
         BoardEntity entity = BOARD_REP.getReferenceById(dto.getIboard());
         entity.setTitle(dto.getTitle());
         entity.setCtnt(dto.getCtnt());
         entity.setImportance(dto.getImportance());
         entity.setUpdatedAt(LocalDateTime.now());
-        return BOARD_REP.save(entity);
+
+        BOARD_REP.save(entity);
+
+        return BoardInsVo.builder()
+                .iboard(entity.getIboard())
+                .iadmin(entity.getAdminEntity().getIadmin())
+                .title(entity.getTitle())
+                .ctnt(entity.getCtnt())
+                .updatedAt(entity.getUpdatedAt())
+                .importance(entity.getImportance())
+                .build();
     }
 
     /** 공지사항 디테일 및 조회수 업로드 **/
