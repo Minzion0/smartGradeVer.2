@@ -2,11 +2,11 @@ package com.green.smartgradever2.config.entity;
 
 import com.green.smartgradever2.config.entity.model.GenderEnum;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
 
@@ -15,14 +15,16 @@ import java.time.LocalDate;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@DynamicInsert
 public class ProfessorEntity extends BaseEntity {
 
 
     //** 교수pk값 **/
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long iprofessor;
 
@@ -66,7 +68,8 @@ public class ProfessorEntity extends BaseEntity {
     private String address;
 
     //** 롤값 ROLE_PROFESSOR **/
-    @Column(length = 30, columnDefinition = "VARCHAR(30) DEFAULT 'ROLE_PROFESSOR'")
+   @Column()
+    @ColumnDefault( "'ROLE_PROFESSOR'")
     private String role;
 
     /** 시크릿키 **/
