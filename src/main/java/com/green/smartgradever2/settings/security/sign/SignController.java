@@ -52,7 +52,7 @@ public class SignController {
         String ip = req.getRemoteAddr();
         log.info("[signIn] 로그인을 시도하고 있습니다. id: {}, pw: {}, role: {}, ip: {}", param.getId(), param.getPassword(), param.getRole(), ip);
 
-        SignInResultDto dto = SERVICE.signIn(param, ip);
+        SignInResultDto dto = SERVICE.signIn(param);
 
         return dto;
 

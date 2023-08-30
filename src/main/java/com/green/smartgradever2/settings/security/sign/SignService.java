@@ -41,7 +41,7 @@ public class SignService {
     private final TOTPTokenGenerator totp;
 
 
-    public SignInResultDto signIn(SignInParam param, String ip) throws Exception {
+    public SignInResultDto signIn(SignInParam param) throws Exception {
         SignInResultDto dto = SignInResultDto.builder().build();
         log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
         String id = param.getId();
@@ -50,7 +50,7 @@ public class SignService {
         UserEntity user = MAPPER.getByUid(id, role);
 
         log.info("[getSignInResult] id: {}", id);
-        log.info("[getSignInResult] 패스워드 비교");
+        log.info("[getSignInResult] 패스워드 비교 password :{}", password);
         if (!PW_ENCODER.matches(password, user.getUpw())) {
             log.info("비밀번호 다름");
             //throw new RuntimeException("비밀번호 다름");
@@ -61,7 +61,7 @@ public class SignService {
 
         setSuccessResult(dto);
         if (role.equals("ROLE_ADMIN") || user.getSecretKey() == null) {
-            dto = issueToken(ip, user.getUid(), role);
+            dto = issueToken(user.getUid(), role);
             dto.setSecretKey(false);
 
         }
@@ -253,7 +253,7 @@ public class SignService {
             throw new Exception("유효하지 않은 otp 코드");
         }
         //인증 성공시 토큰 토큰 발행
-        return issueToken(ip, uid, role);
+        return issueToken(uid, role);
     }
 
     private String getOtpCode(String secretKey) {
@@ -265,7 +265,7 @@ public class SignService {
         return TOTP.getOTP(hexKey);
     }
 
-    private SignInResultDto issueToken(String ip, String iuser, String role) throws JsonProcessingException {
+    private SignInResultDto issueToken(String iuser, String role) throws JsonProcessingException {
 
         System.out.println("iuser = " + iuser);
         UserEntity user = MAPPER.getByUid(iuser, role);
@@ -276,7 +276,7 @@ public class SignService {
 
 
         System.out.println("user = " + user);
-        String redisKey = String.format("b:RT(%s):%s:%s", "Server", user.getIuser(), ip);
+        String redisKey = String.format("b:RT(%s):%s:%s", "Server", user.getIuser());
         if (REDIS_SERVICE.getValues(redisKey) != null) {
             REDIS_SERVICE.deleteValues(redisKey);
         }
@@ -298,7 +298,6 @@ public class SignService {
         UserTokenEntity tokenEntity = UserTokenEntity.builder()
                 .iuser(user.getIuser())
                 .role(role)
-                .ip(ip)
                 .build();
         REDIS_SERVICE.setValues(redisKey, refreshToken);
 
