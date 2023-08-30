@@ -31,10 +31,7 @@ public class LectureApplyController {
         dto.setIlectureName(param.getIlectureName());
         dto.setIlectureRoom(param.getIlectureRoom());
         dto.setIprofessor(iprofessor);
-        dto.setIsemester(param.getIsemester());
-        dto.setOpeningProcedures(param.getOpeningProcedures());
-        dto.setLectureStrDate(param.getLectureStrDate());
-        dto.setLectureEndDate(param.getLectureEndDate());
+
         dto.setLectureEndTime(param.getLectureEndTime());
         dto.setLectureStrTime(param.getLectureStrTime());
         dto.setDayWeek(param.getDayWeek());
@@ -42,8 +39,7 @@ public class LectureApplyController {
         dto.setMidtermExamination(param.getMidtermExamination());
         dto.setFinalExamination(param.getFinalExamination());
         dto.setLectureMaxPeople(param.getLectureMaxPeople());
-        dto.setGaredLimit(param.getGaredLimit());
-        dto.setDelYn(param.getDelYn());
+
         return service.InsApplly(dto);
     }
 
