@@ -10,7 +10,7 @@ public class LectureAppllyInsParam {
     private Long ilectureRoom;
     private String lectureStrTime;
     private String lectureEndTime;
-    private String dayWeek;
+    private int dayWeek;
     private int attendance;
     private int midtermExamination;
     private int finalExamination;

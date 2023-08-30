@@ -1,100 +1,99 @@
 package com.green.smartgradever2.lecture_apply;
 
+import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
+import com.green.smartgradever2.admin.lectureroom.AdminLectureRoomRepository;
+import com.green.smartgradever2.admin.semester.SemesterRepository;
+import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.model.*;
 import com.green.smartgradever2.utils.PagingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class LectureApplyService {
     private final LectureApplyMapper mapper;
-
-    public LectureAppllyRes InsApplly(LectureAppllyInsDto dto){
-
-        String msg="";
-        LectureAppllyRes res= new LectureAppllyRes();
-
-
-        // 입력 값들을 가져온다
-        int attendance = dto.getAttendance();
-        int midtermExamination = dto.getMidtermExamination();
-        int finalExamination = dto.getFinalExamination();
+    private final LectureApplyRepository LECTURE_APPLY_RPS;
+    private final AdminLectureRoomRepository LECTURE_ROOM_RPS;
+    private final SemesterRepository SEMESTER_RPS;
+    private final LectureNameRepository LECTURE_NAME_RPS;
 
 
-        // 출석, 중간고사, 기말고사 점수의 배점을 계산
+
+
+
+
+public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param){
+
+
+        int attendance = param.getAttendance();
+        int midtermExamination = param.getMidtermExamination();
+        int finalExamination = param.getFinalExamination();
+
         int totalScore = attendance + midtermExamination + finalExamination;
 
+    ProfessorEntity professorEntity = new ProfessorEntity();
+    professorEntity.setIprofessor(iprofessor);
 
-        if (totalScore > 100) {
-            msg+= "출석, 중간고사, 기말고사 점수의 합은 100을 넘을 수 없습니다.";
-            res.setMsg(msg);
-            return res;
+    if (totalScore > 100) {
+            new Exception("출석, 중간고사, 기말고사 점수의 합은 100을 넘을 수 없습니다.");
+
         } else if (totalScore < 100) {
-            msg+="출석, 중간고사, 기말고사 점수의 합은 100미만 일수 없습니다.";
-            res.setMsg(msg);
-            return res;
-
+           new Exception("출석, 중간고사, 기말고사 점수의 합은 100미만 일수 없습니다.") ;
         }
 
-        dto.setAttendance(attendance);
-        dto.setMidtermExamination(midtermExamination);
-        dto.setFinalExamination(finalExamination);
+        List<SemesterEntity> semester = SEMESTER_RPS.findAll(Sort.by(Sort.Direction.DESC, "isemester"));
+        SemesterEntity semesterEntity = semester.get(0);
 
+        LectureRoomEntity lectureRoomEntity = LECTURE_ROOM_RPS.findById(param.getIlectureRoom()).get();
 
-        int garedLimit = dto.getGaredLimit();
-        if (garedLimit < 1 || garedLimit > 5) {
-            // garedLimit 값이 1부터 5 사이에 없는 경우, 기본값으로 1을 설정
-            garedLimit = 1;
-        }
-        dto.setGaredLimit(garedLimit);
+        Optional<LectureNameEntity> byId = LECTURE_NAME_RPS.findById(param.getIlectureName());
 
-        int lectureMaxPeople = dto.getLectureMaxPeople();
-        // lectureMaxPeople 값이 1부터 30 사이에 없는 경우, 기본값으로 10을 설정
-        if (lectureMaxPeople < 1 || lectureMaxPeople >= 30) {
-            lectureMaxPeople = 10;
-        }
-        dto.setLectureMaxPeople(lectureMaxPeople);
-
-        int openingProcedures = dto.getOpeningProcedures();
-        if (openingProcedures <= 0 || openingProcedures > 5) {
-            openingProcedures = 1;
-        }
-        dto.setOpeningProcedures(openingProcedures);
-
-
-        try {
-            int result = mapper.InsApplly(dto);
-            if (result != 1) {
-                throw new RuntimeException();
-            }
-        } catch (IllegalArgumentException ex) {
-            ex.fillInStackTrace();
+        if (byId.isEmpty()){
+            new Exception("해당 강의명이 없습니다");
         }
 
-        String dayWeek = dto.getDayWeek();
-        String[] split = dayWeek.split(",");
-
-        List<LectureApllyDto> list = new ArrayList<>();
-        for (String s : split) {
-            LectureApllyDto applyDto = new LectureApllyDto();
-            applyDto.setDayWeek(s);
-            applyDto.setIlecture(dto.getIlecture());
-            list.add(applyDto);
+        if (lectureRoomEntity.getMaxCapacity()>param.getLectureMaxPeople()){
+            new Exception("강의실 정원 초과입니다");
         }
 
-        int re = mapper.InsDayWeek(list);
-        if (re ==0){
-            return null;
+        if (param.getGradeLimit()<5){
+            new Exception("학년은 1~4학년 까지 입니다");
         }
-        res.setDto(dto);
 
-        return res;
+
+        LectureApplyEntity lectureApplyEntity = LectureApplyEntity.builder()
+                .lectureRoomEntity(lectureRoomEntity)
+                .lectureNameEntity(byId.get())
+                .semesterEntity(semesterEntity)
+                .professorEntity(professorEntity)
+                .attendance(attendance)
+                .midtermExamination(midtermExamination)
+                .finalExamination(finalExamination)
+                .ctnt(param.getCtnt())
+                .textbook(param.getTextBook())
+                .bookUrl(param.getBookUrl())
+                .gradeLimit(param.getGradeLimit())
+                .lectureMaxPeople(param.getLectureMaxPeople())
+                .build();
+
+        LECTURE_APPLY_RPS.save(lectureApplyEntity);
+
+
+//    LectureApplyRes.builder()
+//            .ilecture(lectureApplyEntity.getIlecture())
+//            .
+//            .build();
+
+
+
+        return null ;
     }
 
 

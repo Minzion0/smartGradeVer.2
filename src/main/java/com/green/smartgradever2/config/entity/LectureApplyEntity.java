@@ -78,6 +78,9 @@ public class LectureApplyEntity extends BaseEntity{
     @Column(length = 20,nullable = false)
     private String textbook;
 
+    @Column
+    private String bookUrl;
+
     @Column(name = "students_apply_deadline")
     private LocalDate studentsApplyDeadline;
 
