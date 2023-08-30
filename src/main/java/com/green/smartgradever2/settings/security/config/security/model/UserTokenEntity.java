@@ -8,7 +8,6 @@ import lombok.Data;
 public class UserTokenEntity {
     private Long iuser;
     private String role;
-    private String ip;
     private String createdAt;
     private String updatedAt;
 }
