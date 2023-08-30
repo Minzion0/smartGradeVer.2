@@ -38,8 +38,6 @@ public class AdminStudentService {
 
         Optional<MajorEntity> major = MAJOR_RPS.findById(param.getImajor());
 
-        log.info("major : {}", major);
-
         LocalDate now = LocalDate.now();
         LocalDate setYear = LocalDate.of(now.getYear(), 1, 1);
         LocalDateTime startOfDay = setYear.atStartOfDay();
@@ -48,12 +46,15 @@ public class AdminStudentService {
 
         List<StudentEntity> majorCount = RPS.findAllByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
 
-        String password = param.getBirthdate().toString().replaceAll("-", "");
 
 
         String num = String.format("%s%02d%04d", year, major.get().getImajor(), majorCount.size() + 1);
+
+
         int studentNum = Integer.parseInt(num);
 
+
+        String password = param.getBirthdate().toString().replaceAll("-", "");
         String encode = PW_ENCODER.encode(password);
 
         StudentEntity entity = new StudentEntity();
