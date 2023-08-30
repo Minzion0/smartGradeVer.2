@@ -302,7 +302,6 @@ public class SignService {
                 .build();
         REDIS_SERVICE.setValues(redisKey, refreshToken);
 
-        int result = MAPPER.updUserToken(tokenEntity);
 
         log.info("[getSignInResult] SignInResultDto 객체 생성");
         SignInResultDto dto = SignInResultDto.builder()
