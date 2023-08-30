@@ -23,10 +23,11 @@ public class BoardController {
     private final BoardService SERVICE;
 
     /** insert **/
-    @PostMapping(value = "/pics", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/pics", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
     public BoardInsRes insBoard(@RequestPart BoardInsDto dto,
-                                @RequestPart List<MultipartFile> pics) {
+                                @RequestPart(required = false) List<MultipartFile> pics) {
         return SERVICE.insBoard(dto, pics);
     }
 
