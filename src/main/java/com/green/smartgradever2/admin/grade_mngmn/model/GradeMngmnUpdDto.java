@@ -6,7 +6,7 @@ import lombok.Data;
 public class GradeMngmnUpdDto {
     private Integer studentNum;
     private int grade;
-    private int semester;
+    private Long isemester;
     private int avgScore;
     private double avgRating;
 }
