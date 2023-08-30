@@ -189,8 +189,6 @@ public class StudentService {
         // 학생이 수강 중인 강의 정보
         List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByStudentEntity(student);
 
-
-
         StudentProfileDto studentProfileDto = new StudentProfileDto();
         studentProfileDto.setStudentNum(student.getStudentNum());
         studentProfileDto.setImajor(student.getMajorEntity().getImajor());
@@ -203,7 +201,7 @@ public class StudentService {
         studentProfileDto.setEmail(student.getEmail());
         studentProfileDto.setPic(student.getPic());
         studentProfileDto.setFinishedYn(student.getFinishedYn());
-        studentProfileDto.setRole(student.getRole());
+
 
         // 수강 중인 강의 정보를 가져와서 StudentLectureDto 리스트로 변환
         List<StudentLectureDto> studentLectures = new ArrayList<>();
