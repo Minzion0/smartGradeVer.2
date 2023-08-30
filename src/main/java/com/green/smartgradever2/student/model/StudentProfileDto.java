@@ -1,15 +1,17 @@
 package com.green.smartgradever2.student.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+
 public class StudentProfileDto {
-    private Long studentNum;
+    private Integer studentNum;
     private Long imajor;
-    private Long isemester;
+
     private String nm;
     private int grade;
     private Enum gender;
