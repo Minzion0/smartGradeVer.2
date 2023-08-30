@@ -207,27 +207,25 @@ public class StudentService {
         // 수강 중인 강의 정보를 가져와서 StudentLectureDto 리스트로 변환
         List<StudentLectureDto> studentLectures = new ArrayList<>();
         for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
-            StudentLectureDto studentLectureDto = new StudentLectureDto();
-            studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
-            studentLectureDto.setIlecture(lectureStudentEntity.getLectureApplyEntity().getIlecture());
-            studentLectureDto.setFinishedYn(lectureStudentEntity.getFinishedYn());
-            studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
-            studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
-            studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
-            studentLectureDto.setTotalScore(lectureStudentEntity.getTotalScore());
-            studentLectureDto.setFinishedAt(lectureStudentEntity.getFinishedAt());
-            studentLectureDto.setCorrectionAt(lectureStudentEntity.getCorrectionAt());
-            studentLectureDto.setDayWeek(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
-            studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
-            studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
-            studentLectures.add(studentLectureDto);
+            if (lectureStudentEntity.getFinishedYn() == 0){
+                StudentLectureDto studentLectureDto = new StudentLectureDto();
+                studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
+                studentLectureDto.setIlecture(lectureStudentEntity.getLectureApplyEntity().getIlecture());
+                studentLectureDto.setFinishedYn(lectureStudentEntity.getFinishedYn());
+                studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
+                studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
+                studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
+                studentLectureDto.setDayWeek(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
+                studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
+                studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
+                studentLectures.add(studentLectureDto);
+            }
         }
 
         studentProfileDto.setAttendedLectures(studentLectures);
 
         return studentProfileDto;
     }
-
 
 
     // 학생 강의별 성적
