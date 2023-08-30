@@ -15,7 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,36 +34,49 @@ public class AdminProfessorService {
     @Transactional
     public AdminProfessorInsVo insProfessor(AdminProfessorInsParam param){
 
-        String setPw = param.getBirthdate().toString().replaceAll("-", "");
+        LocalDate now = LocalDate.now();
+        LocalDate setYear = LocalDate.of(now.getYear(), 1, 1);
+        LocalDateTime startOfDay = setYear.atStartOfDay();
+        LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
+        String year = setYear.toString().substring(2, 4);
+
         MajorEntity major = new MajorEntity();
         major.setImajor(param.getImajor());
+
+        Optional<List<ProfessorEntity>> orderByIprofessor = RPS.findAllByOrderByIprofessor();
+        int size=1;
+        if (!orderByIprofessor.isEmpty()){
+            size = orderByIprofessor.get().size()+1;
+        }
+        long iprofessor = 100000 + size;
+
+
+        String setPw = param.getBirthdate().toString().replaceAll("-", "");
+
         ProfessorEntity professor = new ProfessorEntity();
-        professor.setProfessorPassword(PW_ENCODER.encode(setPw));
-        professor.setPhone(param.getPhone());
-        professor.setNm(param.getNm());
-        professor.setGender(param.getGender());
-        professor.setBirthDate(param.getBirthdate());
-        professor.setMajorEntity(major);
+            professor.setIprofessor(iprofessor);
+            professor.setProfessorPassword(PW_ENCODER.encode(setPw));
+            professor.setPhone(param.getPhone());
+            professor.setNm(param.getNm());
+            professor.setGender(param.getGender());
+            professor.setBirthDate(param.getBirthdate());
+            professor.setMajorEntity(major);
 
-        RPS.save(professor);
+        RPS.saveAndFlush(professor);
 
-        EM.clear();
+        EM.detach(professor);
 
         ProfessorEntity entity = RPS.findById(professor.getIprofessor()).get();
 
-        AdminProfessorInsVo vo = new AdminProfessorInsVo();
-
-        vo.setIprofessor(entity.getIprofessor());
-        vo.setImajor(entity.getMajorEntity().getImajor());
-        vo.setNm(entity.getNm());
-        vo.setGender(entity.getGender());
-        vo.setBirthdate(entity.getBirthDate());
-        vo.setPhone(entity.getPhone());
-        vo.setCreatedAt(entity.getCreatedAt());
-        vo.setDelYn(entity.getDelYn());
-
-        return vo;
-
+       return AdminProfessorInsVo.builder().iprofessor(entity.getIprofessor())
+                .imajor(entity.getMajorEntity().getImajor())
+                .nm(entity.getNm())
+                .gender(entity.getGender())
+                .birthdate(entity.getBirthDate())
+                .phone(entity.getPhone())
+                .createdAt(entity.getCreatedAt())
+                .delYn(entity.getDelYn())
+                .build();
     }
 
 

@@ -32,6 +32,7 @@ public class BaseEntity {
     @JsonIgnore
     private LocalDateTime updatedAt;
     /** 삭제 여부 **/
+
     @Column(name = "del_yn")
     @ColumnDefault("0")
     private int delYn;
