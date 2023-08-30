@@ -1,7 +1,6 @@
-package com.green.smartgradever2.entity;
+package com.green.smartgradever2.config.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;

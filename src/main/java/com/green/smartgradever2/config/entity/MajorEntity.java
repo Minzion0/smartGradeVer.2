@@ -1,4 +1,4 @@
-package com.green.smartgradever2.entity;
+package com.green.smartgradever2.config.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

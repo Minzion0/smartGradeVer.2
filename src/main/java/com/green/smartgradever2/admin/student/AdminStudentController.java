@@ -1,18 +1,21 @@
 package com.green.smartgradever2.admin.student;
 
 import com.green.smartgradever2.admin.student.model.*;
-import com.green.smartgradever2.entity.StudentEntity;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
-@RequiredArgsConstructor
+@Tag(name = "관리자 학생 관리")
 @RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class AdminStudentController {
 
     private final AdminStudentService SERVICE;

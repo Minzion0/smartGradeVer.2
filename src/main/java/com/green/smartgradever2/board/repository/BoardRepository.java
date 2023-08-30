@@ -1,6 +1,6 @@
 package com.green.smartgradever2.board.repository;
 
-import com.green.smartgradever2.entity.BoardEntity;
+import com.green.smartgradever2.config.entity.BoardEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

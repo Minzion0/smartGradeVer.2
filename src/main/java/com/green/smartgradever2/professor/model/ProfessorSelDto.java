@@ -1,6 +1,6 @@
 package com.green.smartgradever2.professor.model;
 
-import com.green.smartgradever2.entity.model.GenderEnum;
+import com.green.smartgradever2.config.entity.model.GenderEnum;
 import lombok.Data;
 
 import java.time.LocalDate;

@@ -4,16 +4,12 @@ import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomFindRes;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomDto;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomVo;
-import com.green.smartgradever2.entity.LectureRoomEntity;
+import com.green.smartgradever2.config.entity.LectureRoomEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;

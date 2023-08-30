@@ -1,4 +1,4 @@
-package com.green.smartgradever2.entity.model;
+package com.green.smartgradever2.config.entity.model;
 
 import lombok.Getter;
 

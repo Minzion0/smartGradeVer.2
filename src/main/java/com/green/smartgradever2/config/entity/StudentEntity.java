@@ -1,6 +1,6 @@
-package com.green.smartgradever2.entity;
+package com.green.smartgradever2.config.entity;
 
-import com.green.smartgradever2.entity.model.GenderEnum;
+import com.green.smartgradever2.config.entity.model.GenderEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;

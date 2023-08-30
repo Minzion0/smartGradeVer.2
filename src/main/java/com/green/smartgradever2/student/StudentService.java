@@ -1,9 +1,9 @@
 package com.green.smartgradever2.student;
 
-import com.green.smartgradever2.entity.LectureApplyEntity;
-import com.green.smartgradever2.entity.LectureScheduleEntity;
-import com.green.smartgradever2.entity.LectureStudentEntity;
-import com.green.smartgradever2.entity.StudentEntity;
+import com.green.smartgradever2.config.entity.LectureApplyEntity;
+import com.green.smartgradever2.config.entity.LectureScheduleEntity;
+import com.green.smartgradever2.config.entity.LectureStudentEntity;
+import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;

@@ -1,7 +1,7 @@
 package com.green.smartgradever2.admin.professor;
 
-import com.green.smartgradever2.entity.MajorEntity;
-import com.green.smartgradever2.entity.ProfessorEntity;
+import com.green.smartgradever2.config.entity.MajorEntity;
+import com.green.smartgradever2.config.entity.ProfessorEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

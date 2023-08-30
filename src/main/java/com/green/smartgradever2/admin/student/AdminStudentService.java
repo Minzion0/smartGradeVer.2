@@ -2,14 +2,13 @@ package com.green.smartgradever2.admin.student;
 
 import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.student.model.*;
-import com.green.smartgradever2.entity.MajorEntity;
-import com.green.smartgradever2.entity.StudentEntity;
+import com.green.smartgradever2.config.entity.MajorEntity;
+import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;

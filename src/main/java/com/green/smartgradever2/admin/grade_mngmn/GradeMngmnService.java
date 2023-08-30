@@ -3,7 +3,6 @@ package com.green.smartgradever2.admin.grade_mngmn;
 import com.green.smartgradever2.admin.grade_mngmn.model.*;
 import com.green.smartgradever2.admin.lectureroom.AdminLectureRoomRepository;
 import com.green.smartgradever2.admin.major.AdminMajorRepository;
-import com.green.smartgradever2.entity.StudentSemesterScoreEntity;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j

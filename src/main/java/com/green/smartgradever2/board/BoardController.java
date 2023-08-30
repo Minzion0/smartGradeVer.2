@@ -1,7 +1,7 @@
 package com.green.smartgradever2.board;
 
 import com.green.smartgradever2.board.model.*;
-import com.green.smartgradever2.entity.BoardEntity;
+import com.green.smartgradever2.config.entity.BoardEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
