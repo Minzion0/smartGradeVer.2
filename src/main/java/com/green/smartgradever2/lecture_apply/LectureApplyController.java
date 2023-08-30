@@ -45,8 +45,6 @@ public class LectureApplyController {
         dto.setGaredLimit(param.getGaredLimit());
         dto.setDelYn(param.getDelYn());
         return service.InsApplly(dto);
-
-
     }
 
 
