@@ -126,7 +126,7 @@ public class StudentService {
 
 
         //수강신청
-    public StudentRegisterRes registerLectureForStudent(Long ilecture, Long studentNum) {
+    public StudentRegisterRes registerLectureForStudent(Long ilecture, Integer studentNum) {
         StudentRegisterRes response = new StudentRegisterRes();
 
         // 학생이 수강하려는 강의 정보 가져오기

@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class StudentLectureReg {
     private Long ilecture;
-    private Long studentNum;
+    private Integer studentNum;
 }
