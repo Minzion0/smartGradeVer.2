@@ -8,10 +8,6 @@ import java.time.LocalDate;
 public class LectureAppllyInsParam {
     private Long ilectureName;
     private Long ilectureRoom;
-    private Long isemester;
-    private int openingProcedures;
-    private LocalDate lectureStrDate;
-    private LocalDate lectureEndDate;
     private String lectureStrTime;
     private String lectureEndTime;
     private String dayWeek;
@@ -19,6 +15,8 @@ public class LectureAppllyInsParam {
     private int midtermExamination;
     private int finalExamination;
     private int lectureMaxPeople;
-    private int garedLimit;
-    private int delYn;
+    private int gradeLimit;
+    private String ctnt;
+    private String textBook;
+    private String bookUrl;
 }
