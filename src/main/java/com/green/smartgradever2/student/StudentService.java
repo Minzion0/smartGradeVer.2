@@ -189,10 +189,11 @@ public class StudentService {
         // 학생이 수강 중인 강의 정보
         List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByStudentEntity(student);
 
+
+
         StudentProfileDto studentProfileDto = new StudentProfileDto();
-        studentProfileDto.setStudentNum(Long.valueOf(student.getStudentNum()));
+        studentProfileDto.setStudentNum(student.getStudentNum());
         studentProfileDto.setImajor(student.getMajorEntity().getImajor());
-        studentProfileDto.setIsemester(student.getSemesterEntity().getIsemester());
         studentProfileDto.setNm(student.getNm());
         studentProfileDto.setGrade(student.getGrade());
         studentProfileDto.setGender(student.getGender());

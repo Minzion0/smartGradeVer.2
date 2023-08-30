@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "student")
@@ -33,10 +34,10 @@ public class StudentEntity extends BaseEntity {
     @ToString.Exclude
     private MajorEntity majorEntity;
 
-    @JoinColumn(name = "isemester")
-    @ManyToOne
-    @ToString.Exclude
-    private SemesterEntity semesterEntity;
+//    @OneToMany(mappedBy ="semesterEntity" )
+////    @ToString.Exclude
+////    private List<SemesterEntity> semesterEntity;
+////
 
 
     @Column(name = "grade",length = 10)
