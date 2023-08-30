@@ -27,9 +27,9 @@ public class GradeMngmnController {
 
     @PutMapping
     @Operation(summary = "SEMESTER_SCORE_PUT")
-    public GradeMngmnUpdRes putGradeMngmn(@RequestParam Integer studentNum, @RequestParam int semester) {
+    public GradeMngmnUpdRes putGradeMngmn(@RequestParam Integer studentNum, @RequestParam Long isemester) {
         GradeMngmnUpdParam p = new GradeMngmnUpdParam();
-        p.setSemester(semester);
+        p.setIsemester(isemester);
         p.setStudentNum(studentNum);
         return SERVICE.updGradeMngmn(p);
     }
