@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -57,7 +58,16 @@ public class BoardController {
     /** update **/
     @PutMapping
     @Operation(summary = "공지 수정")
-    public BoardEntity updBoard(@RequestBody BoardUpdDto dto) {
+    public BoardInsVo updBoard(@RequestBody BoardUpdParam param,
+                                @AuthenticationPrincipal MyUserDetails details) {
+        BoardUpdDto dto = new BoardUpdDto();
+        dto.setIboard(param.getIboard());
+        dto.setIadmin(details.getIuser());
+        dto.setTitle(param.getTitle());
+        dto.setCtnt(param.getCtnt());
+        dto.setImportance(param.getImportance());
+        dto.setUpdatedAt(LocalDateTime.now());
+
         return SERVICE.updBoard(dto);
     }
 
