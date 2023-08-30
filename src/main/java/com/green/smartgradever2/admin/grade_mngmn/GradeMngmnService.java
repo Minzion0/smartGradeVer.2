@@ -3,7 +3,12 @@ package com.green.smartgradever2.admin.grade_mngmn;
 import com.green.smartgradever2.admin.grade_mngmn.model.*;
 import com.green.smartgradever2.admin.lectureroom.AdminLectureRoomRepository;
 import com.green.smartgradever2.admin.major.AdminMajorRepository;
+import com.green.smartgradever2.admin.semester.SemesterRepository;
+import com.green.smartgradever2.config.entity.SemesterEntity;
+import com.green.smartgradever2.config.entity.StudentEntity;
+import com.green.smartgradever2.config.entity.StudentSemesterScoreEntity;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
+import com.green.smartgradever2.student.StudentRepository;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +26,8 @@ public class GradeMngmnService {
     private final AdminMajorRepository M_REP;
     private final AdminLectureRoomRepository ALR_REP;
     private final LectureStudentRepository LS_REP;
+    private final SemesterRepository SM_REP;
+    private final StudentRepository ST_REP;
     private final GradeMngmnMapper MAPPER;
 
     public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
@@ -52,7 +59,7 @@ public class GradeMngmnService {
     // todo 수정이 필요함
     public GradeMngmnUpdRes updGradeMngmn(GradeMngmnUpdParam p) {
         GradeMngmnUpdDto dto = new GradeMngmnUpdDto();
-        dto.setSemester(p.getSemester());
+        dto.setIsemester(p.getIsemester());
         dto.setStudentNum(p.getStudentNum());
 
         GradeAvgVo vo = MAPPER.selAvgScore(dto);
@@ -72,10 +79,39 @@ public class GradeMngmnService {
 
         return GradeMngmnUpdRes.builder()
                 .studentNum(p.getStudentNum())
-                .semester(p.getSemester())
+                .isemester(p.getIsemester())
                 .avgScore(p.getAvgScore())
                 .avgRating(p.getAvgRating())
                 .build();
+    }
+
+    public GradeMngmnUpdRes updGradeMngmn2(GradeMngmnUpdParam p) {
+        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
+        SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
+        StudentEntity studentEntity = ST_REP.findById(p.getStudentNum()).get();
+        GradeUtils utils = new GradeUtils();
+
+        entity.setSemesterEntity(semesterEntity);
+        entity.setStudentEntity(studentEntity);
+        List<StudentSemesterScoreEntity> allBy = GM_REP.findAllByStudentEntityAndSemesterEntity(entity.getStudentEntity(),entity.getSemesterEntity());
+        if (allBy == null) {
+            throw new RuntimeException("불러올 데이터가 존재하지 않습니다.");
+        } else {
+            for (StudentSemesterScoreEntity scoreEntity : allBy) {
+                entity.setAvgScore(scoreEntity.getAvgScore());
+                double v = utils.totalScore2(entity.getAvgScore());
+                entity.setRating(v);
+            }
+        }
+        StudentSemesterScoreEntity save = GM_REP.save(entity);
+
+        return GradeMngmnUpdRes.builder()
+                .studentNum(studentEntity.getStudentNum())
+                .isemester(semesterEntity.getIsemester())
+                .avgScore(entity.getAvgScore())
+                .avgRating(entity.getRating())
+                .build();
+
     }
 
 
