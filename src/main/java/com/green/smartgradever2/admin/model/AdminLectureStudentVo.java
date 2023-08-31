@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class AdminLectureStudentVo {
-    private Integer istudent;
+    private Long istudent;
     private String nm;
     private String majorNm;
     private int attendance;

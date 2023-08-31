@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class StudentUpRes {
-    private int studentNum;
+    private Long studentNum;
     private String address;
     private String phone;
     private String email;

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface AdminStudentRepository extends JpaRepository<StudentEntity,Integer> {
+public interface AdminStudentRepository extends JpaRepository<StudentEntity,Long> {
     List<StudentEntity> findAllByMajorEntityAndCreatedAtBetween(MajorEntity imajor, LocalDateTime start, LocalDateTime end);
 
 

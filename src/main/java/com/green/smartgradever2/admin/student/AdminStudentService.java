@@ -51,7 +51,7 @@ public class AdminStudentService {
         String num = String.format("%s%02d%04d", year, major.get().getImajor(), majorCount.size() + 1);
 
 
-        int studentNum = Integer.parseInt(num);
+        Long studentNum = Long.parseLong(num);
 
 
         String password = param.getBirthdate().toString().replaceAll("-", "");
