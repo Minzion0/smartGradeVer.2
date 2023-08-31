@@ -4,9 +4,5 @@ import lombok.Data;
 
 @Data
 public class GradeMngmnUpdParam {
-    private Integer studentNum;
-    private int grade;
-    private Long isemester;
-    private int avgScore;
-    private double avgRating;
+   private Long isemester;
 }
