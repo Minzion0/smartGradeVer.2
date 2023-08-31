@@ -3,11 +3,15 @@ package com.green.smartgradever2.lecture_apply;
 import com.green.smartgradever2.lecture_apply.model.LectureApllySelRes;
 import com.green.smartgradever2.lecture_apply.model.LectureAppllyInsParam;
 import com.green.smartgradever2.lecture_apply.model.LectureApplyRes;
+import com.green.smartgradever2.lecture_apply.model.LectureApplyScheduleVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,7 +29,7 @@ public class LectureApplyController {
             + "attendace : 출결 배점<br>" + "midtermExamination : 중간고사 배점<br>" + "finalExamination : 기말고사 배점<br>"
             + "lectureMaxPeople : 강의최대 인원 1~30<br>" + "gradeLimit : 신청할수있는 학년범위 1~4<br>" + "delYn : 삭제 여부<br>"
             + "<br>" + "기본 배점 출결(20),중간고사(40),기말고사(40)<br>")
-    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) {
+    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) throws Exception {
 
         return service.InsApply(iprofessor,param);
     }
@@ -42,5 +46,13 @@ public class LectureApplyController {
 
         return service.selLectureApplly(page, iprofessor);
 
+    }
+
+    @GetMapping("/lecture/room")
+    @Operation(summary = "강의실 시간표")
+    public ResponseEntity< List<LectureApplyScheduleVo>> lectureRoomSchedule(@RequestParam Long ilectureRoom){
+
+        List<LectureApplyScheduleVo> list = service.lectureRoomSchedule(ilectureRoom);
+        return ResponseEntity.ok().body(list);
     }
 }

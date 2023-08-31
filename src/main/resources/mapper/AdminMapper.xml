@@ -26,11 +26,11 @@
             ON H.ilectuer = A.ilecture
 
     <where>
-        <if test="procedures==-2">
-            and A.opening_procedures BETWEEN 0 AND 2
+        <if test="procedures == -2">
+            and A.opening_proceudres BETWEEN 0 AND 2
         </if>
         <if test="procedures>=0">
-            and A.opening_procedures=#{procedures}
+            and A.opening_proceudres = #{procedures}
         </if>
 
         <if test="nm!=null">
@@ -52,10 +52,10 @@
         on A.iprofessor=B.iprofessor
         <where>
             <if test="procedures>=0">
-                and A.opening_procedures=#{procedures}
+                and A.opening_proceudres =#{procedures}
             </if>
             <if test="procedures==-2">
-                and A.opening_procedures BETWEEN 0 AND 2
+                and A.opening_proceudres BETWEEN 0 AND 2
             </if>
 
 
