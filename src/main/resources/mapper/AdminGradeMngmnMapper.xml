@@ -12,7 +12,7 @@
     <select id="selGradeFindStudent">
         SELECT A.grade grade, C.semester semester, F.lecture_name lectureName
         , G.nm professorName, F.score lectureScore
-        , D.total_score totalScore
+        , D.total_score totalScore, rating
         FROM student_semester_score A
         INNER JOIN student B
         ON A.student_num = B.student_num
@@ -70,7 +70,7 @@
         , A.birthdate, A.phone , A.address address
         , A.student_num studentNum, B.major_name majorName
         , A.created_at createdAt, A.email,
-        sum(C.score) scoreStudent, B.graduation_score graduationScore
+        C.score scoreStudent, B.graduation_score graduationScore
         , A.grade grade, C.isemester isemester, D.ilecture ilecture
         , C.avg_score avgScore, avg(C.rating) rating
         FROM student A

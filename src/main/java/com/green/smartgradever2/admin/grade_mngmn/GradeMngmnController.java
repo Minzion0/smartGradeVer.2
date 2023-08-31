@@ -57,7 +57,7 @@ public class GradeMngmnController {
     }
 
     @PatchMapping
-    @Operation(summary = "SEMESTER_SCORE_PUT2")
+    @Operation(summary = "SEMESTER_SCORE_PUT")
     public GradeMngmnUpdRes putGradeMngmn2(@RequestParam Long isemester) {
         GradeMngmnUpdParam p = new GradeMngmnUpdParam();
         p.setIsemester(isemester);

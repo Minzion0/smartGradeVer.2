@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Builder
 public class StudentProFileRes {
-    private StudentProfileDto profileDto;
+    private StudentProfileLectureVo profileDto;
     private List<StudentLectureDto> dtos;
 }
