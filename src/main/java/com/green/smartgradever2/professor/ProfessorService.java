@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
@@ -22,9 +23,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProfessorService {
+
     private final ProfessorMapper MAPPER;
     private final ProfesserRepository professorRepository;
     private final LectureApplyRepository lectureApplyRepository;
+    private final PasswordEncoder PW_ENCODER;
+
     @Value("${file.dir}")
     private String fileDir;
     //교수 프로필
@@ -190,5 +194,24 @@ public class ProfessorService {
                 .page(utils)
                 .lectures(lectures)
                 .build();
+    }
+
+    /** 교수 비밀번호 변경 (현재 비밀번호 확인 후 변경 가능(로그인 완료시 가능)) **/
+    public String updPassword(ProfessorUpdPasswordDto updDto, ProfessorUpdPasswordParam param) throws Exception {
+        ProfessorSelCurrentPasswordDto dto = new ProfessorSelCurrentPasswordDto();
+        dto.setIprofessor(updDto.getIprofessor());
+        dto.setRole(updDto.getRole());
+
+        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).get();
+
+        if (!PW_ENCODER.matches(param.getCurrentProfessorPassword(), entity.getProfessorPassword())){
+            throw new Exception("기존 비밀번호를 다시 확인해주세요");
+        }
+        updDto.setProfessorPassword(param.getProfessorPassword());
+        String npw = PW_ENCODER.encode(updDto.getProfessorPassword());
+        entity.setProfessorPassword(npw);
+        professorRepository.save(entity);
+
+        return "비밀번호 변경이 완료 되었습니다.";
     }
 }

@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +33,7 @@ public class StudentService {
     private final LectureApplyRepository lectureApplyRep;
     private final LectureStudentRepository lectureStudentRep;
     private final LectureScheduleRepository lectureScheduleRep;
-
+    private final PasswordEncoder PW_ENCODER;
 
 
 
@@ -126,7 +127,7 @@ public class StudentService {
 
 
         //수강신청
-    public StudentRegisterRes registerLectureForStudent(Long ilecture, Integer studentNum) {
+    public StudentRegisterRes registerLectureForStudent(Long ilecture, Long studentNum) {
         StudentRegisterRes response = new StudentRegisterRes();
 
         // 학생이 수강하려는 강의 정보 가져오기
@@ -295,7 +296,18 @@ public class StudentService {
         return totalCredit;
     }
 
+    /** 학생 비밀번호 변경 (로그인 완료 시 가능) **/
+    public String updPassword(StudentPasswordParam param, StudentUpdPasswordDto dto) throws Exception{
+        StudentEntity entity = studentRep.findById(dto.getIstudent()).get();
 
+        if (!PW_ENCODER.matches(param.getCurrentPassword(), entity.getStudentPassword())) {
+            throw new Exception("기존 비밀번호를 다시 확인해주세요");
+        }
+        String npw = PW_ENCODER.encode(param.getStudentPassword());
+        entity.setStudentPassword(npw);
+        studentRep.save(entity);
 
+        return "비밀번호 변경이 완료되었습니다.";
+    }
 
 }

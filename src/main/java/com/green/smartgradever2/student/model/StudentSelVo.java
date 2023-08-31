@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class StudentSelVo {
-    private int studentNum;
+    private Long studentNum;
     private Long ilectureStudent;
     private Long ilecture;
     private int finishedYn;
