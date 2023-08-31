@@ -8,8 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity,Long> {
     List<LectureApplyEntity> findByProfessorEntity(ProfessorEntity professor);
     Page<LectureApplyEntity> findAllByProfessorEntityIprofessor(Long iprofessor, Pageable pageable);
+    Optional<LectureApplyEntity> findByProfessorEntityIprofessorAndIlecture(Long iprofessor, Long ilecture);
 }

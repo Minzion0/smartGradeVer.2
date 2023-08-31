@@ -5,14 +5,12 @@
 <mapper namespace="com.green.smartgradever2.lecture_apply.LectureApplyMapper">
     <insert id="InsApplly" useGeneratedKeys="true" keyProperty="ilecture">
         insert into lecture_applly
-        (ilecture_name  ,ilecture_room ,iprofessor,isemester,opening_procedures,
-        lecture_str_date,lecture_end_date,lecture_str_time,lecture_end_time,attendance,
-        midterm_examination,final_examination,lecture_max_people,grade_limit,del_yn)
+        (ilecture_name,ilecture_room ,iprofessor,lecture_str_time,lecture_end_time,attendance,
+        midterm_examination,final_examination,lecture_max_people,grade_limit,ctnt,textbook,bookurl)
         values
-        (#{ilectureName},#{ilectureRoom},#{iprofessor},#{isemester},#{openingProcedures},
-        #{lectureStrDate},#{lectureEndDate},#{lectureStrTime},#{lectureEndTime},
+        (#{ilectureName},#{ilectureRoom},#{iprofessor},#{lectureStrTime},#{lectureEndTime},
         #{attendance},#{midtermExamination},#{finalExamination},#{lectureMaxPeople}
-        ,#{garedLimit},#{delYn})
+        ,#{garedLimit},#{ctnt},#{textBook},#{bookUrl})
     </insert>
 
     <insert id="InsDayWeek">

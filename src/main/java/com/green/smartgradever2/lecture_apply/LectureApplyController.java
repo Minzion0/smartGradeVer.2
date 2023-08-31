@@ -1,24 +1,23 @@
 package com.green.smartgradever2.lecture_apply;
 
 import com.green.smartgradever2.lecture_apply.model.LectureApllySelRes;
-import com.green.smartgradever2.lecture_apply.model.LectureAppllyInsDto;
 import com.green.smartgradever2.lecture_apply.model.LectureAppllyInsParam;
-import com.green.smartgradever2.lecture_apply.model.LectureAppllyRes;
+import com.green.smartgradever2.lecture_apply.model.LectureApplyRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Tag(name = "교수 강의")
 public class LectureApplyController {
     private  final LectureApplyService service;
 
-    @PostMapping
+    @PostMapping("/lecture/apply")
     @Operation(summary = "강의 등록", description = "ilecture : 강의신청 pk<br>" +
             "ilecture_name : 강의pk<br>" + "ilecture_room : 강의실pk<br>" + "iprofessor : 교수pk<br>"
             + "isemester : 학기pk<br>" + "openingProcedures : 개강절차 0~5<br>" + "lectureStrDate : 개강시작 일자<br>"
@@ -26,25 +25,9 @@ public class LectureApplyController {
             + "attendace : 출결 배점<br>" + "midtermExamination : 중간고사 배점<br>" + "finalExamination : 기말고사 배점<br>"
             + "lectureMaxPeople : 강의최대 인원 1~30<br>" + "gradeLimit : 신청할수있는 학년범위 1~4<br>" + "delYn : 삭제 여부<br>"
             + "<br>" + "기본 배점 출결(20),중간고사(40),기말고사(40)<br>")
-    public LectureAppllyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) {
-        LectureAppllyInsDto dto = new LectureAppllyInsDto();
-        dto.setIlectureName(param.getIlectureName());
-        dto.setIlectureRoom(param.getIlectureRoom());
-        dto.setIprofessor(iprofessor);
-        dto.setIsemester(param.getIsemester());
-        dto.setOpeningProcedures(param.getOpeningProcedures());
-        dto.setLectureStrDate(param.getLectureStrDate());
-        dto.setLectureEndDate(param.getLectureEndDate());
-        dto.setLectureEndTime(param.getLectureEndTime());
-        dto.setLectureStrTime(param.getLectureStrTime());
-        dto.setDayWeek(param.getDayWeek());
-        dto.setAttendance(param.getAttendance());
-        dto.setMidtermExamination(param.getMidtermExamination());
-        dto.setFinalExamination(param.getFinalExamination());
-        dto.setLectureMaxPeople(param.getLectureMaxPeople());
-        dto.setGaredLimit(param.getGaredLimit());
-        dto.setDelYn(param.getDelYn());
-        return service.InsApplly(dto);
+    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) {
+
+        return service.InsApply(iprofessor,param);
     }
 
 

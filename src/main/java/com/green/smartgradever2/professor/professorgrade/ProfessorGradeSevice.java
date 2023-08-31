@@ -1,8 +1,13 @@
 package com.green.smartgradever2.professor.professorgrade;
 
+import com.green.smartgradever2.config.entity.LectureApplyEntity;
+import com.green.smartgradever2.config.entity.LectureStudentEntity;
+import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
+import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.professor.professorgrade.model.*;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,74 +19,59 @@ import java.util.List;
 public class ProfessorGradeSevice {
     private final ProfessorGradeMapper mapper;
 
-    public ProfessorGradeMngmnUpRes upMngnm(ProfessorGradeMngmnUpParam param, Long iprofessor, Long ilecture, Long ilectureStudent ) {
-
-        ProfessorGradeMngmnUpDto dto = new ProfessorGradeMngmnUpDto();
-        String msg="";
-        ProfessorGradeMngmnUpRes res = new ProfessorGradeMngmnUpRes();
-
-
-        dto.setIlectureStudent(ilectureStudent);
-        dto.setIlecture(ilecture);
-        dto.setIpofessor(iprofessor);
-        dto.setFinishedYn(1);
+    private final LectureApplyRepository lectureApplyRep;
+    private final LectureStudentRepository lectureStudentRep;
 
 
 
-        int attendance = param.getAttendance();
-        int midtermExamination = param.getMidtermExamination();
-        int finalExamination = param.getFinalExamination();
+    public StudentGradeDTO updateStudentGrade(Long ilectureStudent, Long iprofessor, Long ilecture, ProfessorGradeDto updatedGrade) {
+        LectureApplyEntity lectureApply = lectureApplyRep.findByProfessorEntityIprofessorAndIlecture(iprofessor, ilecture)
+                .orElseThrow(() -> new EntityNotFoundException("강의 정보를 찾을 수 없습니다."));
 
 
-        // 각 점수들의 최대 값을 가져오기
-        int maxAttendance = mapper.getMaxAttendance(ilecture);
-        int maxMidtermExamination = mapper.getMaxMidtermExamination(ilecture);
-        int maxFinalExamination = mapper.getMaxFinalExamination(ilecture);
+        LectureStudentEntity existingGrade = lectureStudentRep.findById(ilectureStudent)
+                .orElseThrow(() -> new EntityNotFoundException("학생 성적 정보를 찾을 수 없습니다."));
 
+        int updatedAttendance = updatedGrade.getAttendance();
+        int updatedMidterm = updatedGrade.getMidtermExamination();
+        int updatedFinalExam = updatedGrade.getFinalExamination();
 
-        // 점수가 최대 값을 넘지 않도록 예외처리
-        if (attendance > maxAttendance) {
-            msg += "출석 점수가 최대값을 넘을 수 없습니다.";
-            res.setMsg(msg);
-            return res;
+        int maxAttendance = lectureApply.getAttendance();
+        int maxMidterm = lectureApply.getMidtermExamination();
+        int maxFinalExam = lectureApply.getFinalExamination();
+
+        if (updatedAttendance <= maxAttendance && updatedMidterm <= maxMidterm && updatedFinalExam <= maxFinalExam) {
+            // 성적 정보 업데이트 및 저장
+            existingGrade.setAttendance(updatedAttendance);
+            existingGrade.setMidtermExamination(updatedMidterm);
+            existingGrade.setFinalExamination(updatedFinalExam);
+            int totalScore = updatedAttendance + updatedMidterm + updatedFinalExam;
+
+            // 등급 계산
+            GradeUtils gradeUtils = new GradeUtils(totalScore);
+            double rating = gradeUtils.totalScore();
+            String grade = gradeUtils.totalRating(rating);
+
+            String ratingString = gradeUtils.totalGradeFromScore(totalScore);
+
+            // 성적 정보 업데이트 및 저장
+            existingGrade.setTotalScore(totalScore);
+            lectureStudentRep.save(existingGrade);
+
+            // DTO를 생성하여 반환
+            StudentGradeDTO studentGradeDTO = new StudentGradeDTO();
+            studentGradeDTO.setAttendance(updatedAttendance);
+            studentGradeDTO.setMidtermExamination(updatedMidterm);
+            studentGradeDTO.setFinalExamination(updatedFinalExam);
+            studentGradeDTO.setTotalScore(totalScore);
+            studentGradeDTO.setGrade(grade);
+            studentGradeDTO.setRating(ratingString);
+
+            return studentGradeDTO;
+        } else {
+            throw new GradeExceedsMaxScoreException("성적 정보의 배점이 초과되었습니다.");
         }
-        if (midtermExamination > maxMidtermExamination) {
-            msg +="중간고사 점수가 최대값을 넘을 수 없습니다.";
-            res.setMsg(msg);
-            return res;
-        }
-        if (finalExamination > maxFinalExamination) {
-            msg += "기말고사 점수가 최대값을 넘을 수 없습니다.";
-            res.setMsg(msg);
-            return res;
-        }
-
-        dto.setAttendance(attendance);
-        dto.setMidtermExamination(midtermExamination);
-        dto.setFinalExamination(finalExamination);
-
-        int point = dto.getAttendance() + dto.getMidtermExamination() + dto.getFinalExamination();
-        GradeUtils gradeUtils = new GradeUtils(point);
-        double score = gradeUtils.totalScore();
-        String rating = gradeUtils.totalRating(score);
-
-        dto.setPoint(point);
-        dto.setRating(rating);
-
-        try {
-            int result = mapper.upMngnm(dto);
-            if (result == 1) {
-                res = new ProfessorGradeMngmnUpRes(dto);
-                res.setIpofessor(iprofessor);
-                res.setIlecture(ilecture);
-                return res;
-            }
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        }
-        return  null;
     }
-
 
 
 

@@ -44,7 +44,7 @@ public class StudentEntity extends BaseEntity {
     @ColumnDefault("1")
     private Integer grade;
 
-    @Column(nullable = false,length = 10)
+    @Column(nullable = false,length = 40)
     private String nm;
 
     @Column(nullable = false)

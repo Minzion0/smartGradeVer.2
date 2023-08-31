@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
 
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@DynamicInsert
 public class LectureApplyEntity extends BaseEntity{
     /** PK **/
     @Id
@@ -47,8 +49,9 @@ public class LectureApplyEntity extends BaseEntity{
     private SemesterEntity semesterEntity;
 
 
-    @Column(name = "opening_proceudres" ,updatable = false, length = 4)
-    private int openingProceudres;
+    @Column(name = "opening_proceudres")
+    @ColumnDefault("1")
+    private Integer openingProceudres;
 
     @Column(name = "lecture_end_date", updatable = false)
     private LocalDate lectureEndDate;
@@ -77,6 +80,9 @@ public class LectureApplyEntity extends BaseEntity{
 
     @Column(length = 20,nullable = false)
     private String textbook;
+
+    @Column
+    private String bookUrl;
 
     @Column(name = "students_apply_deadline")
     private LocalDate studentsApplyDeadline;
