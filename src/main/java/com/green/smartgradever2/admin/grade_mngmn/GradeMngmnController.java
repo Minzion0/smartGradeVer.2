@@ -50,7 +50,7 @@ public class GradeMngmnController {
 
     @GetMapping("/{studentNum}")
     @Operation(summary = "상세보기")
-    public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable int studentNum) {
+    public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable Long studentNum) {
         GradeMngmnDetailSelDto dto = new GradeMngmnDetailSelDto();
         dto.setStudentNum(studentNum);
         return SERVICE.selStudentDetail(dto);
