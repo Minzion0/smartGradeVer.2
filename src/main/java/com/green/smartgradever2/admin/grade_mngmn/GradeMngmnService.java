@@ -116,28 +116,27 @@ public class GradeMngmnService {
 //                .build();
         SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
         log.info("semesterEntity.getIlectureStudent() : {}", semesterEntity.getIsemester());
+
         LectureApplyEntity applyEntity = APPLY_REP.findById(semesterEntity.getIsemester()).get();
         log.info("applyEntity.get().getIlecture() : {}", applyEntity.getIlecture());
+
         LectureStudentEntity lectureStudentEntity = LS_REP.findById(applyEntity.getIlecture()).get();
         List<LectureStudentEntity> list = LS_REP.findAllByLectureApplyEntity(applyEntity);
-
-
         log.info("list.size() : {}", list.size());
 
         int total;
         double avg;
-        List<StudentEntity> studentEntities = ST_REP.findAll();
 
+        List<StudentEntity> studentEntities = ST_REP.findAll();
         List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
 
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < studentEntities.size(); i++) {
             total = list.get(i).getTotalScore();
             GradeUtils utils = new GradeUtils();
             avg = utils.totalScore2(total);
             log.info("avg : {}", avg);
 
             for (int z = 0; z < studentEntities.size(); z++) {
-
                 StudentSemesterScoreEntity entity = StudentSemesterScoreEntity.builder()
                         .grade(studentEntities.get(z).getGrade()) // 학년
                         .rating(avg) // 평점
@@ -146,13 +145,12 @@ public class GradeMngmnService {
                         .semesterEntity(semesterEntity) // semester pk
                         .studentEntity(studentEntities.get(z)) // studentEntities pk
                         .build();
-
                 GM_REP.save(entity);
             }
         }
         return null;
-
     }
+
 
 
     public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {

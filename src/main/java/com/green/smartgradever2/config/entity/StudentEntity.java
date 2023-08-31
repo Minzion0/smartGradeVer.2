@@ -23,7 +23,7 @@ import java.util.List;
 public class StudentEntity extends BaseEntity {
     @Id
     @Column(updatable = false,nullable = false,columnDefinition = "INT UNSIGNED")
-    private Integer studentNum;
+    private Long studentNum;
 
     @Column(name = "student_password",nullable = false,length = 100)
     private String studentPassword;

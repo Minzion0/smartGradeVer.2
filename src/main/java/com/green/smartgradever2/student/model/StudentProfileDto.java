@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 
 public class StudentProfileDto {
-    private Integer studentNum;
+    private Long studentNum;
     private Long imajor;
 
     private String nm;

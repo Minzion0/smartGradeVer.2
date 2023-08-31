@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class AdminInsStudentVo {
 
 
-    private int  studentNum;
+    private Long  studentNum;
     private Long imajor;
     private String nm;
     private GenderEnum gender;
