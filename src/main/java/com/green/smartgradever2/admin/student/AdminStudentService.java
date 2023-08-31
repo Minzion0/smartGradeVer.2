@@ -63,7 +63,7 @@ public class AdminStudentService {
         entity.setNm(param.getNm());
         entity.setGender(param.getGender());
         entity.setMajorEntity(major.get());
-        entity.setBirthdate(param.getBirthdate());
+        entity.setBirthDate(param.getBirthdate());
         entity.setPhone(param.getPhone());
 
 
@@ -77,7 +77,7 @@ public class AdminStudentService {
         return AdminInsStudentVo.builder().studentNum(student.getStudentNum())
                                             .nm(student.getNm())
                                             .grade(student.getGrade())
-                                            .birthdate(student.getBirthdate())
+                                            .birthdate(student.getBirthDate())
                                             .delYn(student.getDelYn())
                                             .finishedYn(student.getFinishedYn())
                                             .phone(student.getPhone())

@@ -52,16 +52,11 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{studentNum}/profileWithLectures")
+    @GetMapping("/{studentNum}")
     @Operation(summary = "학생 프로필 디테일")
-    public ResponseEntity<StudentProfileDto> getStudentProfileWithLectures(@PathVariable int studentNum) {
-        StudentProfileDto studentProfileWithLectures = SERVICE.getStudentProfileWithLectures(studentNum);
+    public StudentFileSelRes getStudentProfileDetail(@PathVariable int studentNum) {
+    return    SERVICE.getStudentProfileWithLectures(studentNum);
 
-        if (studentProfileWithLectures == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(studentProfileWithLectures);
     }
 
     @GetMapping
@@ -77,7 +72,7 @@ public class StudentController {
     }
 
 
-    @GetMapping("/{studentNum}/info")
+    @GetMapping("/{studentNum}/score")
     @Operation(summary = "학점 조회")
     public StudentInfoDto getStudentInfo(@PathVariable Integer studentNum) {
         return SERVICE.getStudentInfo(studentNum);

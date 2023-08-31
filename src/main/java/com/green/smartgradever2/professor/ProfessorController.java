@@ -17,17 +17,16 @@ public class ProfessorController {
     private  final  ProfessorService SERVICE;
 
 
-    @GetMapping("/{iprofessor}")
-    @Operation(summary = "교수 프로필")
-    public ProfessorProfileDto getProfessorProfile(@PathVariable Long iprofessor) {
-        return SERVICE.getProfessorProfile(iprofessor);
-    }
+//    @GetMapping("/{iprofessor}")
+//    @Operation(summary = "교수 프로필")
+//    public ProfessorProfileDto getProfessorProfile(@PathVariable Long iprofessor) {
+//        return SERVICE.getProfessorProfile(iprofessor);
+//    }
     @GetMapping
     @Operation(summary = "교수프로필 본인 강의까지 출력")
     public ProfessorSelRes getProfessorWithLectures(@RequestParam Long iprofessor) {
-        ProfessorProfileDto dto = new ProfessorProfileDto();
-        dto.setIprofessor(iprofessor);
-        return SERVICE.getProfessorLectures(dto);
+
+        return SERVICE.getProfessorLectures(iprofessor);
     }
 
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
