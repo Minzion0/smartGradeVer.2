@@ -13,10 +13,9 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @SuperBuilder
 @AllArgsConstructor
-@ToString(callSuper = true)
+@ToString
 public class LectureScheduleEntity {
 
-    //todo pk 수정이 필요함
     @Id
     private Long ilecture;
 

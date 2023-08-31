@@ -13,9 +13,6 @@ public class LectureApplyRes {
     private Long ilectureRoom;
     private Long iprofessor;
     private Long isemester;
-    private int openingProcedures;
-    private LocalDate lectureStrDate;
-    private LocalDate lectureEndDate;
     private String lectureStrTime;
     private String lectureEndTime;
     private int attendance;

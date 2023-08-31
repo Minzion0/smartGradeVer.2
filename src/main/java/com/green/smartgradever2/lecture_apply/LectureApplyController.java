@@ -25,7 +25,7 @@ public class LectureApplyController {
             + "attendace : 출결 배점<br>" + "midtermExamination : 중간고사 배점<br>" + "finalExamination : 기말고사 배점<br>"
             + "lectureMaxPeople : 강의최대 인원 1~30<br>" + "gradeLimit : 신청할수있는 학년범위 1~4<br>" + "delYn : 삭제 여부<br>"
             + "<br>" + "기본 배점 출결(20),중간고사(40),기말고사(40)<br>")
-    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) {
+    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) throws Exception {
 
         return service.InsApply(iprofessor,param);
     }
