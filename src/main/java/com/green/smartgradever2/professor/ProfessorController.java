@@ -3,6 +3,7 @@ package com.green.smartgradever2.professor;
 import com.green.smartgradever2.professor.model.*;
 import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/professor")
+@Tag(name = "교수")
 public class ProfessorController {
     private  final  ProfessorService SERVICE;
 
