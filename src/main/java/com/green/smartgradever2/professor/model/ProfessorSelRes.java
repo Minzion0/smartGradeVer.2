@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Builder
 public class ProfessorSelRes {
-   private ProfessorProfileDto professor;
-   private List<ProfessorLectureDto> lectures;
+   private ProfessorProfileDto profile;
+   private List<ProfessorLectureVo> lectureList;
 }

@@ -1,5 +1,6 @@
 package com.green.smartgradever2.student;
 
+import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
 import com.green.smartgradever2.config.entity.LectureApplyEntity;
 import com.green.smartgradever2.config.entity.LectureScheduleEntity;
 import com.green.smartgradever2.config.entity.LectureStudentEntity;
@@ -180,51 +181,40 @@ public class StudentService {
     }
 
     //학생프로필 디데일
-    public StudentProfileDto getStudentProfileWithLectures(int studentNum) {
-        StudentEntity student = studentRep.findBystudentNum(studentNum);
+    public StudentFileSelRes getStudentProfileWithLectures(int studentNum) {
+        StudentEntity student = studentRep.findById((long) studentNum).get();
         if (student == null) {
-            log.error("Student not found with studentNum: {}", studentNum);
+            log.error("학생이 없습니다.: {}", studentNum);
             return null;
         }
-
-        // 학생이 수강 중인 강의 정보
-        List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByStudentEntity(student);
-
-        StudentProfileDto studentProfileDto = new StudentProfileDto();
-        studentProfileDto.setStudentNum(student.getStudentNum());
-        studentProfileDto.setImajor(student.getMajorEntity().getImajor());
-        studentProfileDto.setNm(student.getNm());
-        studentProfileDto.setGrade(student.getGrade());
-        studentProfileDto.setGender(student.getGender());
-        studentProfileDto.setAddress(student.getAddress());
-        studentProfileDto.setPhone(student.getPhone());
-        studentProfileDto.setBirthDate(student.getBirthdate());
-        studentProfileDto.setEmail(student.getEmail());
-        studentProfileDto.setPic(student.getPic());
-        studentProfileDto.setFinishedYn(student.getFinishedYn());
+        StudentProfileVo profile = new StudentProfileVo();
+        profile.setStudentNum(student.getStudentNum());
+        profile.setName(student.getNm());
+        profile.setMajorName(student.getMajorEntity().getMajorName());
+        profile.setGrade(student.getGrade());
+        profile.setGender(student.getGender());
+        profile.setBirthDate(student.getBirthDate());
+        profile.setAddress(student.getAddress());
+        profile.setPhone(student.getPhone());
+        profile.setEmail(student.getEmail());
+        profile.setGender(student.getGender());
+        profile.setPic(student.getPic());
+        profile.setFinishedYn(student.getFinishedYn());
 
 
-        // 수강 중인 강의 정보를 가져와서 StudentLectureDto 리스트로 변환
-        List<StudentLectureDto> studentLectures = new ArrayList<>();
-        for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
-            if (lectureStudentEntity.getFinishedYn() == 0){
-                StudentLectureDto studentLectureDto = new StudentLectureDto();
-                studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
-                studentLectureDto.setIlecture(lectureStudentEntity.getLectureApplyEntity().getIlecture());
-                studentLectureDto.setFinishedYn(lectureStudentEntity.getFinishedYn());
-                studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
-                studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
-                studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
-                studentLectureDto.setDayWeek(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
-                studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
-                studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
-                studentLectures.add(studentLectureDto);
-            }
-        }
 
-        studentProfileDto.setAttendedLectures(studentLectures);
+        List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
+        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().map(lecture -> StudentProfileLectureVo.builder()
+                .ilecture(lecture.getLectureApplyEntity().getLectureScheduleEntity().getIlecture())
+                .lectureStrTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime())
+                .lectureEndTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime())
+                .lectureStrDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterStrDate())
+                .lectureEndDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterEndDate())
+                .lectureName(lecture.getLectureApplyEntity().getLectureNameEntity().getLectureName()).build()).toList();
 
-        return studentProfileDto;
+        return StudentFileSelRes.builder().profile(profile).lectureList(lectureList).build();
+
+
     }
 
 
