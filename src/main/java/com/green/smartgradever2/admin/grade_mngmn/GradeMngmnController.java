@@ -34,6 +34,14 @@ public class GradeMngmnController {
         return SERVICE.updGradeMngmn(p);
     }
 
+//    @PatchMapping
+//    @Operation(summary = "SEMESTER_SCORE_PUT2")
+//    public GradeMngmnUpdRes putGradeMngmn2(@RequestParam Long isemester) {
+//        GradeMngmnUpdParam p = new GradeMngmnUpdParam();
+//        p.setIsemester(isemester);
+//        return SERVICE.updGradeMngmn2(p);
+//    }
+
     @GetMapping
     @Operation(summary = " 학번으로 조회")
     public GradeMngmnFindRes getGradeMngmn(@PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
