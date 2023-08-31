@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Temporal;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.List;
 
 @Entity
 @Table(name = "semester"
@@ -48,4 +49,9 @@ public class SemesterEntity {
 
     @Column(name = "lecture_apply_deadline", nullable = false)
     private LocalDate lectureApplyDeadline;
+
+
+//    @OneToMany(mappedBy = "studentNum")
+//    @ToString.Exclude
+//    private List<StudentEntity> studentEntity;
 }

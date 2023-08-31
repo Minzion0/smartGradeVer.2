@@ -42,6 +42,7 @@ public class SignService {
 
 
     public SignInResultDto signIn(SignInParam param) throws Exception {
+
         SignInResultDto dto = SignInResultDto.builder().build();
         log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
         String id = param.getId();
@@ -51,6 +52,7 @@ public class SignService {
 
         log.info("[getSignInResult] id: {}", id);
         log.info("[getSignInResult] 패스워드 비교 password :{}", password);
+        log.info("[getSignInResult] 패스워드 비교 password :{}", PW_ENCODER.encode(password));
         if (!PW_ENCODER.matches(password, user.getUpw())) {
             log.info("비밀번호 다름");
             //throw new RuntimeException("비밀번호 다름");
@@ -60,6 +62,7 @@ public class SignService {
         log.info("[getSignInResult] 패스워드 일치");
 
         setSuccessResult(dto);
+
         if (role.equals("ROLE_ADMIN") || user.getSecretKey() == null) {
             dto = issueToken(user.getUid(), role);
             dto.setSecretKey(false);
@@ -70,61 +73,6 @@ public class SignService {
 
     }
 
-
-/* 원래 있던 코드
-    public SignInResultDto refreshToken(HttpServletRequest req, String refreshToken) throws RuntimeException {
-        if (!(JWT_PROVIDER.isValidateToken(refreshToken, JWT_PROVIDER.REFRESH_KEY))) {
-            return null;
-        }
-
-        String ip = req.getRemoteAddr();
-        String accessToken = JWT_PROVIDER.resolveToken(req, JWT_PROVIDER.TOKEN_TYPE);
-        Claims claims = JWT_PROVIDER.getClaims(refreshToken, JWT_PROVIDER.REFRESH_KEY);
-        if (claims == null) {
-            return null;
-        }
-        String strIuser = claims.getSubject();
-        Long iuser = Long.valueOf(strIuser);
-
-        String redisKey = String.format("b:RT(%s):%s:%s", "Server", iuser, ip);
-        String value = REDIS_SERVICE.getValues(redisKey);
-        if (value == null) { // Redis에 저장되어 있는 RT가 없을 경우
-            return null; // -> 재로그인 요청
-        }
-
-        try {
-            RedisJwtVo redisJwtVo = OBJECT_MAPPER.readValue(value, RedisJwtVo.class);
-            if (!redisJwtVo.getAccessToken().equals(accessToken)
-                    || !redisJwtVo.getRefreshToken().equals(refreshToken)) {
-                return null;
-            }
-
-            List<String> roles = (List<String>) claims.get("roles");
-            String reAccessToken = JWT_PROVIDER.generateJwtToken(strIuser, roles, JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
-
-            //redis 업데이트
-            RedisJwtVo updateRedisJwtVo = RedisJwtVo.builder()
-                    .accessToken(reAccessToken)
-                    .refreshToken(redisJwtVo
-                            .getRefreshToken())
-                    .build();
-            String upateValue = OBJECT_MAPPER.writeValueAsString(updateRedisJwtVo);
-            REDIS_SERVICE.setValues(redisKey, upateValue);
-            Long expiration = JWT_PROVIDER.REFRESH_TOKEN_VALID_MS;
-            REDIS_SERVICE.setValuesWithTimeout(accessToken, "login", expiration);
-
-            SignInResultDto result = SignInResultDto.builder()
-                    .accessToken(reAccessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-
-            setSuccessResult(result);
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    } */
 
     public SignInResultDto refreshToken(HttpServletRequest req, String refreshToken) {
         if (!(JWT_PROVIDER.isValidateToken(refreshToken, JWT_PROVIDER.REFRESH_KEY))) {
@@ -276,7 +224,7 @@ public class SignService {
 
 
         System.out.println("user = " + user);
-        String redisKey = String.format("b:RT(%s):%s:%s", "Server", user.getIuser());
+        String redisKey = String.format("b:RT(%s):%s", "Server", user.getIuser());
         if (REDIS_SERVICE.getValues(redisKey) != null) {
             REDIS_SERVICE.deleteValues(redisKey);
         }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.smartgradever2.professor.professorgrade.ProfessorGradeMapper">
+
+    <update id="upMngnm">
+        <![CDATA[
+
+        UPDATE lecture_student A
+        INNER JOIN lecture_applly B
+        ON A.ilecture = B.ilecture
+        SET A.finished_yn = 1,
+        A.attendance =
+        CASE WHEN #{attendance} > B.attendance THEN B.attendance ELSE #{attendance} END,
+        A.midterm_examination =
+        CASE WHEN #{midtermExamination} > B.midterm_examination THEN B.midterm_examination ELSE #{midtermExamination} END,
+        A.final_examination =
+        CASE WHEN #{finalExamination} > B.final_examination THEN B.final_examination ELSE #{finalExamination} END,
+        A.total_score =
+        CASE
+        WHEN #{attendance} > B.attendance THEN B.attendance ELSE #{attendance}
+        END +
+        CASE
+        WHEN #{midtermExamination} > B.midterm_examination THEN B.midterm_examination ELSE #{midtermExamination}
+        END +
+        CASE
+        WHEN #{finalExamination} > B.final_examination THEN B.final_examination ELSE #{finalExamination}
+        END,
+
+        A.update_at = NOW()
+        WHERE A.ilecture_student = #{ilectureStudent} AND B.iprofessor = #{ipofessor} And B.ilecture = #{ilecture}
+        ]]>
+    </update>
+
+
+
+    <select id="getMaxAttendance">
+        SELECT MAX(attendance) AS maxAttendance
+        FROM lecture_applly
+        WHERE ilecture = #{ilecture};
+    </select>
+
+    <select id="getMaxMidtermExamination">
+        SELECT midterm_examination AS maxMidtermExamination
+        FROM lecture_applly
+        WHERE ilecture = #{ilecture};
+    </select>
+
+    <select id="getMaxFinalExamination">
+        SELECT MAX(final_examination) AS maxFinalExamination
+        FROM lecture_applly
+        WHERE ilecture = #{ilecture};
+    </select>
+
+
+    <select id="selStudentScore">
+        SELECT B.student_num studentNum, B.nm,
+        C.major_name majorName, A.attendance,
+        A.midterm_examination midtermExamination,
+        A.final_examination finalExamination
+        FROM lecture_student A
+        INNER JOIN student B
+        ON A.istudent = B.istudent
+        INNER JOIN major C
+        ON B.imajor = C.imajor
+        INNER JOIN lecture_applly D
+        ON A.ilecture = D.ilecture
+        <where>
+            <if test="iprofessor != null">
+                D.iprofessor = #{iprofessor}
+            </if>
+            <if test="ilecture != 0">
+                AND A.ilecture = #{ilecture}
+            </if>
+            <if test="studentNum != 0">
+                AND B.student_num = #{studentNum}
+            </if>
+        </where>
+        LIMIT #{staIdx}, 10;
+    </select>
+
+    <select id="selStudentScoreCount">
+        SELECT COUNT(*)
+        FROM lecture_student A
+        INNER JOIN student B
+        ON A.istudent = B.istudent
+        INNER JOIN major C
+        ON B.imajor = C.imajor
+        INNER JOIN lecture_applly D
+        ON A.ilecture = D.ilecture;
+    </select>
+
+
+
+
+
+</mapper>

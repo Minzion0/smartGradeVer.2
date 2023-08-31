@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "student")
@@ -33,17 +34,17 @@ public class StudentEntity extends BaseEntity {
     @ToString.Exclude
     private MajorEntity majorEntity;
 
-    @JoinColumn(name = "isemester")
-    @ManyToOne
-    @ToString.Exclude
-    private SemesterEntity semesterEntity;
+//    @OneToMany(mappedBy ="semesterEntity" )
+////    @ToString.Exclude
+////    private List<SemesterEntity> semesterEntity;
+////
 
 
     @Column(name = "grade",length = 10)
     @ColumnDefault("1")
     private Integer grade;
 
-    @Column(nullable = false,length = 10)
+    @Column(nullable = false,length = 40)
     private String nm;
 
     @Column(nullable = false)
@@ -79,8 +80,7 @@ public class StudentEntity extends BaseEntity {
     @Column(name = "secret_key")
     private String secretKey;
 
-
-
-
-
+    /** Opt QR URL 저장 **/
+    @Column(name = "otp_url")
+    private String otpUrl;
 }

@@ -2,6 +2,7 @@ package com.green.smartgradever2.board;
 
 import com.green.smartgradever2.board.model.*;
 import com.green.smartgradever2.config.entity.BoardEntity;
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,10 +26,17 @@ public class BoardController {
     private final BoardService SERVICE;
 
     /** insert **/
-    @PostMapping(value = "/pics", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/pics", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
-    public BoardInsRes insBoard(@RequestPart BoardInsDto dto,
-                                @RequestPart List<MultipartFile> pics) {
+    public BoardInsRes insBoard(@RequestPart BoardInsParam param,
+                                @RequestPart(required = false) List<MultipartFile> pics,
+                                @AuthenticationPrincipal MyUserDetails details) {
+        BoardInsDto dto = new BoardInsDto();
+        dto.setCtnt(param.getCtnt());
+        dto.setIadmin(details.getIuser());
+        dto.setImportance(dto.getImportance());
+        dto.setTitle(dto.getTitle());
         return SERVICE.insBoard(dto, pics);
     }
 
@@ -48,7 +58,16 @@ public class BoardController {
     /** update **/
     @PutMapping
     @Operation(summary = "공지 수정")
-    public BoardEntity updBoard(@RequestBody BoardUpdDto dto) {
+    public BoardInsVo updBoard(@RequestBody BoardUpdParam param,
+                                @AuthenticationPrincipal MyUserDetails details) {
+        BoardUpdDto dto = new BoardUpdDto();
+        dto.setIboard(param.getIboard());
+        dto.setIadmin(details.getIuser());
+        dto.setTitle(param.getTitle());
+        dto.setCtnt(param.getCtnt());
+        dto.setImportance(param.getImportance());
+        dto.setUpdatedAt(LocalDateTime.now());
+
         return SERVICE.updBoard(dto);
     }
 

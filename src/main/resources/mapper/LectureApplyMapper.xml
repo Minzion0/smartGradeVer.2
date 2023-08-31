@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.smartgradever2.lecture_apply.LectureApplyMapper">
+    <insert id="InsApplly" useGeneratedKeys="true" keyProperty="ilecture">
+        insert into lecture_applly
+        (ilecture_name,ilecture_room ,iprofessor,lecture_str_time,lecture_end_time,attendance,
+        midterm_examination,final_examination,lecture_max_people,grade_limit,ctnt,textbook,bookurl)
+        values
+        (#{ilectureName},#{ilectureRoom},#{iprofessor},#{lectureStrTime},#{lectureEndTime},
+        #{attendance},#{midtermExamination},#{finalExamination},#{lectureMaxPeople}
+        ,#{garedLimit},#{ctnt},#{textBook},#{bookUrl})
+    </insert>
+
+    <insert id="InsDayWeek">
+        insert into lecture_day_week
+        (ilecture,day_week)
+        values
+        <foreach collection="list" item="item" open="(" separator="),(" close=")">
+            #{item.ilecture},#{item.dayWeek}
+        </foreach>
+
+
+
+    </insert>
+
+    <select id="selLectureApplly">
+        SELECT A.ilecture,A.ilecture_name ilectureName,A.ilecture_room ilectureRoom,A.iprofessor,A.isemester
+        ,A.lecture_str_date lectureStrDate,A.lecture_end_date lectureEndDate,A.lecture_str_time lectureStrTime
+        ,A.lecture_end_time lectureEndTime
+        ,A.lecture_max_people lectureMaxPeople,A.grade_limit gradeLimit,A.del_yn delYn,A.opening_procedures openingProcedures,B.day_week dayWeek
+        from lecture_applly A
+        INNER JOIN lecture_day_week B
+        ON A.ilecture = B.ilecture
+        WHERE A.iprofessor = #{iprofessor} and A.opening_procedures = 1
+        order BY A.iprofessor DESC
+        LIMIT #{startIdx}, #{row}
+    </select>
+
+    <select id="selAplly">
+        select count(*)
+        from lecture_applly
+        where iprofessor = #{iprofessor}
+    </select>
+
+
+
+
+
+
+
+
+</mapper>

@@ -190,9 +190,8 @@ public class StudentService {
         List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByStudentEntity(student);
 
         StudentProfileDto studentProfileDto = new StudentProfileDto();
-        studentProfileDto.setStudentNum(Long.valueOf(student.getStudentNum()));
+        studentProfileDto.setStudentNum(student.getStudentNum());
         studentProfileDto.setImajor(student.getMajorEntity().getImajor());
-        studentProfileDto.setIsemester(student.getSemesterEntity().getIsemester());
         studentProfileDto.setNm(student.getNm());
         studentProfileDto.setGrade(student.getGrade());
         studentProfileDto.setGender(student.getGender());
@@ -202,7 +201,7 @@ public class StudentService {
         studentProfileDto.setEmail(student.getEmail());
         studentProfileDto.setPic(student.getPic());
         studentProfileDto.setFinishedYn(student.getFinishedYn());
-        studentProfileDto.setRole(student.getRole());
+
 
         // 수강 중인 강의 정보를 가져와서 StudentLectureDto 리스트로 변환
         List<StudentLectureDto> studentLectures = new ArrayList<>();
