@@ -116,10 +116,10 @@ public class GradeMngmnService {
             for (int z = 0; z < student.size(); z++) {
 
                 StudentSemesterScoreEntity entity = StudentSemesterScoreEntity.builder()
-                        .grade(student.get(z).getGrade())//학년
-                        .rating(avg)//평점
-                        .score(nameEntities.get(z).getScore()) //학점
-                        .semesterEntity(semesterEntity) //isemster
+                        .grade(student.get(z).getGrade()) // 학년
+                        .rating(avg) // 평점
+                        .score(nameEntities.get(z).getScore()) // 학점
+                        .semesterEntity(semesterEntity) // isemester
                         .studentEntity(student.get(z)) // student pk
                         .build();
 

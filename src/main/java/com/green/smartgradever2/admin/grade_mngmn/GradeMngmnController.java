@@ -56,13 +56,13 @@ public class GradeMngmnController {
 //        return SERVICE.selStudentDetail(dto);
 //    }
 
-//    @PatchMapping
-//    @Operation(summary = "SEMESTER_SCORE_PUT2")
-//    public GradeMngmnUpdRes putGradeMngmn2(@RequestParam Long isemester) {
-//        GradeMngmnUpdParam p = new GradeMngmnUpdParam();
-//        p.setIsemester(isemester);
-//        return SERVICE.updGradeMngmn2(p);
-//    }
+    @PatchMapping
+    @Operation(summary = "SEMESTER_SCORE_PUT2")
+    public GradeMngmnUpdRes putGradeMngmn2(@RequestParam Long isemester) {
+        GradeMngmnUpdParam p = new GradeMngmnUpdParam();
+        p.setIsemester(isemester);
+        return SERVICE.updGradeMngmn2(p);
+    }
 
     @GetMapping
     public GradeMngmnUpdRes updGradeMngmn2(GradeMngmnUpdParam p) {
