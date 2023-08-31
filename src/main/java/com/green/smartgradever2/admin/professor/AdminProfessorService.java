@@ -139,7 +139,34 @@ public class AdminProfessorService {
 
     }
 
+public AdminProfessorInsVo patchProfessor(Long iprofessor, AdminProfessorPatchParam param) throws Exception {
 
+    Optional<ProfessorEntity> optionalProfessorEntity = RPS.findById(iprofessor);
+    if (optionalProfessorEntity.isEmpty()){
+        throw new Exception("없는 회원 정보입니다");
+    }
+    ProfessorEntity professorEntity = optionalProfessorEntity.get();
+
+    MajorEntity majorEntity = new MajorEntity();
+    majorEntity.setImajor(param.getImajor());
+
+    professorEntity.setNm(param.getName());
+    professorEntity.setMajorEntity(majorEntity);
+
+    RPS.save(professorEntity);
+
+  return   AdminProfessorInsVo.builder().iprofessor(professorEntity.getIprofessor())
+            .imajor(professorEntity.getMajorEntity().getImajor())
+            .nm(professorEntity.getNm())
+            .gender(professorEntity.getGender())
+            .birthdate(professorEntity.getBirthDate())
+            .phone(professorEntity.getPhone())
+            .createdAt(professorEntity.getCreatedAt())
+            .delYn(professorEntity.getDelYn())
+            .build();
+
+
+}
 
 
 }

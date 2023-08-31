@@ -47,5 +47,13 @@ public class AdminProfessorController {
         return SERVICE.findProfessorDetail(iprofessor);
     }
 
+    @PatchMapping("/professor/{iprofessor}")
+    @Operation(summary = "교수 정보 수정")
+    public ResponseEntity<AdminProfessorInsVo> patchProfessor(@PathVariable Long iprofessor,@RequestBody AdminProfessorPatchParam param) throws Exception {
+
+        AdminProfessorInsVo vo = SERVICE.patchProfessor(iprofessor, param);
+
+       return ResponseEntity.ok().body(vo);
+    }
 
 }
