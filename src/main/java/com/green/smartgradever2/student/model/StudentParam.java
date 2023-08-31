@@ -7,5 +7,5 @@ public class StudentParam {
     private String phone;
     private String email;
     private String address;
-    private int studentNum;
+    private Long studentNum;
 }

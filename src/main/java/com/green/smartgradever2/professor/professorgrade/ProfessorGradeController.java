@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/professor/grade")
@@ -34,25 +36,18 @@ public class ProfessorGradeController {
         }
     }
 
-    @GetMapping("/lecture-student-list")
-    @Operation(summary = "내 강의를 듣고 있는 학생 목록", description = "iprofessor : 교수pk<br>"+ "studentNum : 학생학번<br>"
-            + "nm : 학생이름<br>"
-            + "majorName : 전공<br>"
-            +"attendance : 출결점수<br>"
-            +"midtermExamination : 중간고사 점수 <br>"
-            +"finalExamination 기말고사 점수 <br>"
-            +"point : 평점 <br>"
-            +"grade : 알파벳 등급<br>")
-    public ProfessorGradeMngmnSelRES selStudentScore(@RequestParam Long iprofessor,
-                                                     @RequestParam(defaultValue = "1") int page,
-                                                     @RequestParam(defaultValue = "0") int ilecture,
-                                                     @RequestParam(defaultValue = "0") int studentNum) {
-        ProfessorGradeMngmnSelDto dto = new ProfessorGradeMngmnSelDto();
-        dto.setIprofessor(iprofessor);
-        dto.setPage(page);
-        dto.setIlecture(ilecture);
-        dto.setStudentNum(studentNum);
-        return service.selStudentScore(dto);
+    @GetMapping // 학생 성적 리스트
+    @Operation(summary = "교수 강의 학생성적리스트")
+    public ProfessorGradeStudentDto getProfessorStudents(@RequestParam Long iprofessor,@RequestParam Long isemester) {
+        return service.getProGraStu(iprofessor,isemester);
+    }
+
+
+
+    @GetMapping("/list")
+    @Operation(summary = "교수 강의를 듣는 학생 리스트")
+    public List<ProStudentLectureDto> getProStuList(@RequestParam Long iprofessor, @RequestParam Long isemester) {
+        return service.getProList(iprofessor, isemester);
     }
 
 }

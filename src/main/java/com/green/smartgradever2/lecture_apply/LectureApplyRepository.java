@@ -2,6 +2,7 @@ package com.green.smartgradever2.lecture_apply;
 
 import com.green.smartgradever2.config.entity.LectureApplyEntity;
 import com.green.smartgradever2.config.entity.ProfessorEntity;
+import com.green.smartgradever2.config.entity.SemesterEntity;
 import com.green.smartgradever2.config.entity.StudentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,5 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
     Optional<LectureApplyEntity> findByProfessorEntityIprofessorAndIlecture(Long iprofessor, Long ilecture);
 
 //    List<LectureApplyEntity> findByStudentEntity(StudentEntity student);
+  List<LectureApplyEntity> findAllByProfessorEntityAndSemesterEntity(ProfessorEntity professorEntity, SemesterEntity semesterEntity);
 }

@@ -1,10 +1,7 @@
 package com.green.smartgradever2.student;
 
 import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
-import com.green.smartgradever2.config.entity.LectureApplyEntity;
-import com.green.smartgradever2.config.entity.LectureScheduleEntity;
-import com.green.smartgradever2.config.entity.LectureStudentEntity;
-import com.green.smartgradever2.config.entity.StudentEntity;
+import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
@@ -97,7 +94,7 @@ public class StudentService {
 
 
     @Transactional
-    public void studentDelPic(int studentNum) {
+    public void studentDelPic(Long studentNum) {
         StudentEntity studnet = studentRep.findBystudentNum(studentNum);
 
         if (studnet != null && studnet.getPic() != null) {
@@ -130,7 +127,7 @@ public class StudentService {
         //수강신청
     public StudentRegisterRes registerLectureForStudent(Long ilecture, Long studentNum) {
         StudentRegisterRes response = new StudentRegisterRes();
-
+        StudentEntity student = studentRep.findBystudentNum(studentNum);
         // 학생이 수강하려는 강의 정보 가져오기
         LectureApplyEntity lectureApply = lectureApplyRep.findById(ilecture)
                 .orElseThrow(() -> new EntityNotFoundException("강의를 찾을수 없습니다."));
@@ -149,6 +146,15 @@ public class StudentService {
                 .lectureApplyEntity(lectureApply)
                 .build();
         lectureStudentRep.save(lectureStudent);
+
+
+        if (lectureStudentRep.existsByStudentEntityAndLectureApplyEntity(student, lectureApply)) {
+            response.setSuccess(false);
+            response.setMessage("이미 신청한 강의입니다.");
+            return response;
+        }
+
+
 
         //수강 신청한 강의 시작시간 ,종료시간 , 시작요일
         LectureScheduleEntity lectureSchedule = lectureScheduleRep.findByIlecture(ilecture);
@@ -181,8 +187,8 @@ public class StudentService {
     }
 
     //학생프로필 디데일
-    public StudentFileSelRes getStudentProfileWithLectures(int studentNum) {
-        StudentEntity student = studentRep.findById((long) studentNum).get();
+    public StudentFileSelRes getStudentProfileWithLectures(Long studentNum) {
+        StudentEntity student = studentRep.findById(studentNum).get();
         if (student == null) {
             log.error("학생이 없습니다.: {}", studentNum);
             return null;
@@ -201,18 +207,53 @@ public class StudentService {
         profile.setPic(student.getPic());
         profile.setFinishedYn(student.getFinishedYn());
 
-
-
         List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
-        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().map(lecture -> StudentProfileLectureVo.builder()
-                .ilecture(lecture.getLectureApplyEntity().getLectureScheduleEntity().getIlecture())
-                .lectureStrTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime())
-                .lectureEndTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime())
-                .lectureStrDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterStrDate())
-                .lectureEndDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterEndDate())
-                .lectureName(lecture.getLectureApplyEntity().getLectureNameEntity().getLectureName()).build()).toList();
+        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().map(lecture -> {
+            LectureApplyEntity lectureApplyEntity = lecture.getLectureApplyEntity();
+            LectureScheduleEntity lectureScheduleEntity = lectureApplyEntity.getLectureScheduleEntity();
 
-        return StudentFileSelRes.builder().profile(profile).lectureList(lectureList).build();
+            LectureNameEntity lectureNameEntity = lectureApplyEntity.getLectureNameEntity();
+            int lectureScore = lectureNameEntity.getScore(); // 강의 학점
+
+            StudentProfileLectureVo lectureVo = StudentProfileLectureVo.builder()
+                    .ilecture(lectureApplyEntity.getIlecture())
+                    .lectureStrTime(lectureScheduleEntity.getLectureStrTime())
+                    .lectureEndTime(lectureScheduleEntity.getLectureEndTime())
+                    .lectureStrDate(lectureApplyEntity.getSemesterEntity().getSemesterStrDate())
+                    .lectureEndDate(lectureApplyEntity.getSemesterEntity().getSemesterEndDate())
+                    .lectureName(lectureNameEntity.getLectureName())
+                    .score(lectureScore) // 강의 학점 설정
+                    .build();
+
+            return lectureVo;
+        }).toList();
+
+        int totalScore = lectureApplyEntityList.stream()
+                .filter(lecture -> lecture.getFinishedYn() == 1) // finishedYn 이 1인것만 출력
+                .mapToInt(lecture -> lecture.getLectureApplyEntity().getLectureNameEntity().getScore()) // 강의 학점 추출
+                .sum();
+
+// 총 학점을 프로필에 설정
+        profile.setScore(totalScore);
+
+
+        StudentFileSelRes result = StudentFileSelRes.builder()
+                .profile(profile)
+                .lectureList(lectureList)
+                .build();
+
+        // 생성한 객체 반환
+        return result;
+//        List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
+//        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().map(lecture -> StudentProfileLectureVo.builder()
+//                .ilecture(lecture.getLectureApplyEntity().getLectureScheduleEntity().getIlecture())
+//                .lectureStrTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime())
+//                .lectureEndTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime())
+//                .lectureStrDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterStrDate())
+//                .lectureEndDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterEndDate())
+//                .lectureName(lecture.getLectureApplyEntity().getLectureNameEntity().getLectureName()).build()).toList();
+//
+//        return StudentFileSelRes.builder().profile(profile).lectureList(lectureList).build();
 
 
     }
@@ -252,14 +293,14 @@ public class StudentService {
         return studentSelVos;  // 강의별 성적 정보 리스트 반환
     }
 
-    public StudentEntity getStudentById(Integer studentNum) {
+    public StudentEntity getStudentById(Long studentNum) {
 
-        return studentRep.findByStudentNum(studentNum);
+        return studentRep.findBystudentNum(studentNum);
     }
 
     // 학생 학점 조회
-    public StudentInfoDto getStudentInfo(Integer studentNum) {
-        StudentEntity student = studentRep.findByStudentNum(studentNum);
+    public StudentInfoDto getStudentInfo(Long studentNum) {
+        StudentEntity student = studentRep.findBystudentNum(studentNum);
         int selfStudyCredit = calculateSelfStudyCredit(studentNum);
         String majorName = student.getMajorEntity().getMajorName();
         int graduationScore = student.getMajorEntity().getGraduationScore();
@@ -275,7 +316,7 @@ public class StudentService {
         return studentInfoDTO;
     }
 
-    public int calculateSelfStudyCredit(Integer studentNum) {
+    public int calculateSelfStudyCredit(Long studentNum) {
         List<LectureStudentEntity> finishedLectures = lectureStudentRep.findByStudentEntityStudentNumAndFinishedYn(studentNum, 1);
         int totalCredit = 0;
 

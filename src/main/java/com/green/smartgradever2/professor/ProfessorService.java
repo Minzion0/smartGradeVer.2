@@ -157,7 +157,7 @@ public class ProfessorService {
         PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
         return ProfessorLctureSelRes.builder()
                 .page(utils)
-                .lectures(lectures)
+                .lectureList(lectures)
                 .build();
     }
 

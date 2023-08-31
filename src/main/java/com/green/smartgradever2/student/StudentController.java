@@ -54,14 +54,14 @@ public class StudentController {
 
     @GetMapping("/{studentNum}")
     @Operation(summary = "학생 프로필 디테일")
-    public StudentFileSelRes getStudentProfileDetail(@PathVariable int studentNum) {
+    public StudentFileSelRes getStudentProfileDetail(@PathVariable Long studentNum) {
     return    SERVICE.getStudentProfileWithLectures(studentNum);
 
     }
 
     @GetMapping
     @Operation(summary = "학생 강의별 성적 조회")
-    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@RequestParam int studentNum) {
+    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@RequestParam Long studentNum) {
         StudentEntity studentEntity = SERVICE.getStudentById(studentNum); // 학생 정보 가져오기
         if (studentEntity == null) {
             return ResponseEntity.notFound().build(); // 학생이 존재하지 않으면 404 반환
@@ -74,7 +74,7 @@ public class StudentController {
 
     @GetMapping("/{studentNum}/score")
     @Operation(summary = "학점 조회")
-    public StudentInfoDto getStudentInfo(@PathVariable Integer studentNum) {
+    public StudentInfoDto getStudentInfo(@PathVariable Long studentNum) {
         return SERVICE.getStudentInfo(studentNum);
     }
 
