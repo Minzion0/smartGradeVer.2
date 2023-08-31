@@ -10,5 +10,4 @@ import java.util.List;
 public interface LectureNameRepository extends JpaRepository<LectureNameEntity,Long> {
     List<LectureNameEntity> findByLectureName(String name);
     List<LectureNameEntity> findByLectureNameContains(String lectureName);
-    List<LectureNameEntity> findByLectureName(String name);
 }
