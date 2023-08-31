@@ -1,12 +1,12 @@
 package com.green.smartgradever2.admin.grade_mngmn;
 
 import com.green.smartgradever2.admin.grade_mngmn.model.*;
+import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
 import com.green.smartgradever2.admin.lectureroom.AdminLectureRoomRepository;
 import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.semester.SemesterRepository;
-import com.green.smartgradever2.config.entity.SemesterEntity;
-import com.green.smartgradever2.config.entity.StudentEntity;
-import com.green.smartgradever2.config.entity.StudentSemesterScoreEntity;
+import com.green.smartgradever2.config.entity.*;
+import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.student.StudentRepository;
 import com.green.smartgradever2.utils.GradeUtils;
@@ -22,6 +22,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GradeMngmnService {
 
+//    private final GradeMngmnRepository GM_REP;
+//    private final AdminMajorRepository M_REP;
+//    private final AdminLectureRoomRepository ALR_REP;
+//    private final LectureStudentRepository LS_REP;
+//    private final SemesterRepository SM_REP;
+//    private final StudentRepository ST_REP;
+//    private final GradeMngmnMapper MAPPER;
+
+
     private final GradeMngmnRepository GM_REP;
     private final AdminMajorRepository M_REP;
     private final AdminLectureRoomRepository ALR_REP;
@@ -29,6 +38,8 @@ public class GradeMngmnService {
     private final SemesterRepository SM_REP;
     private final StudentRepository ST_REP;
     private final GradeMngmnMapper MAPPER;
+    private final LectureApplyRepository APPLY_REP;
+    private final LectureNameRepository NAME_REP;
 
     public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
         GradeMngmnDto mngmnDto = new GradeMngmnDto();
@@ -86,31 +97,70 @@ public class GradeMngmnService {
     }
 
     public GradeMngmnUpdRes updGradeMngmn2(GradeMngmnUpdParam p) {
-        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
+//        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
+//        SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
+//        StudentEntity studentEntity = ST_REP.findById(p.getStudentNum()).get();
+//        GradeUtils utils = new GradeUtils();
+//
+//        entity.setSemesterEntity(semesterEntity);
+//        entity.setStudentEntity(studentEntity);
+//        List<StudentSemesterScoreEntity> allBy = GM_REP.findAllByStudentEntityAndSemesterEntity(entity.getStudentEntity(),entity.getSemesterEntity());
+//        if (allBy == null) {
+//            throw new RuntimeException("불러올 데이터가 존재하지 않습니다.");
+//        } else {
+//            for (StudentSemesterScoreEntity scoreEntity : allBy) {
+//                entity.setAvgScore(scoreEntity.getAvgScore());
+//                double v = utils.totalScore2(entity.getAvgScore());
+//                entity.setRating(v);
+//            }
+//        }
+//        StudentSemesterScoreEntity save = GM_REP.save(entity);
+//
+//        return GradeMngmnUpdRes.builder()
+//                .studentNum(studentEntity.getStudentNum())
+//                .isemester(semesterEntity.getIsemester())
+//                .avgScore(entity.getAvgScore())
+//                .avgRating(entity.getRating())
+//                .build();
         SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
-        StudentEntity studentEntity = ST_REP.findById(p.getStudentNum()).get();
-        GradeUtils utils = new GradeUtils();
+        log.info("semesterEntity.getIlectureStudent() : {}", semesterEntity.getIsemester());
+        LectureApplyEntity applyEntity = APPLY_REP.findById(semesterEntity.getIsemester()).get();
+        log.info("applyEntity.get().getIlecture() : {}", applyEntity.getIlecture());
+        LectureStudentEntity lectureStudentEntity = LS_REP.findById(applyEntity.getIlecture()).get();
+        List<LectureStudentEntity> list = LS_REP.findByLectureApplyEntity(applyEntity);
 
-        entity.setSemesterEntity(semesterEntity);
-        entity.setStudentEntity(studentEntity);
-        List<StudentSemesterScoreEntity> allBy = GM_REP.findAllByStudentEntityAndSemesterEntity(entity.getStudentEntity(),entity.getSemesterEntity());
-        if (allBy == null) {
-            throw new RuntimeException("불러올 데이터가 존재하지 않습니다.");
-        } else {
-            for (StudentSemesterScoreEntity scoreEntity : allBy) {
-                entity.setAvgScore(scoreEntity.getAvgScore());
-                double v = utils.totalScore2(entity.getAvgScore());
-                entity.setRating(v);
+        log.info("list.size() : {}", list.size());
+
+        int total;
+        double avg;
+        List<StudentEntity> student = ST_REP.findAll();
+
+        List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
+
+        for (int i = 0; i < list.size(); i++) {
+            total = list.get(i).getTotalScore();
+            GradeUtils utils = new GradeUtils();
+            avg = utils.totalScore2(total);
+            log.info("avg : {}", avg);
+
+            for (int z = 0; z < student.size(); z++) {
+
+                StudentSemesterScoreEntity entity = StudentSemesterScoreEntity.builder()
+                        .grade(student.get(z).getGrade())//학년
+                        .rating(avg)//평점
+                        .score(nameEntities.get(z).getScore()) //학점
+                        .semesterEntity(semesterEntity) //isemster
+                        .studentEntity(student.get(z)) // student pk
+                        .build();
+
+                GM_REP.save(entity);
             }
         }
-        StudentSemesterScoreEntity save = GM_REP.save(entity);
 
-        return GradeMngmnUpdRes.builder()
-                .studentNum(studentEntity.getStudentNum())
-                .isemester(semesterEntity.getIsemester())
-                .avgScore(entity.getAvgScore())
-                .avgRating(entity.getRating())
-                .build();
+
+
+
+        return null;
 
     }
 
