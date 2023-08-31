@@ -261,32 +261,32 @@ public class SignService {
         return dto;
     }
 
-//    public boolean updForgetPassword(String uid, String role, String inputCode) {
-//        UserEntity entity = MAPPER.getByUid(uid, role);
-//        String otpCode = getOtpCode(entity.getSecretKey());
-//        boolean result = otpCode.equals(inputCode);
-//
-//        if (result) {
-//            MAPPER.updForgetPasswordTrue(uid, role);
-//            return true;
-//        }
-//        return false;
-//    }
+    public boolean updForgetPassword(String uid, String role, String inputCode) {
+        UserEntity entity = MAPPER.getByUid(uid, role);
+        String otpCode = getOtpCode(entity.getSecretKey());
+        boolean result = otpCode.equals(inputCode);
 
-//    public String updPasswordNew(SignSelPasswordTrueDto dto) {
-//        SignSelPasswordTrueVo result = MAPPER.selTruePassword(dto);
-//
-//        log.info("result.getUpw() : {}", result.getUpw());
-//        if (result.getUpw().equals("true")) {
-//            UpdForgetPasswordDto passwordDto = new UpdForgetPasswordDto();
-//            String npw = PW_ENCODER.encode(dto.getUpw());
-//            passwordDto.setUpw(npw);
-//            passwordDto.setRole(result.getRole());
-//            passwordDto.setUid(result.getUid());
-//            MAPPER.updForgetPassword(passwordDto);
-//            return "비밀번호 변경이 완료되었습니다.";
-//        }
-//        return "비밀번호 변경이 실패하였습니다.";
-//    }
+        if (result) {
+            MAPPER.updForgetPasswordTrue(uid, role);
+            return true;
+        }
+        return false;
+    }
+
+    public String updPasswordNew(SignSelPasswordTrueDto dto) {
+        SignSelPasswordTrueVo result = MAPPER.selTruePassword(dto);
+
+        log.info("result.getUpw() : {}", result.getUpw());
+        if (result.getUpw().equals("true")) {
+            UpdForgetPasswordDto passwordDto = new UpdForgetPasswordDto();
+            String npw = PW_ENCODER.encode(dto.getUpw());
+            passwordDto.setUpw(npw);
+            passwordDto.setRole(result.getRole());
+            passwordDto.setUid(result.getUid());
+            MAPPER.updForgetPassword(passwordDto);
+            return "비밀번호 변경이 완료되었습니다.";
+        }
+        return "비밀번호 변경이 실패하였습니다.";
+    }
 }
 
