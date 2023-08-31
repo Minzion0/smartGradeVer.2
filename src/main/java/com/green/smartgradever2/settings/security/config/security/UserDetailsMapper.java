@@ -30,4 +30,10 @@ public interface UserDetailsMapper {
 
     /** 학생 학번 뽑기 **/
     String getStudentNum(String studentNum);
+
+    /** 비밀번호 임의로 true 값으로 변환 시키기 **/
+    int updForgetPasswordTrue (String uid, String role);
+
+    /** 비밀번호 변경 **/
+    int updForgetPassword (UpdForgetPasswordDto dto);
 }

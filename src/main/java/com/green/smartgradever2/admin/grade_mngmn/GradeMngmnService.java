@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -116,43 +117,54 @@ public class GradeMngmnService {
 //                .build();
         SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
         log.info("semesterEntity.getIlectureStudent() : {}", semesterEntity.getIsemester());
+
         LectureApplyEntity applyEntity = APPLY_REP.findById(semesterEntity.getIsemester()).get();
         log.info("applyEntity.get().getIlecture() : {}", applyEntity.getIlecture());
+
         LectureStudentEntity lectureStudentEntity = LS_REP.findById(applyEntity.getIlecture()).get();
         List<LectureStudentEntity> list = LS_REP.findAllByLectureApplyEntity(applyEntity);
-
-
         log.info("list.size() : {}", list.size());
 
         int total;
         double avg;
+
         List<StudentEntity> studentEntities = ST_REP.findAll();
-
         List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
+        GradeUtils utils = new GradeUtils();
 
-        for (int i = 0; i < list.size(); i++) {
-            total = list.get(i).getTotalScore();
-            GradeUtils utils = new GradeUtils();
-            avg = utils.totalScore2(total);
-            log.info("avg : {}", avg);
+            for (int i = 0; i < studentEntities.size(); i++) {
+                List<LectureStudentEntity> studentEntityList = LS_REP.findAllByStudentEntityAndFinishedYn(studentEntities.get(i), 1);
+                StudentSemesterScoreEntity entity = null;
+                int temp = 0;
+                int index = 0;
+                int score = 0;
 
-            for (int z = 0; z < studentEntities.size(); z++) {
-
-                StudentSemesterScoreEntity entity = StudentSemesterScoreEntity.builder()
-                        .grade(studentEntities.get(z).getGrade()) // 학년
-                        .rating(avg) // 평점
-                        .avgScore(total /= list.size()) // 총점 평균
-                        .score(nameEntities.get(z).getScore()) // 학점
-                        .semesterEntity(semesterEntity) // semester pk
-                        .studentEntity(studentEntities.get(z)) // studentEntities pk
-                        .build();
-
-                GM_REP.save(entity);
+                for (int z = 0; z < studentEntityList.size(); z++) {
+                    temp += studentEntityList.get(z).getTotalScore();
+                    score += studentEntityList.get(z).getLectureApplyEntity().getLectureNameEntity().getScore();
+                    index++;
+                }
+                if (studentEntityList.size() != 0) {
+                    avg = utils.totalScore2(temp / index);
+                    log.info("avg : {}", avg);
+                    entity = StudentSemesterScoreEntity.builder()
+                            .grade(studentEntities.get(i).getGrade()) // 학년
+                            .rating(avg) // 평점
+                            .score(score) // 학점
+                            .avgScore(temp / index) // 평균 총점
+                            .semesterEntity(semesterEntity) // semester pk
+                            .studentEntity(studentEntities.get(i)) // studentEntities pk
+                            .build();
+                    try {
+                        GM_REP.save(entity);
+                    } catch (Exception e) {
+                        throw new RuntimeException("중복된 값이 존재합니다.");
+                    }
+                }
             }
-        }
         return null;
-
     }
+
 
 
     public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {

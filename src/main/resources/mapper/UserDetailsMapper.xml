@@ -98,4 +98,31 @@
         </if>
     </select>
 
+    <update id="updForgetPasswordTrue">
+        <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
+            UPDATE student
+            SET student_password = 'true'
+            WHERE  student_num = #{uid}
+        </if>
+        <if test='role.equalsIgnoreCase("ROLE_PROFESSOR")'>
+            UPDATE  professor
+            SET professor_password = 'true'
+            WHERE iprofessor = #{uid}
+        </if>
+    </update>
+
+
+    <update id="updForgetPassword">
+        <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
+            UPDATE student
+            SET student_password = #{upw}
+            WHERE  student_num = #{uid}
+        </if>
+        <if test='role.equalsIgnoreCase("ROLE_PROFESSOR")'>
+            UPDATE  professor
+            SET professor_password = #{upw}
+            WHERE iprofessor = #{uid}
+        </if>
+    </update>
+
 </mapper>
