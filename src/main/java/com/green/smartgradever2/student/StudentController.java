@@ -1,6 +1,7 @@
 package com.green.smartgradever2.student;
 
 import com.green.smartgradever2.config.entity.StudentEntity;
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import com.green.smartgradever2.student.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -81,5 +83,15 @@ public class StudentController {
         return SERVICE.getStudentInfo(studentNum);
     }
 
+    @PutMapping("/changPassword")
+    @Operation(summary = "비밀번호 변경",
+            description = "studentPassword : 바꿀 비밀번호 <br>" + "currentStudentPassword : 현재 비밀번호")
+    public ResponseEntity<?> updPassword(@AuthenticationPrincipal MyUserDetails details,
+                                         @RequestBody StudentPasswordParam param) throws Exception {
+        StudentUpdPasswordDto dto = new StudentUpdPasswordDto();
+        dto.setRole(details.getRoles().get(0));
+        dto.setIstudent(details.getIuser());
 
+        return ResponseEntity.ok().body(SERVICE.updPassword(param, dto));
+    }
 }

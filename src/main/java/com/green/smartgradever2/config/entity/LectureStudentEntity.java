@@ -29,7 +29,7 @@ public class LectureStudentEntity extends BaseEntity {
     @ToString.Exclude
     private StudentEntity studentEntity;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ilecture")
     @ToString.Exclude
     private LectureApplyEntity lectureApplyEntity;

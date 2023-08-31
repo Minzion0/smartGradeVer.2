@@ -12,17 +12,22 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserDetailsMapper {
-//    int save(UserEntity p);
+
+    /** 유저정보 뽑기 **/
     UserEntity getByUid(String uid, String role);
+
+    /** 유저시크릿키 발급 **/
     UserEntity getUserSecret(String uid, String role);
 
-    int updUserToken(UserTokenEntity p);
-    UserTokenEntity selUserToken(UserTokenEntity p);
-
+    /** 유정 이메일 뽑기 **/
     UserSelRoleEmailVo getUserRoleEmail(String uid, String role);
+
+    /** 유정 시크릿 키 새로 발급 **/
     int updSecretKey(UserUpdSecretKeyDto dto);
-    int updForgetPassword (UpdForgetPasswordDto dto);
-    int updForgetPasswordTrue (String uid, String role);
+
+
     SignSelPasswordTrueVo selTruePassword (SignSelPasswordTrueDto dto);
+
+    /** 학생 학번 뽑기 **/
     String getStudentNum(String studentNum);
 }

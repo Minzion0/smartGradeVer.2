@@ -4,7 +4,6 @@
 <mapper namespace="com.green.smartgradever2.settings.security.config.security.UserDetailsMapper">
 
     <select id="getByUid">
-
         <if test='role.equalsIgnoreCase("ROLE_ADMIN")'>
             SELECT iadmin iuser, admin_Id uid, admin_password upw, role,secret_key secretKey
             FROM admin
@@ -18,12 +17,12 @@
         </if>
 
         <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
-            SELECT istudent iuser, istudent uid, student_password upw, role,secret_key secretKey
+            SELECT student_num iuser, student_num uid, student_password upw, role,secret_key secretKey
             FROM student
             WHERE student_num = #{uid}
         </if>
-
     </select>
+
     <select id="getUserRoleEmail">
         <if test='role.equalsIgnoreCase("ROLE_PROFESSOR")'>
             select nm,secret_key secretKey,email
@@ -34,15 +33,16 @@
         <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
             SELECT nm,secret_key secretKey,email
             FROM student
-            WHERE istudent = #{uid}
+            WHERE student_num = #{uid}
         </if>
 
     </select>
+
     <update id="updSecretKey">
         <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
             update  student
             set secret_key=#{secretKey}
-            where istudent = #{uid}
+            where student_num = #{uid}
         </if>
         <if test='role.equalsIgnoreCase("ROLE_PROFESSOR")'>
             update  professor
@@ -51,22 +51,12 @@
         </if>
     </update>
 
-    <!-- ///////////////////////////////////////// user_token /////////-->
-    <insert id="updUserToken">
-        INSERT INTO user_token
-        (role, iuser, ip)
-        VALUES
-        (#{role}, #{iuser}, #{ip})
-
-        ON DUPLICATE KEY UPDATE
-        role = #{role}
-        , iuser = #{iuser}
-    </insert>
     <select id="getStudentNum">
-        select istudent
+        select student_num
         from student
         where student_num =#{studentNum}
     </select>
+
     <select id="selUserToken">
         SELECT iuser, role, ip, access_token accessToken,
         refresh_token refreshToken, created_at createdAt,
@@ -74,32 +64,6 @@
         FROM user_token
         WHERE iuser = #{iuser} AND role = #{role}
     </select>
-
-    <update id="updForgetPassword">
-        <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
-            UPDATE student
-            SET student_password = #{upw}
-            WHERE  student_num = #{uid}
-        </if>
-        <if test='role.equalsIgnoreCase("ROLE_PROFESSOR")'>
-            UPDATE  professor
-            SET professor_password = #{upw}
-            WHERE iprofessor = #{uid}
-        </if>
-    </update>
-
-    <update id="updForgetPasswordTrue">
-        <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
-            UPDATE student
-            SET student_password = 'true'
-            WHERE  student_num = #{uid}
-        </if>
-        <if test='role.equalsIgnoreCase("ROLE_PROFESSOR")'>
-            UPDATE  professor
-            SET professor_password = 'true'
-            WHERE iprofessor = #{uid}
-        </if>
-    </update>
 
     <select id="getUserSecret">
         <if test='role.equalsIgnoreCase("ROLE_ADMIN")'>
@@ -115,9 +79,9 @@
         </if>
 
         <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
-            SELECT istudent iuser, student_num uid, student_password upw, role,secret_key secretKey
+            SELECT student_num iuser, student_num uid, student_password upw, role,secret_key secretKey
             FROM student
-            WHERE istudent = #{uid}
+            WHERE student_num = #{uid}
         </if>
     </select>
 

@@ -19,11 +19,11 @@ public class GradeMngmnController {
     @Autowired
     private final GradeMngmnService SERVICE;
 
-//    @PostMapping
-//    @Operation(summary = "SEMESTER_SCORE INSERT")
-//    public GradeMngmnRes postGradeMngmn(@RequestBody GradeMngmnInsDto dto) {
-//        return SERVICE.postGradeMngmn(dto);
-//    }
+    @PostMapping
+    @Operation(summary = "SEMESTER_SCORE INSERT")
+    public GradeMngmnRes postGradeMngmn(@RequestBody GradeMngmnInsDto dto) {
+        return SERVICE.postGradeMngmn(dto);
+    }
 //
 //    @PutMapping
 //    @Operation(summary = "SEMESTER_SCORE_PUT")
@@ -34,30 +34,33 @@ public class GradeMngmnController {
 //        return SERVICE.updGradeMngmn(p);
 //    }
 //
-//    @GetMapping
-//    @Operation(summary = " 학번으로 조회")
-//    public GradeMngmnFindRes getGradeMngmn(@PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
-//                                           @RequestParam(required = false, defaultValue = "0") int grade,
-//                                           @RequestParam Integer studentNum) {
-//
-//        GradeMngmnDto dto = new GradeMngmnDto();
-//        dto.setStudentNum(studentNum);
-//        dto.setGrade(grade);
-//        dto.setSize(pageable.getPageSize());
-//        dto.setPage(pageable.getPageNumber());
-//        return SERVICE.selGradeMngmn(dto);
-//    }
-//
-//    @GetMapping("/{studentNum}")
-//    @Operation(summary = "상세보기")
-//    public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable int studentNum) {
-//        GradeMngmnDetailSelDto dto = new GradeMngmnDetailSelDto();
-//        dto.setStudentNum(studentNum);
-//        return SERVICE.selStudentDetail(dto);
-//    }
-
     @GetMapping
-    public GradeMngmnUpdRes updGradeMngmn2(GradeMngmnUpdParam p) {
+    @Operation(summary = " 학번으로 조회")
+    public GradeMngmnFindRes getGradeMngmn(@PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
+                                           @RequestParam(required = false, defaultValue = "0") int grade,
+                                           @RequestParam Integer studentNum) {
+
+        GradeMngmnDto dto = new GradeMngmnDto();
+        dto.setStudentNum(studentNum);
+        dto.setGrade(grade);
+        dto.setSize(pageable.getPageSize());
+        dto.setPage(pageable.getPageNumber());
+        return SERVICE.selGradeMngmn(dto);
+    }
+
+    @GetMapping("/{studentNum}")
+    @Operation(summary = "상세보기")
+    public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable int studentNum) {
+        GradeMngmnDetailSelDto dto = new GradeMngmnDetailSelDto();
+        dto.setStudentNum(studentNum);
+        return SERVICE.selStudentDetail(dto);
+    }
+
+    @PatchMapping
+    @Operation(summary = "SEMESTER_SCORE_PUT2")
+    public GradeMngmnUpdRes putGradeMngmn2(@RequestParam Long isemester) {
+        GradeMngmnUpdParam p = new GradeMngmnUpdParam();
+        p.setIsemester(isemester);
         return SERVICE.updGradeMngmn2(p);
     }
 }

@@ -1,10 +1,12 @@
 package com.green.smartgradever2.professor;
 
 import com.green.smartgradever2.professor.model.*;
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,5 +66,17 @@ public class ProfessorController {
         return SERVICE.selProfessorLecture(dto);
     }
 
+    @PutMapping("/changPassword")
+    @Operation(summary = "비밀번호 변경",
+            description = "currentProfessorPassword : 현재 비밀번호 <br>" + "professorPassword : 바꿀 비밀번호")
+    public ResponseEntity<?> updPassword(@AuthenticationPrincipal MyUserDetails details,
+                                         @RequestBody ProfessorUpdPasswordParam param) throws Exception {
+        ProfessorUpdPasswordDto dto = new ProfessorUpdPasswordDto();
+        Long iuser = details.getIuser();
+        String role = details.getRoles().get(0);
+        dto.setIprofessor(iuser);
+        dto.setRole(role);
+        return ResponseEntity.ok().body(SERVICE.updPassword(dto, param));
+    }
 
 }

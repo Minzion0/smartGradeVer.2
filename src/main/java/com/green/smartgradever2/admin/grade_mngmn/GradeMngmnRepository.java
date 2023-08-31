@@ -9,6 +9,6 @@ import java.util.List;
 
 
 public interface GradeMngmnRepository extends JpaRepository<StudentSemesterScoreEntity, Long> {
-    List<StudentSemesterScoreEntity> findAllByStudentEntityAndSemesterEntity(StudentEntity studentEntity, SemesterEntity semesterEntity);
+    List<StudentSemesterScoreEntity> findAllBySemesterEntity(SemesterEntity semesterEntity);
 
 }
