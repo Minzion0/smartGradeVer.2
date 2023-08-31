@@ -10,6 +10,8 @@ import java.time.LocalDate;
 public class LectureApplyRes {
     private Long ilecture;
     private Long ilectureName;
+    private String lectureName;
+    private int score;
     private Long ilectureRoom;
     private Long iprofessor;
     private Long isemester;
@@ -20,7 +22,7 @@ public class LectureApplyRes {
     private int finalExamination;
     private int lectureMaxPeople;
     private int gradeLimit;
-    private String dayWeek;
+    private int dayWeek;
     private int delYn;
 
 

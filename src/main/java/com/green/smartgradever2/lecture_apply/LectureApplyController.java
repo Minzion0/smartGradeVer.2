@@ -3,11 +3,15 @@ package com.green.smartgradever2.lecture_apply;
 import com.green.smartgradever2.lecture_apply.model.LectureApllySelRes;
 import com.green.smartgradever2.lecture_apply.model.LectureAppllyInsParam;
 import com.green.smartgradever2.lecture_apply.model.LectureApplyRes;
+import com.green.smartgradever2.lecture_apply.model.LectureApplyScheduleVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -42,5 +46,13 @@ public class LectureApplyController {
 
         return service.selLectureApplly(page, iprofessor);
 
+    }
+
+    @GetMapping("/lecture/room")
+    @Operation(summary = "강의실 시간표")
+    public ResponseEntity< List<LectureApplyScheduleVo>> lectureRoomSchedule(@RequestParam Long ilectureRoom){
+
+        List<LectureApplyScheduleVo> list = service.lectureRoomSchedule(ilectureRoom);
+        return ResponseEntity.ok().body(list);
     }
 }

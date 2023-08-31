@@ -15,8 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,50 +42,39 @@ public class LectureApplyService {
 
 public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) throws Exception {
 
-    List<SemesterEntity> semester = SEMESTER_RPS.findAll(Sort.by(Sort.Direction.DESC, "isemester"));
-        SemesterEntity semesterEntity = semester.get(0);
+    SemesterEntity semesterEntity = getCurrentSemester();
+
+    if (LocalDate.now().isBefore(semesterEntity.getLectureApplyDeadline())){
+            throw new Exception("강의 등록기간이 아님니다");
+        }
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     LocalTime strTime = LocalTime.parse(param.getLectureStrTime(), dateTimeFormatter);
     LocalTime endTime = LocalTime.parse(param.getLectureEndTime(), dateTimeFormatter);
 
-
+    //강의 최소 최대 시간 확인
     LocalTime time = endTime.minusHours(strTime.getHour());
-    log.info("time : {} ",time.getHour());
     if (time.getHour() ==0 || time.getHour() >3){
         throw new Exception("강의 시간은 최소 1 시간에서 최대 3시간 입니다");
     }
 
-
+//  지금 학기의 요일 강의실 시간정보 호출
     String query = "SELECT ls from LectureScheduleEntity ls  where ls.lectureApplyEntity.lectureRoomEntity.ilectureRoom = :ilectureRoom and ls.dayWeek = :dayWeek";
-
-
     List<LectureScheduleEntity> lectureScheduleEntity = EM.createQuery(query).setParameter("ilectureRoom",param.getIlectureRoom()).setParameter("dayWeek",param.getDayWeek()).getResultList();
 
     for (LectureScheduleEntity schedule : lectureScheduleEntity) {
         LocalTime lectureStrTime = schedule.getLectureStrTime();
         LocalTime lectureEndTime = schedule.getLectureEndTime();
 
-
-
+        // 강의 시간 중복 체크
        if ((strTime.isAfter(lectureStrTime) && strTime.isBefore(lectureEndTime)) || strTime.equals(lectureStrTime) ){
-
-               log.info("start : {}",strTime.isAfter(lectureStrTime));
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
-
        }
        if (endTime.equals(lectureEndTime) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime)) || (strTime.isBefore(lectureStrTime) && endTime.isBefore(lectureEndTime) )  ) {
-
-               log.info("end : {}",endTime.isAfter(lectureEndTime));
-               log.info("end : {}",endTime);
-               log.info("end : {}",lectureEndTime);
-
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
-
        }
     }
-
 
     int attendance = param.getAttendance();
     int midtermExamination = param.getMidtermExamination();
@@ -104,12 +95,6 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
         LectureRoomEntity lectureRoomEntity = LECTURE_ROOM_RPS.findById(param.getIlectureRoom()).get();
 
-        Optional<LectureNameEntity> byId = LECTURE_NAME_RPS.findById(param.getIlectureName());
-
-        if (byId.isEmpty()){
-            new Exception("해당 강의명이 없습니다");
-        }
-
         if (lectureRoomEntity.getMaxCapacity()>param.getLectureMaxPeople()){
             new Exception("강의실 정원 초과입니다");
         }
@@ -118,12 +103,16 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             new Exception("학년은 1~4학년 까지 입니다");
         }
 
+    LectureNameEntity lectureNameEntity = new LectureNameEntity();
+        lectureNameEntity.setLectureName(param.getLectureName());
+        lectureNameEntity.setScore(param.getScore());
 
-        //todo 단순 insert 성공 이제 condition 테이블 출력해보기 + 업데이트 시간 적용 이슈있음 확인해볼것
+        LECTURE_NAME_RPS.save(lectureNameEntity);
+
 
     LectureApplyEntity lectureApplyEntity = LectureApplyEntity.builder()
                 .lectureRoomEntity(lectureRoomEntity)
-                .lectureNameEntity(byId.get())
+                .lectureNameEntity(lectureNameEntity)
                 .semesterEntity(semesterEntity)
                 .professorEntity(professorEntity)
                 .attendance(attendance)
@@ -149,18 +138,33 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
     LECTURE_SCHEDULE_RPS.save(scheduleEntity);
 
-    LectureApplyRes.builder()
+
+
+   return LectureApplyRes.builder()
             .ilecture(lectureApplyEntity.getIlecture())
-            .ilectureName(byId.get().getIlectureName())
+            .ilectureName(lectureApplyEntity.getLectureNameEntity().getIlectureName())
+            .lectureName(lectureNameEntity.getLectureName())
+            .score(lectureNameEntity.getScore())
             .ilectureRoom(lectureApplyEntity.getLectureRoomEntity().getIlectureRoom())
             .iprofessor(lectureApplyEntity.getProfessorEntity().getIprofessor())
             .isemester(lectureApplyEntity.getSemesterEntity().getIsemester())
-            .
+            .lectureStrTime(scheduleEntity.getLectureStrTime().toString())
+            .lectureEndTime(scheduleEntity.getLectureEndTime().toString())
+            .attendance(lectureApplyEntity.getAttendance())
+            .midtermExamination(lectureApplyEntity.getMidtermExamination())
+            .finalExamination(lectureApplyEntity.getFinalExamination())
+            .lectureMaxPeople(lectureApplyEntity.getLectureMaxPeople())
+            .gradeLimit(lectureApplyEntity.getGradeLimit())
+            .dayWeek(scheduleEntity.getDayWeek())
+            .delYn(lectureApplyEntity.getDelYn())
             .build();
 
+    }
 
-
-        return null ;
+    private SemesterEntity getCurrentSemester() {
+        List<SemesterEntity> semester = SEMESTER_RPS.findAll(Sort.by(Sort.Direction.DESC, "isemester"));
+        SemesterEntity semesterEntity = semester.get(0);
+        return semesterEntity;
     }
 
 
@@ -179,7 +183,34 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
     }
 
 
+    
+    public List<LectureApplyScheduleVo> lectureRoomSchedule(Long ilectureRoom){
+        SemesterEntity currentSemester = getCurrentSemester();
 
+        String query = "SELECT sh FROM LectureScheduleEntity sh INNER JOIN sh.lectureApplyEntity la " +
+                "INNER JOIN la.lectureRoomEntity rm WHERE sh.semesterEntity = :semester AND rm.ilectureRoom = :ilectureRoom  ";
+
+        List<LectureScheduleEntity> resultList = EM.createQuery(query).setParameter("semester", currentSemester).setParameter("ilectureRoom", ilectureRoom).getResultList();
+
+
+        List<LectureApplyScheduleVo> list=new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        for (LectureScheduleEntity scheduleEntity : resultList) {
+            LocalTime lectureStrTime = scheduleEntity.getLectureStrTime();
+            LocalTime lectureEndTime = scheduleEntity.getLectureEndTime();
+            int dayWeek = scheduleEntity.getDayWeek();
+
+            String start = lectureStrTime.format(formatter);
+            String end = lectureEndTime.format(formatter);
+
+            LectureApplyScheduleVo vo = new LectureApplyScheduleVo();
+            vo.setStartTime(start);
+            vo.setEndTime(end);
+            vo.setDayWeek(dayWeek);
+            list.add(vo);
+        }
+        return list;
+    }
 
 
 
