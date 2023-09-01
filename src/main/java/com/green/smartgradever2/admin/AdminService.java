@@ -316,7 +316,7 @@ public class AdminService {
             row.createCell(3).setCellValue(s.getGender().toString());
             row.createCell(4).setCellValue(s.getMajorEntity().getMajorName());
         }
-        String format = String.format("attachment;filename=%s학생명단.xls", LocalDate.now());
+        String format = String.format("attachment;filename=%s studentList.xls", LocalDate.now());
         response.setContentType("ms-vnd/excel");
         response.setHeader("Content-Disposition", format);
 

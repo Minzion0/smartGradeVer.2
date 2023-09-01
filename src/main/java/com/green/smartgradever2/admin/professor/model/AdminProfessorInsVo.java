@@ -16,6 +16,6 @@ public class AdminProfessorInsVo {
     private GenderEnum gender;
     private LocalDate birthdate;
     private String phone;
-    private LocalDateTime createdAt;
+    private String createdAt;
     private int delYn;
 }

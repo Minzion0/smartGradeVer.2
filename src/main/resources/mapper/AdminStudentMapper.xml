@@ -98,7 +98,7 @@
             INNER JOIN semester D
             ON D.isemester=B.isemester
             INNER JOIN lecture_schedule E
-            ON A.ilecture = E.ilecture
+            ON A.ilecture = E.ilectuer
         WHERE A.student_num = #{studentNum} AND B.isemester=(SELECT isemester FROM semester ORDER BY isemester DESC LIMIT 1)
     </select>
 
