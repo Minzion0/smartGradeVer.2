@@ -7,4 +7,5 @@ public class BoardInsParam {
     private String ctnt;
     private String title;
     private int importance;
+    private Long iadmin;
 }

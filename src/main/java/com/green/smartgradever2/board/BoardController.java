@@ -30,11 +30,12 @@ public class BoardController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
     public BoardInsRes insBoard(@RequestPart BoardInsParam param,
-                                @RequestPart(required = false) List<MultipartFile> pics,
-                                @AuthenticationPrincipal MyUserDetails details) {
+                                @RequestPart(required = false) List<MultipartFile> pics
+            /* @AuthenticationPrincipal MyUserDetails details */) {
         BoardInsDto dto = new BoardInsDto();
         dto.setCtnt(param.getCtnt());
-        dto.setIadmin(details.getIuser());
+//        dto.setIadmin(details.getIuser());
+        dto.setIadmin(param.getIadmin());
         dto.setImportance(dto.getImportance());
         dto.setTitle(dto.getTitle());
         return SERVICE.insBoard(dto, pics);
@@ -58,11 +59,12 @@ public class BoardController {
     /** update **/
     @PutMapping
     @Operation(summary = "공지 수정")
-    public BoardInsVo updBoard(@RequestBody BoardUpdParam param,
-                                @AuthenticationPrincipal MyUserDetails details) {
+    public BoardInsVo updBoard(@RequestBody BoardUpdParam param
+            /*  @AuthenticationPrincipal MyUserDetails details*/) {
         BoardUpdDto dto = new BoardUpdDto();
         dto.setIboard(param.getIboard());
-        dto.setIadmin(details.getIuser());
+//        dto.setIadmin(details.getIuser());
+        dto.setIadmin(param.getIadmin());
         dto.setTitle(param.getTitle());
         dto.setCtnt(param.getCtnt());
         dto.setImportance(param.getImportance());
