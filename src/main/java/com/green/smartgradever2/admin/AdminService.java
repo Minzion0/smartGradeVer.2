@@ -4,6 +4,7 @@ import com.green.smartgradever2.admin.lecturecondition.LectureConditionRepositor
 import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
 import com.green.smartgradever2.admin.model.*;
 import com.green.smartgradever2.admin.semester.SemesterRepository;
+import com.green.smartgradever2.admin.student.AdminStudentRepository;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.config.exception.AdminException;
 
@@ -11,13 +12,20 @@ import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -37,7 +45,7 @@ public class AdminService {
     private final LectureStudentRepository LECTURE_STUDENT_RPS;
     private final LectureConditionRepository LECTURE_CONDITION_RPS;
     private final LectureApplyRepository APPLY_RPS;
-
+    private final AdminStudentRepository STUDENT_RPS;
 
     @Transactional(rollbackFor = Exception.class)
     public AdminInsSemesterVo semesterIns(AdminInsSemesterParam param)  {
@@ -247,6 +255,74 @@ public class AdminService {
         APPLY_RPS.save(applyEntity);
 
         return AdminUpdLectureRes.builder().ilecture(applyEntity.getIlecture()).ctnt(applyEntity.getCtnt()).procedures(applyEntity.getOpeningProceudres()).build();
+    }
+
+    public void excelTest(HttpServletResponse response, Long studentNum) throws IOException {
+//엑셀 생성
+//        Workbook workbook = new HSSFWorkbook();
+//        int rowIdx= 0;
+//        Sheet sheet = workbook.createSheet("학생 테스트");
+//
+//        Row row = sheet.createRow(rowIdx++);
+//        row.createCell(0).setCellValue("학번");
+//        row.createCell(1).setCellValue("이름");
+//        row.createCell(2).setCellValue("전공");
+//        row.createCell(3).setCellValue("학년");
+//
+//        collegeStudent[] list = {
+//                new collegeStudent(2022032401L,"김학생",2,"M","경영학"),
+//                new collegeStudent(2022032402L,"이학생",1,"F","컴퓨터공학"),
+//                new collegeStudent(2022032403L,"박학생",2,"M","통계학"),
+//                new collegeStudent(2022032404L,"최학생",1,"F","식품영양학"),
+//                new collegeStudent(2022032405L,"정학생",1,"M","영화예술학"),
+//                new collegeStudent(2022032406L,"강학생",4,"M","디자인학"),
+//                new collegeStudent(2022032407L,"조학생",1,"F","심리학"),
+//                new collegeStudent(2022032408L,"윤학생",1,"F","경제학"),
+//                new collegeStudent(2022032409L,"장학생",3,"M","체육학"),
+//                new collegeStudent(2022032410L,"임학생",2,"M","화학"),
+//                new collegeStudent(2022032411L,"한학생",1,"M","기계공학"),
+//                new collegeStudent(2022032412L,"오학생",4,"F","의예"),
+//                new collegeStudent(2022032413L,"서학생",1,"F","조경학"),
+//                new collegeStudent(2022032414L,"신학생",1,"M","수학"),
+//                new collegeStudent(2022032415L,"권학생",3,"M","물리"),
+//                new collegeStudent(2022032416L,"황학생",2,"M","미술"),
+//                new collegeStudent(2022032417L,"안학생",3,"M","제약"),
+//                new collegeStudent(2022032418L,"송학생",4,"F","철학"),
+//                new collegeStudent(2022032419L,"전학생",2,"M","의상학"),
+//                new collegeStudent(2022032420L,"홍학생",1,"M","반도체")
+//        };
+
+        List<StudentEntity> all = STUDENT_RPS.findAll();
+        int size = all.size();
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("학생부 명단");
+        int rowNo = 0;
+
+        Row headerRow = sheet.createRow(rowNo++);
+        headerRow.createCell(0).setCellValue("학번");
+        headerRow.createCell(1).setCellValue("이름");
+        headerRow.createCell(2).setCellValue("학년");
+        headerRow.createCell(3).setCellValue("성별");
+        headerRow.createCell(4).setCellValue("전공");
+
+
+
+
+        for (StudentEntity s : all) {
+            Row row = sheet.createRow(rowNo++);
+            row.createCell(0).setCellValue(s.getStudentNum());
+            row.createCell(1).setCellValue(s.getNm());
+            row.createCell(2).setCellValue(s.getGrade());
+            row.createCell(3).setCellValue(s.getGender().toString());
+            row.createCell(4).setCellValue(s.getMajorEntity().getMajorName());
+        }
+        String format = String.format("attachment;filename=%s학생명단.xls", LocalDate.now());
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", format);
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
 }
