@@ -50,7 +50,7 @@ public class ProfessorService {
 
         List<LectureApplyEntity> lectureApplyEntityList = lectureApplyRepository.findByProfessorEntity(professor);
 
-        List<ProfessorLectureVo> lectureList = lectureApplyEntityList.stream().map(lecture -> ProfessorLectureVo.builder()
+        List<ProfessorLectureVo> lectureList = lectureApplyEntityList.stream().filter(lecture -> lecture.getOpeningProceudres()==3).map(lecture -> ProfessorLectureVo.builder()
                 .ilecture(lecture.getIlecture())
                 .lectureStrTime(lecture.getLectureScheduleEntity().getLectureStrTime())
                 .lectureEndTime(lecture.getLectureScheduleEntity().getLectureEndTime())
@@ -129,33 +129,27 @@ public class ProfessorService {
     }
 
     //본인의 강의 조회
-    public ProfessorLctureSelRes selProfessorLecture(ProfessorSelLectureDto dto) {
+    public ProfessorSelLectureRes selProfessorLecture(ProfessorSelLectureDto dto) {
         int itemsPerPage = 10; // 한 페이지당 수
         Pageable pageable = PageRequest.of(dto.getPage() - 1, itemsPerPage);
         Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findAllByProfessorEntityIprofessor(dto.getIprofessor(), pageable);
-        List<ProfessorLectureDto> lectures = new ArrayList<>();
+        List<ProfessorSelAllDto> lectures = new ArrayList<>();
         for (LectureApplyEntity lectureEntity : lecturePage.getContent()) {
-            ProfessorLectureDto lectureDto = new ProfessorLectureDto();
+            ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
             lectureDto.setIlecture(lectureEntity.getIlecture());
-            lectureDto.setIlectureName(lectureEntity.getLectureNameEntity().getIlectureName());
-            lectureDto.setIlectureRoom(lectureEntity.getLectureRoomEntity().getIlectureRoom());
+            lectureDto.setLectureName(lectureEntity.getLectureNameEntity().getLectureName());
+            lectureDto.setLectureRoomName(lectureEntity.getLectureRoomEntity().getLectureRoomName());
             lectureDto.setIsemester(lectureEntity.getSemesterEntity().getIsemester());
             lectureDto.setOpeningProceudres(lectureEntity.getOpeningProceudres());
             lectureDto.setGradeLimit(lectureEntity.getGradeLimit());
-            lectureDto.setAttendance(lectureEntity.getAttendance());
-            lectureDto.setMidtermExamination(lectureEntity.getMidtermExamination());
-            lectureDto.setFinalExamination(lectureEntity.getFinalExamination());
             lectureDto.setLectureMaxPeople(lectureEntity.getLectureMaxPeople());
-            lectureDto.setLectureEndDate(lectureEntity.getLectureEndDate());
-            lectureDto.setStudentsApplyDeadline(lectureEntity.getStudentsApplyDeadline());
-            lectureDto.setCtnt(lectureEntity.getCtnt());
-            lectureDto.setTextbook(lectureEntity.getTextbook());
+            lectureDto.setScore(lectureEntity.getLectureNameEntity().getScore());
             lectureDto.setDelYn(lectureEntity.getDelYn());
             lectures.add(lectureDto);
         }
         int maxPage = lecturePage.getTotalPages();
         PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
-        return ProfessorLctureSelRes.builder()
+        return ProfessorSelLectureRes.builder()
                 .page(utils)
                 .lectureList(lectures)
                 .build();
