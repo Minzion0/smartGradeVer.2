@@ -9,9 +9,9 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +20,6 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
     private final StudentRepository STUDENT_REP;
-    private final TemplateEngine templateEngine;
 
 
     /** 직접적인 이메일 내용 **/

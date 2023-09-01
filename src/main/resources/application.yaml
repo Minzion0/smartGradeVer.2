@@ -19,6 +19,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: qkqh970605@gmail.com
+    password: lbjwkwlsvbwwmcda
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
