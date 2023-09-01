@@ -183,6 +183,7 @@ public class StudentService {
         response.setCorrectionAt(lectureStudent.getCorrectionAt());
         response.setFinishedYn(lectureStudent.getFinishedYn());
         response.setDelYn(lectureStudent.getDelYn());
+        response.setObjection(lectureStudent.getObjection());
         // 필요한 정보를 저장하는 로직 추가
 
         return response;
@@ -231,11 +232,11 @@ public class StudentService {
         }).toList();
 
         int totalScore = lectureApplyEntityList.stream()
-                .filter(lecture -> lecture.getFinishedYn() == 1) // finishedYn 이 1인것만 출력
-                .mapToInt(lecture -> lecture.getLectureApplyEntity().getLectureNameEntity().getScore()) // 강의 학점 추출
+                .filter(lecture -> lecture.getFinishedYn() == 1) //
+                .mapToInt(lecture -> lecture.getLectureApplyEntity().getLectureNameEntity().getScore())
                 .sum();
 
-// 총 학점을 프로필에 설정
+        // 총 학점을 프로필에 설정
         profile.setScore(totalScore);
 
 
@@ -244,18 +245,7 @@ public class StudentService {
                 .lectureList(lectureList)
                 .build();
 
-        // 생성한 객체 반환
         return result;
-//        List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
-//        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().map(lecture -> StudentProfileLectureVo.builder()
-//                .ilecture(lecture.getLectureApplyEntity().getLectureScheduleEntity().getIlecture())
-//                .lectureStrTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime())
-//                .lectureEndTime(lecture.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime())
-//                .lectureStrDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterStrDate())
-//                .lectureEndDate(lecture.getLectureApplyEntity().getSemesterEntity().getSemesterEndDate())
-//                .lectureName(lecture.getLectureApplyEntity().getLectureNameEntity().getLectureName()).build()).toList();
-//
-//        return StudentFileSelRes.builder().profile(profile).lectureList(lectureList).build();
 
 
     }
@@ -267,18 +257,27 @@ public class StudentService {
         List<StudentSelVo> studentSelVos = new ArrayList<>(); // 각 강의별 성적 정보를 담을 리스트
 
         for (LectureStudentEntity lectureGrade : lectureGrades) {
-            if (lectureGrade.getFinishedYn() == 1) {
-                StudentSelVo vo = new StudentSelVo(); // 새로운 StudentSelVo 객체 생성
+                StudentSelVo vo = new StudentSelVo();
 
                 // 강의별 성적 정보를 각각의 필드에 설정
-                vo.setStudentNum(studentEntity.getStudentNum());
-                vo.setIlectureStudent(lectureGrade.getIlectureStudent());
-                vo.setIlecture(lectureGrade.getLectureApplyEntity().getIlecture());
-                vo.setFinishedYn(lectureGrade.getFinishedYn());
-                vo.setAttendance(lectureGrade.getAttendance());
-                vo.setMidtermExamination(lectureGrade.getMidtermExamination());
-                vo.setFinalExamination(lectureGrade.getFinalExamination());
-                vo.setTotalScore(lectureGrade.getTotalScore());
+            vo.setStudentNum(studentEntity.getStudentNum());
+            vo.setIlectureStudent(lectureGrade.getIlectureStudent());
+            vo.setIlecture(lectureGrade.getLectureApplyEntity().getIlecture());
+            vo.setStudentGrade(lectureGrade.getStudentEntity().getGrade());
+            vo.setIsemester(lectureGrade.getLectureApplyEntity().getSemesterEntity().getIsemester());
+            vo.setYear(lectureGrade.getLectureApplyEntity().getSemesterEntity().getYear());
+            vo.setProfessorName(lectureGrade.getLectureApplyEntity().getProfessorEntity().getNm());
+            vo.setLectureName(lectureGrade.getLectureApplyEntity().getLectureNameEntity().getLectureName());
+            vo.setDayWeek(lectureGrade.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
+            vo.setLectureStrTime(lectureGrade.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
+            vo.setLectureEndTime(lectureGrade.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
+            vo.setScore(lectureGrade.getLectureApplyEntity().getLectureNameEntity().getScore());
+
+            vo.setFinishedYn(lectureGrade.getFinishedYn());
+            vo.setAttendance(lectureGrade.getAttendance());
+            vo.setMidtermExamination(lectureGrade.getMidtermExamination());
+            vo.setFinalExamination(lectureGrade.getFinalExamination());
+            vo.setTotalScore(lectureGrade.getTotalScore());
 
 
                 GradeUtils gradeUtils = new GradeUtils();
@@ -292,7 +291,6 @@ public class StudentService {
 
                 studentSelVos.add(vo); // 각각의 강의별 성적 정보를 리스트에 추가
             }
-        }
 
         return studentSelVos;  // 강의별 성적 정보 리스트 반환
     }
@@ -345,5 +343,8 @@ public class StudentService {
 
         return "비밀번호 변경이 완료되었습니다.";
     }
+
+
+
 
 }
