@@ -60,7 +60,8 @@ public class LectureStudentEntity extends BaseEntity {
     @Column(name = "correction_at")
     private LocalDate correctionAt;
 
-
-
+    @Column(name = "objection")
+    @ColumnDefault("0")
+    private int objection;
 
 }

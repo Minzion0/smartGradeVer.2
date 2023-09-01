@@ -57,7 +57,7 @@ public class ProfessorController {
     }
     @GetMapping("/lecture-List")
     @Operation(summary = "본인의 강의 조회")
-    public ProfessorLctureSelRes getLecturePro(@RequestParam Long iprofessor
+    public ProfessorSelLectureRes getLecturePro(@RequestParam Long iprofessor
             ,@RequestParam (defaultValue = "1") int page
             ,@RequestParam(required = false ) String openingProcedures) {
         ProfessorSelLectureDto dto = new ProfessorSelLectureDto();

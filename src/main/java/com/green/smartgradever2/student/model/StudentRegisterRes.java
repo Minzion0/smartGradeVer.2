@@ -26,4 +26,5 @@ public class StudentRegisterRes {
     private int dayWeek;
     private LocalTime lectureStrTime;
     private LocalTime lectureEndTime;
+    private int objection;
 }
