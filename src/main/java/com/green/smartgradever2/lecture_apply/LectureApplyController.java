@@ -32,17 +32,16 @@ public class LectureApplyController {
     }
 
 
-    @GetMapping("/lecture")
-    @Operation(summary = "신청중인 강의 리스트 뽑기", description = "iprofessor : 교수 pk<br>" + "ilecture : 강의신청pk<br>" + "ilectureName : 강의 이름pk<br>"
-            + "ilectureRoom : 강의실pk<br> " + "isemester : 학기pk 1학기 = 20 2학기 = 21<br>" + "dayWeek : 강의 시작 요일<br>" + "lectureStrDate : 강의 시작일자<br>" + "lectureEndDate : 강의 종료일자<br>"
-            + "lectureStrTime : 강의 시작시간<br>" + "lectureEndTime : 강의 종료시간<br>" + "lectureMaxPeople : 수강인원 최대 30명<br>" + "gradeLimit : 신청할수있는 학년범위 1~4<br>"
-            + "openingProcedures : 신청절차  0 반려 1개강신청 2개강인원모집중 3개강 4수강종료 1만나오게함<br>")
-    public LectureApllySelRes getLectureApplly
-            (@RequestParam(defaultValue = "1") int page, @RequestParam Long iprofessor) {
+    @GetMapping("/lecture/list")
+    @Operation(summary = "신청중인 강의 리스트")
+    private ResponseEntity<LectureSelAllRes> getLecture(@RequestParam Long iprofessor,@RequestParam(required = false) Integer openingProceudres) {
+        if (openingProceudres != null && (openingProceudres < 0 || openingProceudres > 4)) {
+            return ResponseEntity.badRequest().build(); // 잘못된 파라미터 값일 경우 400 Bad Request 반환
+        }
 
+        LectureSelAllRes lectureSelAllRes = service.getList(iprofessor,openingProceudres);
 
-        return service.selLectureApplly(page, iprofessor);
-
+        return ResponseEntity.ok(lectureSelAllRes);
     }
 
     @GetMapping("/lecture/room")

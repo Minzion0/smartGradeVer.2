@@ -89,4 +89,18 @@ public class StudentController {
 
         return ResponseEntity.ok().body(SERVICE.updPassword(param, dto));
     }
+
+
+    @PutMapping("/objection")
+    public ResponseEntity<String> updateObjection(
+            @RequestParam Long studentNum,
+            @RequestParam Long ilectureStudent,
+            @RequestBody StudentObjectionDto objectionDto) {
+        try {
+           SERVICE.updateObjection(studentNum, ilectureStudent, objectionDto);
+            return ResponseEntity.status(HttpStatus.OK).body("학생의 이의제의가 신청되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+        }
+    }
 }
