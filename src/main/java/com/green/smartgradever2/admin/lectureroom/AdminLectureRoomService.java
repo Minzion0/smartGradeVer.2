@@ -70,6 +70,7 @@ public class AdminLectureRoomService {
         return all.stream().map(list-> LectureRoomVo.builder()
                 .ilectureRoom(list.getIlectureRoom())
                 .lectureRoomName(list.getBuildingName()+" "+list.getLectureRoomName())
+                .maxCapacity(list.getMaxCapacity())
                 .build()).toList();
     }
 

@@ -8,4 +8,5 @@ import lombok.Data;
 public class LectureRoomVo {
     private Long ilectureRoom;
     private String lectureRoomName;
+    private int maxCapacity;
 }

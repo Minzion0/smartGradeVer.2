@@ -192,6 +192,16 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
         List<LectureScheduleEntity> resultList = EM.createQuery(query).setParameter("semester", currentSemester).setParameter("ilectureRoom", ilectureRoom).getResultList();
 
+        LectureRoomEntity lectureRoomEntity= null;
+
+        if (resultList.size()==0){
+           lectureRoomEntity = LECTURE_ROOM_RPS.findById(ilectureRoom).get();
+        }
+        if (resultList.size()!=0){
+
+            lectureRoomEntity = resultList.get(0).getLectureApplyEntity().getLectureRoomEntity();
+        }
+
 
         List<LectureApplyScheduleVo> list=new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -209,7 +219,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             vo.setDayWeek(dayWeek);
             list.add(vo);
         }
-        LectureRoomEntity lectureRoomEntity = resultList.get(0).getLectureApplyEntity().getLectureRoomEntity();
+
 
        return LectureApplyScheduleRes.builder()
                 .ilectureRoom(lectureRoomEntity.getIlectureRoom())
