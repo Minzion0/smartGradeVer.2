@@ -139,6 +139,13 @@ public class StudentService {
             return response;
         }
 
+        if (lectureStudentRep.existsByStudentEntityAndLectureApplyEntity(student, lectureApply)) {
+            response.setSuccess(false);
+            response.setMessage("이미 신청한 강의입니다.");
+            return response;
+        }
+
+
         // 학생과 강의 정보를 수강 신청 테이블에 등록
         LectureStudentEntity lectureStudent = LectureStudentEntity.builder()
                 .studentEntity(studentRep.findById(studentNum)
@@ -148,11 +155,6 @@ public class StudentService {
         lectureStudentRep.save(lectureStudent);
 
 
-        if (lectureStudentRep.existsByStudentEntityAndLectureApplyEntity(student, lectureApply)) {
-            response.setSuccess(false);
-            response.setMessage("이미 신청한 강의입니다.");
-            return response;
-        }
 
 
 
@@ -208,7 +210,7 @@ public class StudentService {
         profile.setFinishedYn(student.getFinishedYn());
 
         List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
-        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().map(lecture -> {
+        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().filter(lecture ->lecture.getFinishedYn() ==0 ).map(lecture -> {
             LectureApplyEntity lectureApplyEntity = lecture.getLectureApplyEntity();
             LectureScheduleEntity lectureScheduleEntity = lectureApplyEntity.getLectureScheduleEntity();
 
@@ -265,29 +267,31 @@ public class StudentService {
         List<StudentSelVo> studentSelVos = new ArrayList<>(); // 각 강의별 성적 정보를 담을 리스트
 
         for (LectureStudentEntity lectureGrade : lectureGrades) {
-            StudentSelVo vo = new StudentSelVo(); // 새로운 StudentSelVo 객체 생성
+            if (lectureGrade.getFinishedYn() == 1) {
+                StudentSelVo vo = new StudentSelVo(); // 새로운 StudentSelVo 객체 생성
 
-            // 강의별 성적 정보를 각각의 필드에 설정
-            vo.setStudentNum(studentEntity.getStudentNum());
-            vo.setIlectureStudent(lectureGrade.getIlectureStudent());
-            vo.setIlecture(lectureGrade.getLectureApplyEntity().getIlecture());
-            vo.setFinishedYn(lectureGrade.getFinishedYn());
-            vo.setAttendance(lectureGrade.getAttendance());
-            vo.setMidtermExamination(lectureGrade.getMidtermExamination());
-            vo.setFinalExamination(lectureGrade.getFinalExamination());
-            vo.setTotalScore(lectureGrade.getTotalScore());
+                // 강의별 성적 정보를 각각의 필드에 설정
+                vo.setStudentNum(studentEntity.getStudentNum());
+                vo.setIlectureStudent(lectureGrade.getIlectureStudent());
+                vo.setIlecture(lectureGrade.getLectureApplyEntity().getIlecture());
+                vo.setFinishedYn(lectureGrade.getFinishedYn());
+                vo.setAttendance(lectureGrade.getAttendance());
+                vo.setMidtermExamination(lectureGrade.getMidtermExamination());
+                vo.setFinalExamination(lectureGrade.getFinalExamination());
+                vo.setTotalScore(lectureGrade.getTotalScore());
 
 
-            GradeUtils gradeUtils = new GradeUtils();
-            String grade = gradeUtils.totalGradeFromScore(lectureGrade.getTotalScore());
-            vo.setGrade(grade); // 점수를 소수점 형태의 평점 문자열로 설정
+                GradeUtils gradeUtils = new GradeUtils();
+                String grade = gradeUtils.totalGradeFromScore(lectureGrade.getTotalScore());
+                vo.setGrade(grade); // 점수를 소수점 형태의 평점 문자열로 설정
 
-            // 학점 계산 및 설정
-            double score = gradeUtils.totalScore();
-            String rating = gradeUtils.totalRating(score);
-            vo.setRating(rating);
+                // 학점 계산 및 설정
+                double score = gradeUtils.totalScore();
+                String rating = gradeUtils.totalRating(score);
+                vo.setRating(rating);
 
-            studentSelVos.add(vo); // 각각의 강의별 성적 정보를 리스트에 추가
+                studentSelVos.add(vo); // 각각의 강의별 성적 정보를 리스트에 추가
+            }
         }
 
         return studentSelVos;  // 강의별 성적 정보 리스트 반환
@@ -297,6 +301,7 @@ public class StudentService {
 
         return studentRep.findBystudentNum(studentNum);
     }
+
 
     // 학생 학점 조회
     public StudentInfoDto getStudentInfo(Long studentNum) {
