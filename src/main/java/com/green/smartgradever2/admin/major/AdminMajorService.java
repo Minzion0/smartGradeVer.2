@@ -3,6 +3,7 @@ package com.green.smartgradever2.admin.major;
 import com.green.smartgradever2.admin.major.model.AdminMajorDto;
 import com.green.smartgradever2.admin.major.model.AdminMajorFindRes;
 import com.green.smartgradever2.admin.major.model.AdminMajorVo;
+import com.green.smartgradever2.admin.major.model.MajorListVo;
 import com.green.smartgradever2.config.entity.MajorEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -83,5 +84,15 @@ public class AdminMajorService {
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
+    }
+
+
+    public List<MajorListVo> getMajorList(){
+        List<MajorEntity> majorEntityList = MAJOR_REP.findAll();
+
+        return majorEntityList.stream().map(list -> MajorListVo.builder()
+                .imajor(list.getImajor())
+                .majorName(list.getMajorName())
+                .build()).toList();
     }
 }

@@ -1,9 +1,6 @@
 package com.green.smartgradever2.lecture_apply;
 
-import com.green.smartgradever2.lecture_apply.model.LectureApllySelRes;
-import com.green.smartgradever2.lecture_apply.model.LectureAppllyInsParam;
-import com.green.smartgradever2.lecture_apply.model.LectureApplyRes;
-import com.green.smartgradever2.lecture_apply.model.LectureApplyScheduleVo;
+import com.green.smartgradever2.lecture_apply.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -50,9 +47,9 @@ public class LectureApplyController {
 
     @GetMapping("/lecture/room")
     @Operation(summary = "강의실 시간표")
-    public ResponseEntity< List<LectureApplyScheduleVo>> lectureRoomSchedule(@RequestParam Long ilectureRoom){
+    public ResponseEntity<LectureApplyScheduleRes> lectureRoomSchedule(@RequestParam Long ilectureRoom){
 
-        List<LectureApplyScheduleVo> list = service.lectureRoomSchedule(ilectureRoom);
-        return ResponseEntity.ok().body(list);
+        LectureApplyScheduleRes lectureApplyScheduleRes = service.lectureRoomSchedule(ilectureRoom);
+        return ResponseEntity.ok().body(lectureApplyScheduleRes);
     }
 }
