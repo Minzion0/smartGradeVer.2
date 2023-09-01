@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,5 +61,12 @@ public class AdminMajorController {
         entity.setImajor(dto.getImajor());
         entity.setGraduationScore(dto.getGraduationScore());
         return SERVICE.updMajor(entity);
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "전공 x페이징")
+    public ResponseEntity<List<MajorListVo>> getMajorList(){
+        List<MajorListVo> majorList = SERVICE.getMajorList();
+        return ResponseEntity.ok().body(majorList);
     }
 }

@@ -1,9 +1,6 @@
 package com.green.smartgradever2.admin.lectureroom;
 
-import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomFindRes;
-import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomDto;
-import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
-import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomVo;
+import com.green.smartgradever2.admin.lectureroom.model.*;
 import com.green.smartgradever2.config.entity.LectureRoomEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -66,6 +63,14 @@ public class AdminLectureRoomService {
             throw new EntityNotFoundException("not found");
         }
 
+    }
+
+    public List<LectureRoomVo> getLectureRoomList(){
+        List<LectureRoomEntity> all = LECTURE_ROOM_REP.findAll();
+        return all.stream().map(list-> LectureRoomVo.builder()
+                .ilectureRoom(list.getIlectureRoom())
+                .lectureRoomName(list.getBuildingName()+" "+list.getLectureRoomName())
+                .build()).toList();
     }
 
 

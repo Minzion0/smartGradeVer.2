@@ -3,6 +3,7 @@ package com.green.smartgradever2.admin.lectureroom;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomDto;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomFindRes;
 import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
+import com.green.smartgradever2.admin.lectureroom.model.LectureRoomVo;
 import com.green.smartgradever2.config.entity.LectureRoomEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,5 +50,12 @@ public class AdminLectureRoomController {
         entity.setIlectureRoom(ilectureRoom);
 
         return SERVICE.delLectureRoom(entity);
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "강의실 리스트 페이징x")
+    public ResponseEntity<List<LectureRoomVo>> getLectureRoomList(){
+        List<LectureRoomVo> lectureRoomList = SERVICE.getLectureRoomList();
+        return ResponseEntity.ok().body(lectureRoomList);
     }
 }
