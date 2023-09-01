@@ -30,7 +30,7 @@ public class ProfessorGradeSevice {
     private final ProfesserRepository professerRep;
 
 
-    //todo 성적입력
+
     public StudentGradeDTO updateStudentGrade(Long ilectureStudent, Long iprofessor, Long ilecture, ProfessorGradeDto updatedGrade) {
         LectureApplyEntity lectureApply = lectureApplyRep.findByProfessorEntityIprofessorAndIlecture(iprofessor, ilecture)
                 .orElseThrow(() -> new EntityNotFoundException("강의 정보를 찾을 수 없습니다."));
@@ -80,7 +80,7 @@ public class ProfessorGradeSevice {
         }
     }
 
-    // todo 교수 학생 성적 리스트
+    // 교수 학생 성적 리스트
     public ProfessorGradeStudentDto getProGraStu(Long iprofessor, Long isemester) {
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {
@@ -141,7 +141,7 @@ public class ProfessorGradeSevice {
         return professorGradeStudentDto;
     }
 
-    //todo 교수의 강의를 듣는 학생리스트
+
     public List<ProStudentLectureDto> getProList(Long iprofessor,Long isemester) {
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {

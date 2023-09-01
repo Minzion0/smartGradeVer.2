@@ -32,7 +32,7 @@ public class SwaggerConfiguration {// 개발단계에서 스웨거 확인을 위
 //    public OpenAPI openAPI() {
 //        final Info info = new Info()
 //                .version("v0.0.1")
-//                .title("ToDo 리스트")
+//                .title("리스트")
 //                .description("Spring Security Exam");
 //
 //        SecurityRequirement securityRequirement = new SecurityRequirement().addList(HEADER_SCHEME_NAME);

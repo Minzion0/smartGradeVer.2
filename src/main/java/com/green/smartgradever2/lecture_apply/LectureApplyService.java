@@ -184,7 +184,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
 
     
-    public List<LectureApplyScheduleVo> lectureRoomSchedule(Long ilectureRoom){
+    public LectureApplyScheduleRes lectureRoomSchedule(Long ilectureRoom){
         SemesterEntity currentSemester = getCurrentSemester();
 
         String query = "SELECT sh FROM LectureScheduleEntity sh INNER JOIN sh.lectureApplyEntity la " +
@@ -209,7 +209,16 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             vo.setDayWeek(dayWeek);
             list.add(vo);
         }
-        return list;
+        LectureRoomEntity lectureRoomEntity = resultList.get(0).getLectureApplyEntity().getLectureRoomEntity();
+
+       return LectureApplyScheduleRes.builder()
+                .ilectureRoom(lectureRoomEntity.getIlectureRoom())
+                .buildingName(lectureRoomEntity.getBuildingName())
+                .lectureRoomName(lectureRoomEntity.getLectureRoomName())
+                .schedule(list)
+                .build();
+
+
     }
 
 
