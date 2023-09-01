@@ -9,7 +9,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "student")
@@ -57,7 +56,7 @@ public class StudentEntity extends BaseEntity {
     private String pic;
 
     @Column(nullable = false)
-    private LocalDate birthdate;
+    private LocalDate birthDate;
 
     @Column(length = 13)
     @Size(min = 13)

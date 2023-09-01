@@ -11,7 +11,10 @@ public interface LectureStudentRepository extends JpaRepository<LectureStudentEn
     List<LectureStudentEntity> findByLectureApplyEntity(LectureApplyEntity entity);
     long countByLectureApplyEntity(LectureApplyEntity lectureApply);
     List<LectureStudentEntity> findByStudentEntity(StudentEntity student);
-    List<LectureStudentEntity> findByStudentEntityStudentNumAndFinishedYn(Integer studentNum, int finishedYn);
+    List<LectureStudentEntity> findByStudentEntityStudentNumAndFinishedYn(Long studentNum, int finishedYn);
     List<LectureStudentEntity> findAllByLectureApplyEntity(LectureApplyEntity entity);
-    List<LectureStudentEntity> findAllByStudentEntity(StudentEntity entity);
+    List<LectureStudentEntity> findAllByStudentEntityAndFinishedYn(StudentEntity entity, int finishedYn);
+    boolean existsByStudentEntityAndLectureApplyEntity(StudentEntity student, LectureApplyEntity lectureApply);
+    
+
 }

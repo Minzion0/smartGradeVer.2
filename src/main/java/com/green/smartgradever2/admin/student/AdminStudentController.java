@@ -51,4 +51,13 @@ public class AdminStudentController {
     }
 
 
+    @PatchMapping("/students/{studentNum}")
+    @Operation(summary = "학생 정보 수정")
+    public ResponseEntity<AdminInsStudentVo> patchStudent(@PathVariable Long studentNum, @RequestBody AdminStudentPatchParam param) throws Exception {
+        AdminInsStudentVo vo = SERVICE.patchStudent(studentNum, param);
+
+        return ResponseEntity.ok().body(vo);
+    }
+
+
 }

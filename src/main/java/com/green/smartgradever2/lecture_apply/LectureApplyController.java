@@ -3,15 +3,19 @@ package com.green.smartgradever2.lecture_apply;
 import com.green.smartgradever2.lecture_apply.model.LectureApllySelRes;
 import com.green.smartgradever2.lecture_apply.model.LectureAppllyInsParam;
 import com.green.smartgradever2.lecture_apply.model.LectureApplyRes;
+import com.green.smartgradever2.lecture_apply.model.LectureApplyScheduleVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/professor")
 @RequiredArgsConstructor
 @Tag(name = "교수 강의")
 public class LectureApplyController {
@@ -25,13 +29,13 @@ public class LectureApplyController {
             + "attendace : 출결 배점<br>" + "midtermExamination : 중간고사 배점<br>" + "finalExamination : 기말고사 배점<br>"
             + "lectureMaxPeople : 강의최대 인원 1~30<br>" + "gradeLimit : 신청할수있는 학년범위 1~4<br>" + "delYn : 삭제 여부<br>"
             + "<br>" + "기본 배점 출결(20),중간고사(40),기말고사(40)<br>")
-    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) {
+    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) throws Exception {
 
         return service.InsApply(iprofessor,param);
     }
 
 
-    @GetMapping
+    @GetMapping("/lecture")
     @Operation(summary = "신청중인 강의 리스트 뽑기", description = "iprofessor : 교수 pk<br>" + "ilecture : 강의신청pk<br>" + "ilectureName : 강의 이름pk<br>"
             + "ilectureRoom : 강의실pk<br> " + "isemester : 학기pk 1학기 = 20 2학기 = 21<br>" + "dayWeek : 강의 시작 요일<br>" + "lectureStrDate : 강의 시작일자<br>" + "lectureEndDate : 강의 종료일자<br>"
             + "lectureStrTime : 강의 시작시간<br>" + "lectureEndTime : 강의 종료시간<br>" + "lectureMaxPeople : 수강인원 최대 30명<br>" + "gradeLimit : 신청할수있는 학년범위 1~4<br>"
@@ -42,5 +46,13 @@ public class LectureApplyController {
 
         return service.selLectureApplly(page, iprofessor);
 
+    }
+
+    @GetMapping("/lecture/room")
+    @Operation(summary = "강의실 시간표")
+    public ResponseEntity< List<LectureApplyScheduleVo>> lectureRoomSchedule(@RequestParam Long ilectureRoom){
+
+        List<LectureApplyScheduleVo> list = service.lectureRoomSchedule(ilectureRoom);
+        return ResponseEntity.ok().body(list);
     }
 }

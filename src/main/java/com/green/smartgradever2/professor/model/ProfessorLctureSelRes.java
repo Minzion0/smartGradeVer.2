@@ -9,5 +9,5 @@ import java.util.List;
 @Builder
 public class ProfessorLctureSelRes {
     private PagingUtils page;
-    private List<ProfessorLectureDto> lectures;
+    private List<ProfessorLectureDto> lectureList;
 }

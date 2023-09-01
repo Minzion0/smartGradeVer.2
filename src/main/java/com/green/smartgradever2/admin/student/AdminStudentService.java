@@ -63,7 +63,7 @@ public class AdminStudentService {
         entity.setNm(param.getNm());
         entity.setGender(param.getGender());
         entity.setMajorEntity(major.get());
-        entity.setBirthdate(param.getBirthdate());
+        entity.setBirthDate(param.getBirthdate());
         entity.setPhone(param.getPhone());
 
 
@@ -77,7 +77,7 @@ public class AdminStudentService {
         return AdminInsStudentVo.builder().studentNum(student.getStudentNum())
                                             .nm(student.getNm())
                                             .grade(student.getGrade())
-                                            .birthdate(student.getBirthdate())
+                                            .birthdate(student.getBirthDate())
                                             .delYn(student.getDelYn())
                                             .finishedYn(student.getFinishedYn())
                                             .phone(student.getPhone())
@@ -151,6 +151,39 @@ public class AdminStudentService {
 
         return AdminStudentDetailRes.builder().profile(profileVo).lectureList(lectureVos).build();
     }
+
+
+    public AdminInsStudentVo patchStudent(Long studentNum,AdminStudentPatchParam param) throws Exception {
+        Optional<StudentEntity> optionalStudentEntity = RPS.findById(studentNum);
+        if (optionalStudentEntity.isEmpty()){
+            throw new Exception("없는 회원 정보입니다");
+        }
+
+        MajorEntity majorEntity = new MajorEntity();
+        majorEntity.setImajor(param.getImajor());
+
+        StudentEntity studentEntity = optionalStudentEntity.get();
+        studentEntity.setMajorEntity(majorEntity);
+        studentEntity.setNm(param.getName());
+
+        RPS.save(studentEntity);
+
+     return    AdminInsStudentVo.builder().studentNum(studentEntity.getStudentNum())
+                .nm(studentEntity.getNm())
+                .grade(studentEntity.getGrade())
+                .birthdate(studentEntity.getBirthDate())
+                .delYn(studentEntity.getDelYn())
+                .finishedYn(studentEntity.getFinishedYn())
+                .phone(studentEntity.getPhone())
+                .gender(studentEntity.getGender())
+                .imajor(studentEntity.getMajorEntity().getImajor())
+                .createdAt(studentEntity.getCreatedAt())
+                .build();
+
+
+    }
+
+
 
     /**매년 말에 학생 진급 **/
     @Scheduled(cron = "0 59 23 31 12 ?")

@@ -9,7 +9,6 @@ import com.green.smartgradever2.config.exception.AdminException;
 
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
-import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,31 +138,66 @@ public class AdminService {
         apply.setIlecture(ilecture);
         List<LectureStudentEntity> applyEntity = LECTURE_STUDENT_RPS.findByLectureApplyEntity(apply);
 
-        if (applyEntity.get(0).getLectureApplyEntity().getOpeningProceudres() == 0) {
-            LectureConditionEntity entity = LECTURE_CONDITION_RPS.findById(ilecture).get();
-            AdminLectureConditionVo vo = new AdminLectureConditionVo();
-            vo.setIlecture(entity.getIlecture().getIlecture());
-            vo.setReturnCtnt(entity.getReturnCtnt());
-            vo.setReturnDate(entity.getReturnDate());
-            return ResponseEntity.ok().body(entity);
+        if (applyEntity.size()!=0){
+            if (applyEntity.get(0).getLectureApplyEntity().getOpeningProceudres() == 0) {
+                LectureConditionEntity entity = LECTURE_CONDITION_RPS.findById(ilecture).get();
+                AdminLectureConditionVo vo = new AdminLectureConditionVo();
+                vo.setIlecture(entity.getIlecture().getIlecture());
+                vo.setReturnCtnt(entity.getReturnCtnt());
+                vo.setReturnDate(entity.getReturnDate());
+                return ResponseEntity.ok().body(entity);
+            }
         }
-        List<AdminLectureStudentVo> vo = applyEntity.stream().map(student -> {
-                    GradeUtils gradeUtils = new GradeUtils(student.getTotalScore());
-                    double score = gradeUtils.totalScore();
-                    String rating = gradeUtils.totalRating(score);
-                    return AdminLectureStudentVo.builder()
-                            .istudent(student.getStudentEntity().getStudentNum())
-                            .nm(student.getStudentEntity().getNm())
-                            .gread(rating)
-                            .majorNm(student.getStudentEntity().getMajorEntity().getMajorName())
-                            .attendance(student.getAttendance())
-                            .minEx(student.getMidtermExamination())
-                            .finEx(student.getFinalExamination())
-                            .totalScore(student.getTotalScore())
-                            .avg(score).build()
-                            ;
-                }
-        ).toList();
+        //3차로 넘어오면서 성적이아닌 강의 정보를 보여주기로 한다
+//        List<AdminLectureStudentVo> vo = applyEntity.stream().map(student -> {
+//                    GradeUtils gradeUtils = new GradeUtils(student.getTotalScore());
+//                    double score = gradeUtils.totalScore();
+//                    String rating = gradeUtils.totalRating(score);
+//                    return AdminLectureStudentVo.builder()
+//                            .istudent(student.getStudentEntity().getStudentNum())
+//                            .nm(student.getStudentEntity().getNm())
+//                            .gread(rating)
+//                            .majorNm(student.getStudentEntity().getMajorEntity().getMajorName())
+//                            .attendance(student.getAttendance())
+//                            .minEx(student.getMidtermExamination())
+//                            .finEx(student.getFinalExamination())
+//                            .totalScore(student.getTotalScore())
+//                            .avg(score).build()
+//                            ;
+//                }
+//        ).toList();
+
+        Optional<LectureApplyEntity> optionalLectureApplyEntity = APPLY_RPS.findById(ilecture);
+        if (optionalLectureApplyEntity.isEmpty()){
+            throw new AdminException("존제하지 않는 강의 입니다");
+        }
+        LectureApplyEntity lectureApplyEntity = optionalLectureApplyEntity.get();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime lectureStrTime = lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime();
+        LocalTime lectureEndTime = lectureApplyEntity.getLectureScheduleEntity().getLectureEndTime();
+        String passStrTime = lectureStrTime.format(formatter);
+        String passEndTime = lectureEndTime.format(formatter);
+
+        AdminLectureDetailVo vo = AdminLectureDetailVo.builder()
+                .lectureName(lectureApplyEntity.getLectureNameEntity().getLectureName())
+                .lectureRoomName(lectureApplyEntity.getLectureRoomEntity().getLectureRoomName())
+                .buildingName(lectureApplyEntity.getLectureRoomEntity().getBuildingName())
+                .currentPeople(applyEntity.size())
+                .score(lectureApplyEntity.getLectureNameEntity().getScore())
+                .lectureStrDate(lectureApplyEntity.getSemesterEntity().getSemesterStrDate())
+                .lectureEndDate(lectureApplyEntity.getSemesterEntity().getSemesterEndDate())
+                .lectureStrTime(passStrTime)
+                .lectureEndTime(passEndTime)
+                .gradeLimit(lectureApplyEntity.getGradeLimit())
+                .attendance(lectureApplyEntity.getAttendance())
+                .midtermExamination(lectureApplyEntity.getMidtermExamination())
+                .finalExamination(lectureApplyEntity.getFinalExamination())
+                .textBook(lectureApplyEntity.getBookUrl())
+                .ctnt(lectureApplyEntity.getCtnt())
+                .bookUrl(lectureApplyEntity.getBookUrl())
+                .build();
+
 
         return ResponseEntity.ok().body(vo);
     }
