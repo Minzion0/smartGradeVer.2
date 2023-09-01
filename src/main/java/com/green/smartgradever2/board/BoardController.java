@@ -36,8 +36,8 @@ public class BoardController {
         dto.setCtnt(param.getCtnt());
 //        dto.setIadmin(details.getIuser());
         dto.setIadmin(param.getIadmin());
-        dto.setImportance(dto.getImportance());
-        dto.setTitle(dto.getTitle());
+        dto.setImportance(param.getImportance());
+        dto.setTitle(param.getTitle());
         return SERVICE.insBoard(dto, pics);
     }
 
