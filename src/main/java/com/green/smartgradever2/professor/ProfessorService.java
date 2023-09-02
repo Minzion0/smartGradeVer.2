@@ -1,5 +1,4 @@
 package com.green.smartgradever2.professor;
-import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.professor.model.*;
@@ -19,14 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProfessorService {
 
     private final ProfessorMapper MAPPER;
-    private final ProfesserRepository professorRepository;
+    private final ProfessorRepository professorRepository;
     private final LectureApplyRepository lectureApplyRepository;
     private final PasswordEncoder PW_ENCODER;
 
