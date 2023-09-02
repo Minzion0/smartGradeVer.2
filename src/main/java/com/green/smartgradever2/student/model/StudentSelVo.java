@@ -20,6 +20,7 @@ public class StudentSelVo {
     private LocalTime lectureEndTime;
     private int score;
     private int finishedYn;
+    private int objection;
 
 
 

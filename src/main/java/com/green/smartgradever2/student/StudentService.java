@@ -272,6 +272,7 @@ public class StudentService {
             vo.setLectureStrTime(lectureGrade.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
             vo.setLectureEndTime(lectureGrade.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
             vo.setScore(lectureGrade.getLectureApplyEntity().getLectureNameEntity().getScore());
+            vo.setObjection(lectureGrade.getObjection());
 
             vo.setFinishedYn(lectureGrade.getFinishedYn());
             vo.setAttendance(lectureGrade.getAttendance());
@@ -342,6 +343,35 @@ public class StudentService {
         studentRep.save(entity);
 
         return "비밀번호 변경이 완료되었습니다.";
+    }
+
+    public void updateObjection(Long studentNum, Long ilectureStudent, StudentObjectionDto objectionDto)  {
+        LectureStudentEntity lectureStudentEntity = lectureStudentRep.findByStudentEntityStudentNumAndIlectureStudent(studentNum, ilectureStudent);
+        if (lectureStudentEntity != null) {
+            int objection = objectionDto.getObjection();
+            if (objection >= 0 && objection <= 4) {
+                lectureStudentEntity.setObjection(objection);
+                lectureStudentRep.save(lectureStudentEntity);
+            } else {
+                throw new IllegalArgumentException("objection 값은 0에서 4 사이여야 합니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("학생과 강의 학생이 일치하지 않습니다.");
+        }
+
+
+
+
+//        if (lectureStudentEntity != null) {
+//            lectureStudentEntity.setObjection(objectionDto.getObjection());
+//            lectureStudentRep.save(lectureStudentEntity);
+//        } else {
+//            try {
+//                throw new Exception("학생과 강의 학생이 일치하지 않습니다.");
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
     }
 
 

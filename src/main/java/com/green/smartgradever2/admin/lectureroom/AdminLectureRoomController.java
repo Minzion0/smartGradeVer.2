@@ -58,4 +58,9 @@ public class AdminLectureRoomController {
         List<LectureRoomVo> lectureRoomList = SERVICE.getLectureRoomList();
         return ResponseEntity.ok().body(lectureRoomList);
     }
+
+
+
+
+
 }
