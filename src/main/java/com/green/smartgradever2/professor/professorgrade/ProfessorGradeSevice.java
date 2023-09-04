@@ -6,10 +6,9 @@ import com.green.smartgradever2.config.entity.ProfessorEntity;
 import com.green.smartgradever2.config.entity.SemesterEntity;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
-import com.green.smartgradever2.professor.ProfesserRepository;
+import com.green.smartgradever2.professor.ProfessorRepository;
 import com.green.smartgradever2.professor.professorgrade.model.*;
 import com.green.smartgradever2.utils.GradeUtils;
-import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,7 @@ public class ProfessorGradeSevice {
 
     private final LectureApplyRepository lectureApplyRep;
     private final LectureStudentRepository lectureStudentRep;
-    private final ProfesserRepository professerRep;
+    private final ProfessorRepository professerRep;
 
 
 

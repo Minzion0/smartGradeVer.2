@@ -7,7 +7,6 @@ import lombok.Getter;
 @Builder
 public class EmailVo {
     private Long id;
-    private String pw;
     private String role;
     private String optUrl;
     private String secretKey;

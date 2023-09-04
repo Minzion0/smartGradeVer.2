@@ -202,7 +202,7 @@ public class StudentService {
         profile.setMajorName(student.getMajorEntity().getMajorName());
         profile.setGrade(student.getGrade());
         profile.setGender(student.getGender());
-        profile.setBirthDate(student.getBirthDate());
+        profile.setBirthDate(student.getBirthdate());
         profile.setAddress(student.getAddress());
         profile.setPhone(student.getPhone());
         profile.setEmail(student.getEmail());

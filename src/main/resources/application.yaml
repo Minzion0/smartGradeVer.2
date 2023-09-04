@@ -51,6 +51,12 @@ springdoc:
     path: /swagger.html
     operations-sorter : method
 
+#naver api 코드
+open-api:
+  client-id: 6c1d_wx2wYAf73bPpAhj
+  client-secret: Pe9NsHDIy6
+
+
 
 file:
   dir: /home/smartGradeVer2
