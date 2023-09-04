@@ -6,6 +6,9 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(
         name = "student_semester_score",
@@ -75,4 +78,6 @@ public class StudentSemesterScoreEntity {
     @Column(name = "del_yn",length = 10)
     @ColumnDefault("0")
     private int delYn;
+
+
 }

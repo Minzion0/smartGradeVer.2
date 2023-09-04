@@ -23,7 +23,11 @@ public class StudentController {
     private final StudentService SERVICE;
 
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "학생 프로필 수정")
+    @Operation(summary = "학생 프로필 수정",description = "studentNum : 학번<br>"+
+            "address : 주소<br>"+
+            "phone : 폰번호<br>"+
+            "email : 이메일<br>"+
+            "pic : 학생프로필사진")
     public ResponseEntity<StudentUpRes> upStudentProfile(@RequestPart(required = false) MultipartFile pic
             , @RequestPart StudentUpdDto dto) {
         StudentParam param = new StudentParam();
@@ -46,21 +50,59 @@ public class StudentController {
     }
 
     @PostMapping
-    @Operation(summary = "학생 수강 신청")
+    @Operation(summary = "학생 수강 신청",description = "ilecture : 강의 PK<br>"+"studentNum : 학번<br>"
+    +"success : 신청성공하면 true<br>"+
+            "message : 수강신청완료메세지 <br> "+
+            "ilectureStudent : 학생 수강pk<br>"+
+            "ilecture : 교수강의 pk<br>"+
+            "lectureName : 강의명<br>"+
+            "attendance : 출석점수 <br>"+
+            "midtermExamination : 중간고사점수<br>"+
+            "finalExamination : 기말고사 점수<br>"+
+            "totalScore : 총점수<br>"+
+            "finishedAt : 수강완료날짜<br>"+
+            "correctionAt : 이의신청기간<br>"+
+            "finishedYn : 수강완료 표시 0,1<br>"+
+            "delYn : 삭제 여부<br>"+
+            "dayWeek : 요일<br>"+
+            "lectureStrTime : 강의시작시간<br>"+
+            "lectureEndTime : 강의종료시간<br>"+
+            "objection : 이의신청 기본0 신청하면 1")
     public ResponseEntity<StudentRegisterRes> registerStudentLecture(@RequestBody StudentLectureReg request) {
         StudentRegisterRes response = SERVICE.registerLectureForStudent(request.getIlecture(), request.getStudentNum());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{studentNum}")
-    @Operation(summary = "학생 프로필 디테일")
+    @Operation(summary = "학생 프로필 디테일",description =  "studentNum : 학번<br>"+
+            "majorName : 전공<br>"+
+            "name : 이름 <br>"+
+            "grade : 학년<br>"+
+            "gender : 성별<br>"+
+            "address : 주소"+
+            "phone : 폰번호<br>"+
+            "birthDate : 생녕월일<br>"+
+            "email : 이메일<br>"+
+            "pic : 프로필사진<br>"+
+            "finishedYn : 재학여부 <br>"+
+            "score : 현재 이수학점"+"<br>"+"<br>"
+          + "ilecture : 강의PK <br>"+
+            "lectureName : 강의명<br>"+
+            "lectureStrDate : 강의 시작날짜<br>"+
+            "lectureEndDate : 강의 종료날짜<br>"+
+            "lectureStrTime : 강의 시작시간<br>"+
+            "lectureEndTime : 강의 종료시간<br>"+
+            "score : 해당강의 학점")
     public StudentFileSelRes getStudentProfileDetail(@PathVariable Long studentNum) {
     return    SERVICE.getStudentProfileWithLectures(studentNum);
 
     }
 
     @GetMapping
-    @Operation(summary = "학생 강의별 성적 조회")
+    @Operation(summary = "학생 강의별 성적 조회",description =  "studentNum : 학번<br>"+ "ilectureStudent : 학생수강PK<br>"+"ilecture : 강의pk <br>"+ "isemester : 학기<br>"+
+            "year : 년도"+"professorName : 담당교수이름 <br>"+"lectureName : 강의 명"+"dayWeek : 요일<br>"+ "lectureStrTime : 강의 시작시간<br>"+"lectureEndTime : 강의 종료시간<br>"+
+            "score : 해당강의 학점<br>"+ "finishedYn : 수료여부 0<- 수강중 1<-수강완료<br>"+ "objection : 이의신청 기본0 신청시1<br>"+ "attendance : 출석점수 <br>"+ "midtermExamination : 중간고사점수<br>"+
+            "finalExamination : 기말고사 점수<br>"+ "totalScore : 총점수<br>"+ "grade : 평점<br>"+ "rating : 알파벳 등급<br>"+ "studentGrade : 학년")
     public ResponseEntity<List<StudentSelVo>> getStudentGrades(@RequestParam Long studentNum) {
         StudentEntity studentEntity = SERVICE.getStudentById(studentNum); // 학생 정보 가져오기
         if (studentEntity == null) {
@@ -73,7 +115,11 @@ public class StudentController {
 
 
     @GetMapping("/{studentNum}/score")
-    @Operation(summary = "학점 조회")
+    @Operation(summary = "학점 조회",description ="studentNum : 학번<br>"+
+            "majorName : 전공<br>"+
+            "selfStudyCredit : 이수학점<br>"+
+            "remainingPoints : 남은학점<br>"+
+            "graduationScore : 전공학점<br>" )
     public StudentInfoDto getStudentInfo(@PathVariable Long studentNum) {
         return SERVICE.getStudentInfo(studentNum);
     }
@@ -92,6 +138,8 @@ public class StudentController {
 
 
     @PutMapping("/objection")
+    @Operation(summary = "학생 이의신청",description = "StudentNum : 학생pk<br>"+"ilectureStudent : 학생이 들은 강의pk<br>"
+    +"objection : 1로 보내면 이의 신청이 됨")
     public ResponseEntity<String> updateObjection(
             @RequestParam Long studentNum,
             @RequestParam Long ilectureStudent,

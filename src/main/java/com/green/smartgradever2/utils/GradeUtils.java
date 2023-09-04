@@ -13,6 +13,12 @@ public class GradeUtils {
     public GradeUtils() {
 
     }
+
+    public String totalGradeFromScore1(int score) {
+        double rating = totalScore2(score);
+        return totalRating(rating);
+    }
+
     public String totalGradeFromScore(int score) {
         double rating = totalScore2(score);
         return String.format("%.1f", rating);

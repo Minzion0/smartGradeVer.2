@@ -11,10 +11,14 @@ import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.student.StudentRepository;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +37,8 @@ public class GradeMngmnService {
     private final GradeMngmnMapper MAPPER;
     private final LectureApplyRepository APPLY_REP;
     private final LectureNameRepository NAME_REP;
+    private final EntityManager EM;
+
 
     public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
         GradeMngmnDto mngmnDto = new GradeMngmnDto();
@@ -195,7 +201,47 @@ public class GradeMngmnService {
                 .build();
     }
 
+    public GradeMngmnFindRes selGradeMngmn2(GradeMngmnDto dto) {
+        long maxPage = GM_REP.count();
+        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+        dto.setStaIdx(utils.getStaIdx());
+
+        Optional<StudentEntity> byId = ST_REP.findById(dto.getStudentNum());
+        List<GradeMngmnAvgVo> avg = GM_REP.selAvg(dto.getPageable());
+        List<GradeMngmnVo> voList = GM_REP.selGradeFindStudent(dto.getPageable());
+        GradeMngmnStudentVo student = GM_REP.findByStudentEntity(byId.get());
+
+        int point;
+        double score;
+        String rate;
+        for (GradeMngmnVo a : voList) {
+            point = a.getTotalScore();
+            GradeUtils utils2 = new GradeUtils(point);
+            score = utils2.totalScore();
+            rate = utils2.totalRating(score);
+            a.setRating(rate);
+        }
+
+        return GradeMngmnFindRes.builder()
+                .avgVo(avg)
+                .voList(voList)
+                .student(student)
+                .paging(utils)
+                .build();
+    }
+
+//    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
+//        return MAPPER.selGradeFindStudentDetail(dto);
+//    }
+
     public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
-        return MAPPER.selGradeFindStudentDetail(dto);
+        GradeMngmnDetailVo gradeMngmnDetailVo;
+        try {
+            gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
+
+        } catch (Exception e) {
+            throw new NullPointerException("null 값이 존재합니다.");
+        }
+        return gradeMngmnDetailVo;
     }
 }

@@ -73,6 +73,7 @@ public class AdminMajorService {
             if (!(entity.getMajorName().equals(byId.get().getMajorName()))) {
                 majorEntity.setRemarks("구 " + byId.get().getMajorName());
                 majorEntity.setMajorName(entity.getMajorName());
+                majorEntity.setGraduationScore(entity.getGraduationScore());
                 save = MAJOR_REP.save(majorEntity);
             } else {
                 throw new RuntimeException("이미 존재하는 학과입니다.");
@@ -80,6 +81,7 @@ public class AdminMajorService {
             return AdminMajorVo.builder()
                     .majorName(save.getMajorName())
                     .remarks(entity.getMajorName())
+                    .graduationScore(entity.getGraduationScore())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
