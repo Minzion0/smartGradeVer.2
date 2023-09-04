@@ -40,35 +40,31 @@ public class GradeMngmnService {
     private final EntityManager EM;
 
 
-    public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
-        GradeMngmnDto mngmnDto = new GradeMngmnDto();
-        int result = MAPPER.insGradeMngmn(dto);
-        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(mngmnDto);
-        int point;
-        double score;
-        for (GradeMngmnVo a : voList) {
-            point = a.getTotalScore();
-            GradeUtils utils2 = new GradeUtils(point);
-            score = utils2.totalScore();
-
-            if (result == 1) {
-                GradeMngmnRes.builder()
-                        .isemester(dto.getIsemester())
-                        .studentNum(dto.getStudentNum())
-                        .ilectureName(dto.getIlectureName())
-                        .semester(dto.getSemester())
-                        .avgScore(point)
-                        .rating(score)
-                        .build();
-            }
-
-        }
-        return null;
-    }
-    public GradeMngmnRes postGradeMngmn2(StudentSemesterScoreEntity entity) {
-        StudentSemesterScoreEntity result = GM_REP.save(entity);
-        return null;
-    }
+//    public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
+//        GradeMngmnDto mngmnDto = new GradeMngmnDto();
+//        int result = MAPPER.insGradeMngmn(dto);
+//        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(mngmnDto);
+//        int point;
+//        double score;
+//        for (GradeMngmnVo a : voList) {
+//            point = a.getTotalScore();
+//            GradeUtils utils2 = new GradeUtils(point);
+//            score = utils2.totalScore();
+//
+//            if (result == 1) {
+//                GradeMngmnRes.builder()
+//                        .isemester(dto.getIsemester())
+//                        .studentNum(dto.getStudentNum())
+//                        .ilectureName(dto.getIlectureName())
+//                        .semester(dto.getSemester())
+//                        .avgScore(point)
+//                        .rating(score)
+//                        .build();
+//            }
+//
+//        }
+//        return null;
+//    }
 
 //    //  수정이 필요함
 //    public GradeMngmnUpdRes updGradeMngmn(GradeMngmnUpdParam p) {
