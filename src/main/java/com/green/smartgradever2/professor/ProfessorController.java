@@ -33,9 +33,9 @@ public class ProfessorController {
     +"address : 주소<br>"+"ilecture : 강의 pk<br>"+"lectureStrDate : 강의시작날짜<br>"+
     "lectureEndDate : 강의 종료날짜<br>"+"lectureStrTime : 강의 시작시간<br>"+"lectureEndTime : 강의종료시간<br>"
     +"lectureName: 강의명")
-    public ProfessorSelRes getProfessorWithLectures(@RequestParam Long iprofessor) {
+    public ProfessorSelRes getProfessorWithLectures(@AuthenticationPrincipal MyUserDetails details) {
 
-        return SERVICE.getProfessorLectures(iprofessor);
+        return SERVICE.getProfessorLectures(details.getIuser());
     }
 
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -43,21 +43,20 @@ public class ProfessorController {
     "pic : 프로필사진")
     public ResponseEntity<ProfessorUpRes> updateProfessorProfile(
             @RequestPart(required = false) MultipartFile pic,
+            @AuthenticationPrincipal MyUserDetails details ,
+            @RequestPart ProfessorParam param) {
+        ProfessorUpdDto dto = new ProfessorUpdDto();
+        dto.setPhone(param.getPhone());
+        dto.setAddress(param.getAddress());
+        dto.setEmail(param.getEmail());
 
-            @RequestPart ProfessorUpdDto dto) {
-
-        ProfessorParam param = new ProfessorParam();
-        param.setPhone(dto.getPhone());
-        param.setEmail(dto.getEmail());
-        param.setAddress(dto.getAddress());
-        param.setIprofessor(dto.getIprofessor());
 
         try {
             // 기존 사진 삭제 처리
-            SERVICE.processProfessorPicDeletion(dto.getIprofessor());
+            SERVICE.processProfessorPicDeletion(details.getIuser());
 
             // 교수 정보 및 사진 업데이트 처리
-            ProfessorUpRes response = SERVICE.upProfessor(pic, param);
+            ProfessorUpRes response = SERVICE.upProfessor(pic, param, details.getIuser());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -73,11 +72,11 @@ public class ProfessorController {
             "lectureMaxPeople : 수강인원<br>"+
             "score : 강의 학점<br>"+
             "delYn : 삭제 여부 <br>")
-    public ProfessorSelLectureRes getLecturePro(@RequestParam Long iprofessor
+    public ProfessorSelLectureRes getLecturePro( @AuthenticationPrincipal MyUserDetails details
             ,@RequestParam (defaultValue = "1") int page
             ,@RequestParam(required = false ) String openingProcedures) {
         ProfessorSelLectureDto dto = new ProfessorSelLectureDto();
-        dto.setIprofessor(iprofessor);
+        dto.setIprofessor(details.getIuser());
         dto.setPage(page);
         dto.setOpeningProcedures(openingProcedures);
         return SERVICE.selProfessorLecture(dto);
@@ -106,8 +105,11 @@ public class ProfessorController {
             "studentName : 학생이름")
     public ResponseEntity<List<ProfessorStudentData>> getStudentsWithObjectionAndScores(
             @RequestParam Long ilecture,
-            @RequestParam int objection) {
-        List<ProfessorStudentData> studentsWithObjectionAndScores = SERVICE.getStudentsWithObjectionAndScores(ilecture, objection);
+            @RequestParam int objection,
+            @AuthenticationPrincipal MyUserDetails details) {
+        Long professorId = details.getIuser();
+
+        List<ProfessorStudentData> studentsWithObjectionAndScores = SERVICE.getStudentsWithObjectionAndScores(ilecture, objection,professorId);
 
         return ResponseEntity.ok(studentsWithObjectionAndScores);
     }

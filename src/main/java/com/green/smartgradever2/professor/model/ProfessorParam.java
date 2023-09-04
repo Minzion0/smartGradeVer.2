@@ -7,5 +7,5 @@ public class ProfessorParam {
     private String phone;
     private String email;
     private String address;
-    private Long iprofessor;
+
 }

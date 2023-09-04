@@ -32,11 +32,11 @@ public class ProfessorGradeController {
             "rating : 평점")
     public ResponseEntity<StudentGradeDTO> updateStudentGrade(
             @RequestParam Long ilectureStudent,
-            @RequestParam Long iprofessor,
+            @AuthenticationPrincipal MyUserDetails details,
             @RequestParam Long ilecture,
             @RequestBody ProfessorGradeDto updatedGrade) {
         try {
-            StudentGradeDTO updatedStudentGrade = service.updateStudentGrade(ilectureStudent, iprofessor, ilecture, updatedGrade);
+            StudentGradeDTO updatedStudentGrade = service.updateStudentGrade(ilectureStudent, details.getIuser(), ilecture, updatedGrade);
             return ResponseEntity.ok(updatedStudentGrade);
         } catch (GradeExceedsMaxScoreException e) {
             return ResponseEntity.badRequest().build();
@@ -59,8 +59,8 @@ public class ProfessorGradeController {
             "totalScore : 총점수 <br>"+
             "grade : 알파벳등급 <br>"+
             "rating : 평점" )
-    public ProfessorGradeStudentDto getProfessorStudents(@RequestParam Long iprofessor,@RequestParam Long isemester) {
-        return service.getProGraStu(iprofessor,isemester);
+    public ProfessorGradeStudentDto getProfessorStudents(@AuthenticationPrincipal MyUserDetails details,@RequestParam Long isemester) {
+        return service.getProGraStu(details.getIuser(), isemester);
     }
 
 
@@ -79,8 +79,8 @@ public class ProfessorGradeController {
             "totalScore : 총점수 <br>"+
             "grade : 알파벳등급 <br>"+
             "rating : 평점"  )
-    public List<ProStudentLectureDto> getProStuList(@RequestParam Long iprofessor, @RequestParam Long isemester) {
-        return service.getProList(iprofessor, isemester);
+    public List<ProStudentLectureDto> getProStuList(@AuthenticationPrincipal MyUserDetails details, @RequestParam Long isemester) {
+        return service.getProList(details.getIuser(), isemester);
     }
 
     @PutMapping("/objection")
@@ -90,9 +90,9 @@ public class ProfessorGradeController {
     public ResponseEntity<String> updateObjection(
             @RequestParam Long ilecture,
             @RequestParam Long ilectureStudent,
-            @RequestParam int newObjection) {
+            @RequestParam int newObjection,@AuthenticationPrincipal MyUserDetails details) {
         try {
-            service.updateObjection(ilecture, ilectureStudent, newObjection);
+            service.updateObjection(ilecture, ilectureStudent, newObjection,details.getIuser());
             return ResponseEntity.status(HttpStatus.OK).body("강의 학생의 이의제기가 업데이트되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");

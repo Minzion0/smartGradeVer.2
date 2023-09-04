@@ -29,18 +29,18 @@ public class StudentController {
             "email : 이메일<br>"+
             "pic : 학생프로필사진")
     public ResponseEntity<StudentUpRes> upStudentProfile(@RequestPart(required = false) MultipartFile pic
-            , @RequestPart StudentUpdDto dto) {
-        StudentParam param = new StudentParam();
-        param.setPhone(dto.getPhone());
-        param.setEmail(dto.getEmail());
-        param.setStudentNum(dto.getStudentNum());
-        param.setAddress(dto.getAddress());
+            , @RequestPart StudentParam param,@AuthenticationPrincipal MyUserDetails details) {
+        StudentUpdDto dto = new StudentUpdDto();
+        dto.setPhone(param.getPhone());
+        dto.setAddress(param.getAddress());
+        dto.setEmail(param.getEmail());
+
 
         try {
             //기존 사진 삭제
-            SERVICE.studentDelPic(dto.getStudentNum());
+            SERVICE.studentDelPic(details.getIuser());
             //학생 정보 및 사진 업데이트 처리
-            StudentUpRes upRes = SERVICE.upStudent(pic, param);
+            StudentUpRes upRes = SERVICE.upStudent(pic, param,details.getIuser());
             return ResponseEntity.ok(upRes);
 
         } catch (Exception e) {
@@ -68,12 +68,12 @@ public class StudentController {
             "lectureStrTime : 강의시작시간<br>"+
             "lectureEndTime : 강의종료시간<br>"+
             "objection : 이의신청 기본0 신청하면 1")
-    public ResponseEntity<StudentRegisterRes> registerStudentLecture(@RequestBody StudentLectureReg request) {
-        StudentRegisterRes response = SERVICE.registerLectureForStudent(request.getIlecture(), request.getStudentNum());
+    public ResponseEntity<StudentRegisterRes> registerStudentLecture(@RequestBody StudentLectureReg request,@AuthenticationPrincipal MyUserDetails details) {
+        StudentRegisterRes response = SERVICE.registerLectureForStudent(request.getIlecture(), details.getIuser());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{studentNum}")
+    @GetMapping("/detail")
     @Operation(summary = "학생 프로필 디테일",description =  "studentNum : 학번<br>"+
             "majorName : 전공<br>"+
             "name : 이름 <br>"+
@@ -93,8 +93,8 @@ public class StudentController {
             "lectureStrTime : 강의 시작시간<br>"+
             "lectureEndTime : 강의 종료시간<br>"+
             "score : 해당강의 학점")
-    public StudentFileSelRes getStudentProfileDetail(@PathVariable Long studentNum) {
-    return    SERVICE.getStudentProfileWithLectures(studentNum);
+    public StudentFileSelRes getStudentProfileDetail(@AuthenticationPrincipal MyUserDetails details) {
+    return    SERVICE.getStudentProfileWithLectures(details.getIuser());
 
     }
 
@@ -103,8 +103,8 @@ public class StudentController {
             "year : 년도"+"professorName : 담당교수이름 <br>"+"lectureName : 강의 명"+"dayWeek : 요일<br>"+ "lectureStrTime : 강의 시작시간<br>"+"lectureEndTime : 강의 종료시간<br>"+
             "score : 해당강의 학점<br>"+ "finishedYn : 수료여부 0<- 수강중 1<-수강완료<br>"+ "objection : 이의신청 기본0 신청시1<br>"+ "attendance : 출석점수 <br>"+ "midtermExamination : 중간고사점수<br>"+
             "finalExamination : 기말고사 점수<br>"+ "totalScore : 총점수<br>"+ "grade : 평점<br>"+ "rating : 알파벳 등급<br>"+ "studentGrade : 학년")
-    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@RequestParam Long studentNum) {
-        StudentEntity studentEntity = SERVICE.getStudentById(studentNum); // 학생 정보 가져오기
+    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@AuthenticationPrincipal MyUserDetails details) {
+        StudentEntity studentEntity = SERVICE.getStudentById(details.getIuser()); // 학생 정보 가져오기
         if (studentEntity == null) {
             return ResponseEntity.notFound().build(); // 학생이 존재하지 않으면 404 반환
         }
@@ -114,14 +114,14 @@ public class StudentController {
     }
 
 
-    @GetMapping("/{studentNum}/score")
+    @GetMapping("/score")
     @Operation(summary = "학점 조회",description ="studentNum : 학번<br>"+
             "majorName : 전공<br>"+
             "selfStudyCredit : 이수학점<br>"+
             "remainingPoints : 남은학점<br>"+
             "graduationScore : 전공학점<br>" )
-    public StudentInfoDto getStudentInfo(@PathVariable Long studentNum) {
-        return SERVICE.getStudentInfo(studentNum);
+    public StudentInfoDto getStudentInfo(@AuthenticationPrincipal MyUserDetails details) {
+        return SERVICE.getStudentInfo(details.getIuser());
     }
 
     @PutMapping("/changPassword")
@@ -141,11 +141,11 @@ public class StudentController {
     @Operation(summary = "학생 이의신청",description = "StudentNum : 학생pk<br>"+"ilectureStudent : 학생이 들은 강의pk<br>"
     +"objection : 1로 보내면 이의 신청이 됨")
     public ResponseEntity<String> updateObjection(
-            @RequestParam Long studentNum,
+            @AuthenticationPrincipal MyUserDetails details,
             @RequestParam Long ilectureStudent,
             @RequestBody StudentObjectionDto objectionDto) {
         try {
-           SERVICE.updateObjection(studentNum, ilectureStudent, objectionDto);
+           SERVICE.updateObjection(details.getIuser(), ilectureStudent, objectionDto);
             return ResponseEntity.status(HttpStatus.OK).body("학생의 이의제의가 신청되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
