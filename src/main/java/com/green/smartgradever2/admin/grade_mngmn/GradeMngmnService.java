@@ -218,7 +218,9 @@ public class GradeMngmnService {
         StudentSemesterScoreEntity sscEntity = GM_REP.findById(dto.getStudentNum()).get();
         LectureStudentEntity lsEntity = LS_REP.findById(sscEntity.getStudentEntity().getStudentNum()).get();
         MajorEntity mEntity = M_REP.findById(stEntity.getStudentNum()).get();
+
         return GradeMngmnDetailVo.builder()
+                .studentNum(dto.getStudentNum())
                 .address(stEntity.getAddress())
                 .scoreStudent(sscEntity.getScore())
                 .createdAt(stEntity.getCreatedAt())

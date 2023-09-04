@@ -53,7 +53,7 @@ public class GradeMngmnController {
     public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable Long studentNum) {
         GradeMngmnDetailSelDto dto = new GradeMngmnDetailSelDto();
         dto.setStudentNum(studentNum);
-        return SERVICE.selStudentDetail(dto);
+        return SERVICE.selStudentDetail2(dto);
     }
 
     @PatchMapping

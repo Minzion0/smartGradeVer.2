@@ -20,7 +20,7 @@ public class GradeMngmnDetailVo {
     private LocalDate birthDate;
     private String phone;
     private String address;
-    private int studentNum;
+    private Long studentNum;
     private String majorName;
     private LocalDateTime createdAt;
     private String email;
