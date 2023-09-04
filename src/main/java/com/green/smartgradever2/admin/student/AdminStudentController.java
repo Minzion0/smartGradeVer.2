@@ -30,7 +30,7 @@ public class AdminStudentController {
 
     @GetMapping("/students")
     @Operation(summary = "학생 검색", description = "학번이나 이름 둘중 하나로 찾기가능")
-    public ResponseEntity<AdminStudentRes> searchStudent(@RequestParam(required = false) Integer studentNum, @RequestParam(required = false)String nm, @PageableDefault(sort="student_num", direction = Sort.Direction.DESC, size=10 )Pageable page
+    public ResponseEntity<AdminStudentRes> searchStudent(@RequestParam(required = false) Integer studentNum, @RequestParam(required = false)String nm, @PageableDefault(sort="studentNum", direction = Sort.Direction.DESC, size=10 )Pageable page
             , @RequestParam (defaultValue = "0") int grade, @RequestParam (defaultValue = "0",required = false) int finishedYn
             , @RequestParam (required = false,defaultValue = "0")Long imajor){
 
