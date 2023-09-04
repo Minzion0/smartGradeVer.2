@@ -19,7 +19,7 @@ public class AdminInsStudentVo {
     private LocalDate birthdate;
     private String phone;
     private int finishedYn;
-    private LocalDateTime createdAt;
+    private String  createdAt;
     private int grade;
     private int delYn;
 
