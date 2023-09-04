@@ -204,34 +204,34 @@ public class GradeMngmnService {
         return MAPPER.selGradeFindStudentDetail(dto);
     }
 
-//    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
-//        String jpql = "select s.pic, s.nm, s.gender, s.birthdate, s.phone, s.address, s.studentNum" +
-//                ", m.majorName, s.createdAt, s.email, sssc.score, m.graduationScore" +
-//                ", s.grade, sssc.semesterEntity, lc.lectureApplyEntity" +
-//                ", sssc.avgScore, avg(sssc.rating)" +
-//                " from LectureStudentEntity lc " +
-//                "LEFT join lc.studentEntity s " +
-//                "inner join s.majorEntity m " +
-//                "inner join  s.ssscList sssc where s.studentNum = :studentNum";
-//        EM.createQuery(jpql, LectureStudentEntity.class).setParameter("GradeMngmnDetailSelDto", dto).getResultList();
-//        StudentEntity stEntity = ST_REP.findById(dto.getStudentNum()).get();
-//        StudentSemesterScoreEntity sscEntity = GM_REP.findById(dto.getStudentNum()).get();
-//        LectureStudentEntity lsEntity = LS_REP.findById(sscEntity.getStudentEntity().getStudentNum()).get();
-//        MajorEntity mEntity = M_REP.findById(stEntity.getStudentNum()).get();
-//        return GradeMngmnDetailVo.builder()
-//                .address(stEntity.getAddress())
-//                .scoreStudent(sscEntity.getScore())
-//                .createdAt(stEntity.getCreatedAt())
-//                .phone(stEntity.getPhone())
-//                .pic(stEntity.getPic())
-//                .graduationScore(mEntity.getGraduationScore())
-//                .birthDate(stEntity.getBirthdate())
-//                .gender(stEntity.getGender())
-//                .email(stEntity.getEmail())
-//                .name(stEntity.getNm())
-//                .majorName(mEntity.getMajorName())
-//                .build();
-//    }
+    public GradeMngmnDetailVo selStudentDetail2(GradeMngmnDetailSelDto dto) {
+        String jpql = "select s.pic, s.nm, s.gender, s.birthdate, s.phone, s.address, s.studentNum" +
+                ", m.majorName, s.createdAt, s.email, sssc.score, m.graduationScore" +
+                ", s.grade, sssc.semesterEntity, lc.lectureApplyEntity" +
+                ", sssc.avgScore, avg(sssc.rating)" +
+                " from LectureStudentEntity lc " +
+                "LEFT join lc.studentEntity s " +
+                "inner join s.majorEntity m " +
+                "inner join  s.ssscList sssc where s.studentNum = :studentNum";
+        EM.createQuery(jpql, LectureStudentEntity.class).setParameter("GradeMngmnDetailSelDto", dto).getResultList();
+        StudentEntity stEntity = ST_REP.findById(dto.getStudentNum()).get();
+        StudentSemesterScoreEntity sscEntity = GM_REP.findById(dto.getStudentNum()).get();
+        LectureStudentEntity lsEntity = LS_REP.findById(sscEntity.getStudentEntity().getStudentNum()).get();
+        MajorEntity mEntity = M_REP.findById(stEntity.getStudentNum()).get();
+        return GradeMngmnDetailVo.builder()
+                .address(stEntity.getAddress())
+                .scoreStudent(sscEntity.getScore())
+                .createdAt(stEntity.getCreatedAt())
+                .phone(stEntity.getPhone())
+                .pic(stEntity.getPic())
+                .graduationScore(mEntity.getGraduationScore())
+                .birthDate(stEntity.getBirthdate())
+                .gender(stEntity.getGender())
+                .email(stEntity.getEmail())
+                .name(stEntity.getNm())
+                .majorName(mEntity.getMajorName())
+                .build();
+    }
 
 
 }
