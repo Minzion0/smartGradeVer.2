@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface GradeMngmnRepository extends JpaRepository<StudentSemesterScoreEntity, Long> {
@@ -27,27 +28,29 @@ public interface GradeMngmnRepository extends JpaRepository<StudentSemesterScore
             "inner join s.majorEntity m " +
             "inner join  s.ssscList sssc " +
             "where s.studentNum = :studentNum")
-    GradeMngmnDetailVo selStudentDetail(Long studentNum);
+    Optional<GradeMngmnDetailVo> selStudentDetail(Long studentNum);
 
     @Query(value = "select " +
             "sssc.grade, sem.semester, lne.lectureName," +
-            "p.nm, lne.score , ls.totalScore, :rating " +
+            "p.nm, lne.score , ls.totalScore, sssc.rating " +
             "from LectureStudentEntity ls " +
             "join ls.studentEntity s " +
             "join s.ssscList sssc " +
             "join sssc.semesterEntity sem " +
             "join ls.lectureApplyEntity la " +
             "join la.lectureNameEntity lne " +
-            "join la.professorEntity p ")
-    List<GradeMngmnVo> selGradeFindStudent(Pageable pageable);
+            "join la.professorEntity p " +
+            "WHERE s.studentNum = :studentNum")
+    List<GradeMngmnVo> selGradeFindStudent(Pageable pageable, Long studentNum);
 
-    @Query(value = "select distinct sssc.grade, sem.semester" +
+    @Query(value = "select sssc.grade, sem.semester" +
             ", sssc.avgScore, sssc.rating " +
             "from LectureStudentEntity ls " +
             "join ls.studentEntity s " +
             "join s.ssscList sssc " +
-            "join sssc.semesterEntity sem")
-    List<GradeMngmnAvgVo> selAvg(Pageable pageable);
+            "join sssc.semesterEntity sem " +
+            "WHERE s.studentNum = :studentNum")
+    List<Optional<GradeMngmnAvgVo>> selAvg(Pageable pageable, Long studentNum);
 
     GradeMngmnStudentVo findByStudentEntity(StudentEntity student);
 }
