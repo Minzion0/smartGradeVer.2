@@ -35,6 +35,7 @@ public class AdminProfessorController {
         AdminProfessorFindParam param = new AdminProfessorFindParam();
         param.setImajor(imajor);
         param.setName(name);
+
         AdminProfessorFindRes res = SERVICE.findProfessors(page, param);
 
         return ResponseEntity.ok().body(res);

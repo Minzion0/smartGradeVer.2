@@ -65,8 +65,8 @@ public class ProfessorService {
     }
 
     @Transactional
-    public ProfessorUpRes upProfessor(MultipartFile pic, ProfessorParam param) {
-        ProfessorEntity professor = professorRepository.findByIprofessor(param.getIprofessor());
+    public ProfessorUpRes upProfessor(MultipartFile pic, ProfessorParam param,Long iprofessor) {
+        ProfessorEntity professor = professorRepository.findByIprofessor(iprofessor);
         if (professor == null) {
             // 교수 정보가 없을 경우 처리
             return null;
@@ -177,7 +177,7 @@ public class ProfessorService {
     }
 
 
-    public List<ProfessorStudentData> getStudentsWithObjectionAndScores(Long ilecture, int objection) {
+    public List<ProfessorStudentData> getStudentsWithObjectionAndScores(Long ilecture, int objection,Long professorId) {
         List<LectureStudentEntity> studentsData = lectureStudentRep.findByLectureApplyEntityIlectureAndObjection(ilecture, objection);
 
         List<ProfessorStudentData> professorStudentDataList = new ArrayList<>();

@@ -19,12 +19,12 @@ public class GradeMngmnController {
     @Autowired
     private final GradeMngmnService SERVICE;
 
-    @PostMapping
-    @Operation(summary = "SEMESTER_SCORE INSERT")
-    public GradeMngmnRes postGradeMngmn(@RequestBody GradeMngmnInsDto dto) {
-        return SERVICE.postGradeMngmn(dto);
-    }
-//
+//    @PostMapping
+//    @Operation(summary = "SEMESTER_SCORE INSERT")
+//    public GradeMngmnRes postGradeMngmn(@RequestBody GradeMngmnInsDto dto) {
+//        return SERVICE.postGradeMngmn(dto);
+//    }
+////
 //    @PutMapping
 //    @Operation(summary = "SEMESTER_SCORE_PUT")
 //    public GradeMngmnUpdRes putGradeMngmn(@RequestParam Integer studentNum, @RequestParam Long isemester) {
@@ -57,7 +57,7 @@ public class GradeMngmnController {
     }
 
     @PatchMapping
-    @Operation(summary = "SEMESTER_SCORE_PUT")
+    @Operation(summary = "SEMESTER_SCORE 일괄입력 (학기말에 한번에 하는)")
     public GradeMngmnUpdRes putGradeMngmn2(@RequestParam Long isemester) {
         GradeMngmnUpdParam p = new GradeMngmnUpdParam();
         p.setIsemester(isemester);

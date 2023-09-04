@@ -18,6 +18,6 @@ public class AdminProfessorFindVo {
     private String phone;
     private String email;
     private String address;
-    private LocalDateTime createdAt;
+    private String  createdAt;
     private int delYn;
 }

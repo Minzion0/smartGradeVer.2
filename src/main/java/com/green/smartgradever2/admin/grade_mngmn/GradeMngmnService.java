@@ -40,31 +40,31 @@ public class GradeMngmnService {
     private final EntityManager EM;
 
 
-    public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
-        GradeMngmnDto mngmnDto = new GradeMngmnDto();
-        int result = MAPPER.insGradeMngmn(dto);
-        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(mngmnDto);
-        int point;
-        double score;
-        for (GradeMngmnVo a : voList) {
-            point = a.getTotalScore();
-            GradeUtils utils2 = new GradeUtils(point);
-            score = utils2.totalScore();
-
-            if (result == 1) {
-                GradeMngmnRes.builder()
-                        .isemester(dto.getIsemester())
-                        .studentNum(dto.getStudentNum())
-                        .ilectureName(dto.getIlectureName())
-                        .semester(dto.getSemester())
-                        .avgScore(point)
-                        .rating(score)
-                        .build();
-            }
-
-        }
-        return null;
-    }
+//    public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
+//        GradeMngmnDto mngmnDto = new GradeMngmnDto();
+//        int result = MAPPER.insGradeMngmn(dto);
+//        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(mngmnDto);
+//        int point;
+//        double score;
+//        for (GradeMngmnVo a : voList) {
+//            point = a.getTotalScore();
+//            GradeUtils utils2 = new GradeUtils(point);
+//            score = utils2.totalScore();
+//
+//            if (result == 1) {
+//                GradeMngmnRes.builder()
+//                        .isemester(dto.getIsemester())
+//                        .studentNum(dto.getStudentNum())
+//                        .ilectureName(dto.getIlectureName())
+//                        .semester(dto.getSemester())
+//                        .avgScore(point)
+//                        .rating(score)
+//                        .build();
+//            }
+//
+//        }
+//        return null;
+//    }
 
 //    //  수정이 필요함
 //    public GradeMngmnUpdRes updGradeMngmn(GradeMngmnUpdParam p) {
@@ -124,18 +124,18 @@ public class GradeMngmnService {
         SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
         log.info("semesterEntity.getIlectureStudent() : {}", semesterEntity.getIsemester());
 
-        LectureApplyEntity applyEntity = APPLY_REP.findById(semesterEntity.getIsemester()).get();
-        log.info("applyEntity.get().getIlecture() : {}", applyEntity.getIlecture());
+//        LectureApplyEntity applyEntity = APPLY_REP.findById(semesterEntity.getIsemester()).get();
+//        log.info("applyEntity.get().getIlecture() : {}", applyEntity.getIlecture());
 
-        LectureStudentEntity lectureStudentEntity = LS_REP.findById(applyEntity.getIlecture()).get();
-        List<LectureStudentEntity> list = LS_REP.findAllByLectureApplyEntity(applyEntity);
-        log.info("list.size() : {}", list.size());
+//        LectureStudentEntity lectureStudentEntity = LS_REP.findById(applyEntity.getIlecture()).get();
+//        List<LectureStudentEntity> list = LS_REP.findAllByLectureApplyEntity(applyEntity);
+//        log.info("list.size() : {}", list.size());
 
         int total;
         double avg;
 
         List<StudentEntity> studentEntities = ST_REP.findAll();
-        List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
+//        List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
         GradeUtils utils = new GradeUtils();
 
             for (int i = 0; i < studentEntities.size(); i++) {
@@ -201,19 +201,19 @@ public class GradeMngmnService {
                 .build();
     }
 
-//    public GradeMngmnFindRes selGradeMngmn2(GradeMngmnDto dto) {
+//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {
 //        long maxPage = GM_REP.count();
 //        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
 //        dto.setStaIdx(utils.getStaIdx());
 //
-//        Optional<StudentEntity> byId = ST_REP.findById(dto.getStudentNum());
-//        List<GradeMngmnAvgVo> avg = GM_REP.selAvg(dto.getPageable());
-//        List<GradeMngmnVo> voList = GM_REP.selGradeFindStudent(dto.getPageable());
-//        GradeMngmnStudentVo student = GM_REP.findByStudentEntity(byId.get());
+//        Optional<StudentEntity> student = ST_REP.findById(dto.getStudentNum());
+//        Optional<StudentEntity> byId = ST_REP.findById(student.get().getStudentNum());
+//        List<Optional<GradeMngmnAvgVo>> avg = GM_REP.selAvg(dto.getPageable(), dto.getStudentNum());
 //
 //        int point;
 //        double score;
-//        String rate;
+//        String rate = "";
+//        List<GradeMngmnVo> voList = GM_REP.selGradeFindStudent(dto.getPageable(), student.get().getStudentNum());
 //        for (GradeMngmnVo a : voList) {
 //            point = a.getTotalScore();
 //            GradeUtils utils2 = new GradeUtils(point);
@@ -221,11 +221,12 @@ public class GradeMngmnService {
 //            rate = utils2.totalRating(score);
 //            a.setRating(rate);
 //        }
+//        GradeMngmnStudentVo studentVo = new GradeMngmnStudentVo(student.get().getStudentNum(), student.get().getNm());
 //
 //        return GradeMngmnFindRes.builder()
 //                .avgVo(avg)
 //                .voList(voList)
-//                .student(student)
+//                .student(studentVo)
 //                .paging(utils)
 //                .build();
 //    }
@@ -235,13 +236,15 @@ public class GradeMngmnService {
 //    }
 
     public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
-        GradeMngmnDetailVo gradeMngmnDetailVo;
         try {
-            gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
-
+            Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
+            if (gradeMngmnDetailVo.isPresent()) {
+                return gradeMngmnDetailVo.get();
+            } else {
+                throw new RuntimeException("비어있는 값이 있습니다.");
+            }
         } catch (Exception e) {
             throw new NullPointerException("null 값이 존재합니다.");
         }
-        return gradeMngmnDetailVo;
     }
 }
