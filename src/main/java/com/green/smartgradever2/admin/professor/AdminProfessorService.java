@@ -96,6 +96,7 @@ public class AdminProfessorService {
 
         PagingUtils pagingUtils = new PagingUtils(pageable.getPageNumber(),(int)list.getTotalElements());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         List<AdminProfessorFindVo> professors = list.getContent().stream().map(item -> AdminProfessorFindVo.builder()
                 .iprofessor(item.getIprofessor())
@@ -106,7 +107,7 @@ public class AdminProfessorService {
                 .phone(item.getPhone())
                 .email(item.getEmail())
                 .address(item.getAddress())
-                .createdAt(item.getCreatedAt())
+                .createdAt(item.getCreatedAt().format(formatter))
                 .delYn(item.getDelYn()).build()).toList();
 
         return AdminProfessorFindRes.builder().professors(professors).page(pagingUtils).build();
