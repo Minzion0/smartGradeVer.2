@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,7 +73,9 @@ public class AdminStudentService {
         EM.clear();
 
         StudentEntity student = RPS.findById(entity.getStudentNum()).get();
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime createdAt = student.getCreatedAt();
+        String format = createdAt.format(formatter);
 
         return AdminInsStudentVo.builder().studentNum(student.getStudentNum())
                                             .nm(student.getNm())
@@ -83,7 +86,7 @@ public class AdminStudentService {
                                             .phone(student.getPhone())
                                             .gender(student.getGender())
                                             .imajor(student.getMajorEntity().getImajor())
-                                            .createdAt(student.getCreatedAt())
+                                            .createdAt(student.getCreatedAt().format(formatter))
                                             .build();
 
     }
@@ -105,6 +108,8 @@ public class AdminStudentService {
 //                .createdAt(student.getCreatedAt().toLocalDate())
 //                .finishedYn(student.getFinishedYn())
 //                .build()).toList();
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         AdminStudentFindDto dto = new AdminStudentFindDto();
         dto.setImajor(param.getImajor());
@@ -138,6 +143,8 @@ public class AdminStudentService {
 
         List<AdminStudentFindVo> students = MAPPER.findStudents(dto);
 
+
+
         AdminStudentRes res = new AdminStudentRes();
         res.setPage(utils);
         res.setStudents(students);
@@ -167,6 +174,7 @@ public class AdminStudentService {
         studentEntity.setNm(param.getName());
 
         RPS.save(studentEntity);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
      return    AdminInsStudentVo.builder().studentNum(studentEntity.getStudentNum())
                 .nm(studentEntity.getNm())
@@ -177,7 +185,7 @@ public class AdminStudentService {
                 .phone(studentEntity.getPhone())
                 .gender(studentEntity.getGender())
                 .imajor(studentEntity.getMajorEntity().getImajor())
-                .createdAt(studentEntity.getCreatedAt())
+                .createdAt(studentEntity.getCreatedAt().format(formatter))
                 .build();
 
 
