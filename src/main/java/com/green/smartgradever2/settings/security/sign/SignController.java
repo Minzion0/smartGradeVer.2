@@ -94,7 +94,7 @@ public class SignController {
 
         String role = details.getRoles().get(0);
 
-        OtpRes res = SERVICE.otp(result, role);
+        OtpRes res = SERVICE.otp(result, role, iuser);
 
         return ResponseEntity.ok().body(res);
     }

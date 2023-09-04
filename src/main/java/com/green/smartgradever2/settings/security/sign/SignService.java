@@ -4,6 +4,9 @@ package com.green.smartgradever2.settings.security.sign;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.green.smartgradever2.config.entity.ProfessorEntity;
+import com.green.smartgradever2.config.entity.StudentEntity;
+import com.green.smartgradever2.professor.ProfessorRepository;
 import com.green.smartgradever2.settings.security.CommonRes;
 import com.green.smartgradever2.settings.security.config.RedisService;
 import com.green.smartgradever2.settings.security.config.security.AuthenticationFacade;
@@ -14,6 +17,7 @@ import com.green.smartgradever2.settings.security.config.security.otp.OtpRes;
 import com.green.smartgradever2.settings.security.config.security.otp.TOTP;
 import com.green.smartgradever2.settings.security.config.security.otp.TOTPTokenGenerator;
 import com.green.smartgradever2.settings.security.sign.model.*;
+import com.green.smartgradever2.student.StudentRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +43,8 @@ public class SignService {
     private final AuthenticationFacade FACADE;
     private final ObjectMapper OBJECT_MAPPER;
     private final TOTPTokenGenerator totp;
+    private final StudentRepository STUDENT_REP;
+    private final ProfessorRepository PROFESSOR_REP;
 
 
     public SignInResultDto signIn(SignInParam param) throws Exception {
@@ -148,7 +154,9 @@ public class SignService {
         REDIS_SERVICE.setValuesWithTimeout(accessToken, "logout", expiration);  //남은시간 이후가 되면 삭제가 되도록 함.
     }
 
-    public OtpRes otp(String uid, String role) throws Exception {
+    public OtpRes otp(String uid, String role, Long iuser) throws Exception {
+        ProfessorEntity professor = null;
+        StudentEntity student = null;
 
         String secretKey = totp.generateSecretKey();//설정할 secretKey를 생성
         UserSelRoleEmailVo vo = MAPPER.getUserRoleEmail(uid, role);
@@ -166,6 +174,16 @@ public class SignService {
             updSecretKey(uid, role, secretKey);
         }catch (Exception e){
             throw new Exception("등록 오류 입니다");
+        }
+        /** otp 큐얄 저장 **/
+        if (role.equals("ROLE_STUDENT")){
+            student = STUDENT_REP.findById(iuser).get();
+            student.setOtpUrl(barcodeUrl);
+            STUDENT_REP.save(student);
+        } else if (role.equals("ROLE_PROFESSOR")) {
+            professor = PROFESSOR_REP.findById(iuser).get();
+            professor.setOtpUrl(barcodeUrl);
+            PROFESSOR_REP.save(professor);
         }
         return res;
     }
