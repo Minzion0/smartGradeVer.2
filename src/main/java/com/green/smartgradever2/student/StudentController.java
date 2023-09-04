@@ -54,14 +54,14 @@ public class StudentController {
 
     @GetMapping("/{studentNum}")
     @Operation(summary = "학생 프로필 디테일")
-    public StudentFileSelRes getStudentProfileDetail(@PathVariable int studentNum) {
+    public StudentFileSelRes getStudentProfileDetail(@PathVariable Long studentNum) {
     return    SERVICE.getStudentProfileWithLectures(studentNum);
 
     }
 
     @GetMapping
     @Operation(summary = "학생 강의별 성적 조회")
-    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@RequestParam int studentNum) {
+    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@RequestParam Long studentNum) {
         StudentEntity studentEntity = SERVICE.getStudentById(studentNum); // 학생 정보 가져오기
         if (studentEntity == null) {
             return ResponseEntity.notFound().build(); // 학생이 존재하지 않으면 404 반환
@@ -74,7 +74,7 @@ public class StudentController {
 
     @GetMapping("/{studentNum}/score")
     @Operation(summary = "학점 조회")
-    public StudentInfoDto getStudentInfo(@PathVariable Integer studentNum) {
+    public StudentInfoDto getStudentInfo(@PathVariable Long studentNum) {
         return SERVICE.getStudentInfo(studentNum);
     }
 
@@ -88,5 +88,19 @@ public class StudentController {
         dto.setIstudent(details.getIuser());
 
         return ResponseEntity.ok().body(SERVICE.updPassword(param, dto));
+    }
+
+
+    @PutMapping("/objection")
+    public ResponseEntity<String> updateObjection(
+            @RequestParam Long studentNum,
+            @RequestParam Long ilectureStudent,
+            @RequestBody StudentObjectionDto objectionDto) {
+        try {
+           SERVICE.updateObjection(studentNum, ilectureStudent, objectionDto);
+            return ResponseEntity.status(HttpStatus.OK).body("학생의 이의제의가 신청되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+        }
     }
 }

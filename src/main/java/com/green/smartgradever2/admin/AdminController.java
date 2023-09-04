@@ -5,6 +5,7 @@ import com.green.smartgradever2.config.exception.AdminException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -99,5 +101,11 @@ public class AdminController {
     public AdminUpdLectureRes updLecture(@RequestBody AdminUpdLectureDto dto)  {
 
         return SERVICE.lectureModify(dto);
+    }
+
+    @GetMapping("/student-file")
+    @Operation(summary = "테스트용")
+public void excelTest(HttpServletResponse request,@RequestParam(required = false) Integer grade) throws IOException {
+        SERVICE.excelTest(request,grade);
     }
 }

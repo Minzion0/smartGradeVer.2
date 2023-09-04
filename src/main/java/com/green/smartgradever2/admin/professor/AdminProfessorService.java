@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,14 +62,16 @@ public class AdminProfessorService {
         EM.detach(professor);
 
         ProfessorEntity entity = RPS.findById(professor.getIprofessor()).get();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String format = entity.getCreatedAt().format(formatter);
 
-       return AdminProfessorInsVo.builder().iprofessor(entity.getIprofessor())
+        return AdminProfessorInsVo.builder().iprofessor(entity.getIprofessor())
                 .imajor(entity.getMajorEntity().getImajor())
                 .nm(entity.getNm())
                 .gender(entity.getGender())
                 .birthdate(entity.getBirthDate())
                 .phone(entity.getPhone())
-                .createdAt(entity.getCreatedAt())
+                .createdAt(format)
                 .delYn(entity.getDelYn())
                 .build();
     }
@@ -139,7 +142,37 @@ public class AdminProfessorService {
 
     }
 
+public AdminProfessorInsVo patchProfessor(Long iprofessor, AdminProfessorPatchParam param) throws Exception {
 
+    Optional<ProfessorEntity> optionalProfessorEntity = RPS.findById(iprofessor);
+    if (optionalProfessorEntity.isEmpty()){
+        throw new Exception("없는 회원 정보입니다");
+    }
+    ProfessorEntity professorEntity = optionalProfessorEntity.get();
+
+    MajorEntity majorEntity = new MajorEntity();
+    majorEntity.setImajor(param.getImajor());
+
+    professorEntity.setNm(param.getName());
+    professorEntity.setMajorEntity(majorEntity);
+
+    RPS.save(professorEntity);
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    String format = professorEntity.getCreatedAt().format(formatter);
+
+    return   AdminProfessorInsVo.builder().iprofessor(professorEntity.getIprofessor())
+            .imajor(professorEntity.getMajorEntity().getImajor())
+            .nm(professorEntity.getNm())
+            .gender(professorEntity.getGender())
+            .birthdate(professorEntity.getBirthDate())
+            .phone(professorEntity.getPhone())
+            .createdAt(format)
+            .delYn(professorEntity.getDelYn())
+            .build();
+
+
+}
 
 
 }

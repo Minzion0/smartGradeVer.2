@@ -6,7 +6,8 @@ import java.time.LocalDate;
 
 @Data
 public class LectureAppllyInsParam {
-    private Long ilectureName;
+    private String  lectureName;
+    private int score;
     private Long ilectureRoom;
     private String lectureStrTime;
     private String lectureEndTime;

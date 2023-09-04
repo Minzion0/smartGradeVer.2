@@ -16,5 +16,7 @@ public class StudentProfileLectureVo {
     private LocalDate  lectureEndDate;
     private LocalTime lectureStrTime;
     private LocalTime  lectureEndTime;
+    private int score;
+
 
 }

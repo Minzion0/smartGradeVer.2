@@ -65,7 +65,7 @@ public class GradeMngmnService {
         return null;
     }
 
-//    // todo 수정이 필요함
+//    //  수정이 필요함
 //    public GradeMngmnUpdRes updGradeMngmn(GradeMngmnUpdParam p) {
 //        GradeMngmnUpdDto dto = new GradeMngmnUpdDto();
 //        dto.setIsemester(p.getIsemester());

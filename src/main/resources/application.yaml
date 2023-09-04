@@ -19,11 +19,24 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  # e-mail config
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: qkqh970605@gmail.com
+    password: lbjwkwlsvbwwmcda
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/team_b
-    username: root
+    url: jdbc:mariadb://192.168.0.144:3306/team_b
+    username: team_b
     password: green502
   #mybatisz
 
@@ -37,6 +50,12 @@ springdoc:
   swagger-ui:
     path: /swagger.html
     operations-sorter : method
+
+#naver api 코드
+open-api:
+  client-id: 6c1d_wx2wYAf73bPpAhj
+  client-secret: Pe9NsHDIy6
+
 
 
 file:

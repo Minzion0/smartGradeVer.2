@@ -11,7 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/grade-mngmn")
+@RequestMapping("/api/admin/grade-mngmn")
 @RequiredArgsConstructor
 @Tag(name = "관리자 통합 성적 관리")
 public class GradeMngmnController {
