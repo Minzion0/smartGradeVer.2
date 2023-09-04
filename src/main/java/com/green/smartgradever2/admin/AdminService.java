@@ -159,7 +159,7 @@ public class AdminService {
                 vo.setIlecture(entity.getIlecture().getIlecture());
                 vo.setReturnCtnt(entity.getReturnCtnt());
                 vo.setReturnDate(entity.getReturnDate());
-                return ResponseEntity.ok().body(entity);
+                return ResponseEntity.ok().body(vo);
             }
         }
         //3차로 넘어오면서 성적이아닌 강의 정보를 보여주기로 한다
