@@ -29,12 +29,12 @@ public class StudentController {
             "email : 이메일<br>"+
             "pic : 학생프로필사진")
     public ResponseEntity<StudentUpRes> upStudentProfile(@RequestPart(required = false) MultipartFile pic
-            , @RequestPart StudentUpdDto dto) {
+            , @RequestPart StudentUpdDto dto,@AuthenticationPrincipal MyUserDetails details) {
         StudentParam param = new StudentParam();
         param.setPhone(dto.getPhone());
         param.setEmail(dto.getEmail());
-        param.setStudentNum(dto.getStudentNum());
         param.setAddress(dto.getAddress());
+        dto.setStudentNum(details.getIuser());
 
         try {
             //기존 사진 삭제
