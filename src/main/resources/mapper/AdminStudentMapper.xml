@@ -40,7 +40,7 @@
         </where>
 
         GROUP BY A.student_num
-        ORDER BY A.created_at DESC
+        ORDER BY A.student_num DESC
         LIMIT #{staIdx},#{row}
 
 
