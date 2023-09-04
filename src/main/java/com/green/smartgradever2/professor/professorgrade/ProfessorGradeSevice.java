@@ -187,6 +187,15 @@ public class ProfessorGradeSevice {
 
     }
 
-
+    public void updateObjection(Long ilecture, Long ilectureStudent, int newObjection) {
+        newObjection = 2;
+        LectureStudentEntity lectureStudentEntity = lectureStudentRep.findByLectureApplyEntityIlectureAndIlectureStudent(ilecture, ilectureStudent);
+        if (lectureStudentEntity != null) {
+            lectureStudentEntity.setObjection(newObjection);
+            lectureStudentRep.save(lectureStudentEntity);
+        } else {
+            throw new IllegalArgumentException("강의 학생을 찾을 수 없습니다.");
+        }
+    }
 
 }

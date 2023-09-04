@@ -170,7 +170,7 @@ public class StudentService {
 
 
         response.setSuccess(true);
-        response.setMessage("수상 신청 성공.");
+        response.setMessage("수강 신청 성공.");
         response.setLectureName(lectureApply.getLectureNameEntity().getLectureName()); // 강의 이름 설정
         response.setIlectureStudent(lectureStudent.getIlectureStudent());
         response.setIlecture(lectureApply.getIlecture());
@@ -349,11 +349,11 @@ public class StudentService {
         LectureStudentEntity lectureStudentEntity = lectureStudentRep.findByStudentEntityStudentNumAndIlectureStudent(studentNum, ilectureStudent);
         if (lectureStudentEntity != null) {
             int objection = objectionDto.getObjection();
-            if (objection >= 0 && objection <= 4) {
+            if (objection >= 0 && objection <= 1) {
                 lectureStudentEntity.setObjection(objection);
                 lectureStudentRep.save(lectureStudentEntity);
             } else {
-                throw new IllegalArgumentException("objection 값은 0에서 4 사이여야 합니다.");
+                throw new IllegalArgumentException("objection 값은 0에서 1 사이여야 합니다.");
             }
         } else {
             throw new IllegalArgumentException("학생과 강의 학생이 일치하지 않습니다.");

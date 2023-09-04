@@ -1,5 +1,6 @@
 package com.green.smartgradever2.professor;
 
+import com.green.smartgradever2.config.entity.LectureStudentEntity;
 import com.green.smartgradever2.professor.model.*;
 import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,14 +28,19 @@ public class ProfessorController {
 //        return SERVICE.getProfessorProfile(iprofessor);
 //    }
     @GetMapping
-    @Operation(summary = "교수프로필 본인 강의까지 출력")
+    @Operation(summary = "교수프로필 디테일",description = "majorName : 전공이름<br>"+"name : 교수이름"
+    +"gender : 성별<br>"+"pic : 프로필 사진<br>"+"birthDate : 생년월일<br>"+"phone : 폰번호<br>"+"email : 이메일<br>"
+    +"address : 주소<br>"+"ilecture : 강의 pk<br>"+"lectureStrDate : 강의시작날짜<br>"+
+    "lectureEndDate : 강의 종료날짜<br>"+"lectureStrTime : 강의 시작시간<br>"+"lectureEndTime : 강의종료시간<br>"
+    +"lectureName: 강의명")
     public ProfessorSelRes getProfessorWithLectures(@RequestParam Long iprofessor) {
 
         return SERVICE.getProfessorLectures(iprofessor);
     }
 
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "교수 프로필 수정")
+    @Operation(summary = "교수 프로필 수정",description = "address : 주소<br>"+"phone : 폰번호"+"eamil : 이메일<br>"+
+    "pic : 프로필사진")
     public ResponseEntity<ProfessorUpRes> updateProfessorProfile(
             @RequestPart(required = false) MultipartFile pic,
 
@@ -56,7 +64,15 @@ public class ProfessorController {
         }
     }
     @GetMapping("/lecture-List")
-    @Operation(summary = "본인의 강의 조회")
+    @Operation(summary = "본인의 강의 조회",description = "ilecture : 강의pk<br>"+
+            "lectureName : 강의명<br>"+
+            "lectureRoomName : 강의실<br>"+
+            "isemester : 학기 <br>"+
+            "openingProceudres : 신청 절차 0반려,1신청,2신청완료모집,3개강,4종료<br>"+
+            "gradeLimit : 학년 제한 <br>"+
+            "lectureMaxPeople : 수강인원<br>"+
+            "score : 강의 학점<br>"+
+            "delYn : 삭제 여부 <br>")
     public ProfessorSelLectureRes getLecturePro(@RequestParam Long iprofessor
             ,@RequestParam (defaultValue = "1") int page
             ,@RequestParam(required = false ) String openingProcedures) {
@@ -79,5 +95,22 @@ public class ProfessorController {
         dto.setRole(role);
         return ResponseEntity.ok().body(SERVICE.updPassword(dto, param));
     }
+
+
+
+    @GetMapping("/objection")
+    @Operation(summary = "학생 이의신청 리스트",description = "ilecture : 강의 PK<br>"+"objection : 이의신청 1 <br>"+
+            "grade : 알파벳 등급 <br>"+
+            "totalScore : 총점<br>"+
+            "studentNum : 학번<br>"+
+            "studentName : 학생이름")
+    public ResponseEntity<List<ProfessorStudentData>> getStudentsWithObjectionAndScores(
+            @RequestParam Long ilecture,
+            @RequestParam int objection) {
+        List<ProfessorStudentData> studentsWithObjectionAndScores = SERVICE.getStudentsWithObjectionAndScores(ilecture, objection);
+
+        return ResponseEntity.ok(studentsWithObjectionAndScores);
+    }
+
 
 }
