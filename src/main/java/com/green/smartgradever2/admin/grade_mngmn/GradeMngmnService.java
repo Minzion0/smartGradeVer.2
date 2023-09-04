@@ -201,34 +201,34 @@ public class GradeMngmnService {
                 .build();
     }
 
-    public GradeMngmnFindRes selGradeMngmn2(GradeMngmnDto dto) {
-        long maxPage = GM_REP.count();
-        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
-        dto.setStaIdx(utils.getStaIdx());
-
-        Optional<StudentEntity> byId = ST_REP.findById(dto.getStudentNum());
-        List<GradeMngmnAvgVo> avg = GM_REP.selAvg(dto.getPageable());
-        List<GradeMngmnVo> voList = GM_REP.selGradeFindStudent(dto.getPageable());
-        GradeMngmnStudentVo student = GM_REP.findByStudentEntity(byId.get());
-
-        int point;
-        double score;
-        String rate;
-        for (GradeMngmnVo a : voList) {
-            point = a.getTotalScore();
-            GradeUtils utils2 = new GradeUtils(point);
-            score = utils2.totalScore();
-            rate = utils2.totalRating(score);
-            a.setRating(rate);
-        }
-
-        return GradeMngmnFindRes.builder()
-                .avgVo(avg)
-                .voList(voList)
-                .student(student)
-                .paging(utils)
-                .build();
-    }
+//    public GradeMngmnFindRes selGradeMngmn2(GradeMngmnDto dto) {
+//        long maxPage = GM_REP.count();
+//        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+//        dto.setStaIdx(utils.getStaIdx());
+//
+//        Optional<StudentEntity> byId = ST_REP.findById(dto.getStudentNum());
+//        List<GradeMngmnAvgVo> avg = GM_REP.selAvg(dto.getPageable());
+//        List<GradeMngmnVo> voList = GM_REP.selGradeFindStudent(dto.getPageable());
+//        GradeMngmnStudentVo student = GM_REP.findByStudentEntity(byId.get());
+//
+//        int point;
+//        double score;
+//        String rate;
+//        for (GradeMngmnVo a : voList) {
+//            point = a.getTotalScore();
+//            GradeUtils utils2 = new GradeUtils(point);
+//            score = utils2.totalScore();
+//            rate = utils2.totalRating(score);
+//            a.setRating(rate);
+//        }
+//
+//        return GradeMngmnFindRes.builder()
+//                .avgVo(avg)
+//                .voList(voList)
+//                .student(student)
+//                .paging(utils)
+//                .build();
+//    }
 
 //    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
 //        return MAPPER.selGradeFindStudentDetail(dto);
