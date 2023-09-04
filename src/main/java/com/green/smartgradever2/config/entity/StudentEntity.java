@@ -42,6 +42,7 @@ public class StudentEntity extends BaseEntity {
     @OneToMany(mappedBy = "studentEntity")
     private List<StudentSemesterScoreEntity> ssscList = new ArrayList<>();
 
+
     @Column(name = "grade", length = 10)
     @ColumnDefault("1")
     private Integer grade;
