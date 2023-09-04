@@ -150,10 +150,15 @@ public class AdminService {
     public ResponseEntity<?> findLectureStudent(Long ilecture) {
         LectureApplyEntity apply = new LectureApplyEntity();
         apply.setIlecture(ilecture);
+        Optional<LectureApplyEntity> optionalLectureApplyEntity = APPLY_RPS.findById(ilecture);
+        if (optionalLectureApplyEntity.isEmpty()) {
+            throw new AdminException("존제하지 않는 강의 입니다");
+        }
+        LectureApplyEntity lectureApplyEntity = optionalLectureApplyEntity.get();
         List<LectureStudentEntity> applyEntity = LECTURE_STUDENT_RPS.findByLectureApplyEntity(apply);
 
-        if (applyEntity.size() != 0) {
-            if (applyEntity.get(0).getLectureApplyEntity().getOpeningProceudres() == 0) {
+
+            if (lectureApplyEntity.getOpeningProceudres()==0) {
                 LectureConditionEntity entity = LECTURE_CONDITION_RPS.findById(ilecture).get();
                 AdminLectureConditionVo vo = new AdminLectureConditionVo();
                 vo.setIlecture(entity.getIlecture().getIlecture());
@@ -161,7 +166,7 @@ public class AdminService {
                 vo.setReturnDate(entity.getReturnDate());
                 return ResponseEntity.ok().body(vo);
             }
-        }
+
         //3차로 넘어오면서 성적이아닌 강의 정보를 보여주기로 한다
 //        List<AdminLectureStudentVo> vo = applyEntity.stream().map(student -> {
 //                    GradeUtils gradeUtils = new GradeUtils(student.getTotalScore());
@@ -181,11 +186,8 @@ public class AdminService {
 //                }
 //        ).toList();
 
-        Optional<LectureApplyEntity> optionalLectureApplyEntity = APPLY_RPS.findById(ilecture);
-        if (optionalLectureApplyEntity.isEmpty()) {
-            throw new AdminException("존제하지 않는 강의 입니다");
-        }
-        LectureApplyEntity lectureApplyEntity = optionalLectureApplyEntity.get();
+
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime lectureStrTime = lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime();
