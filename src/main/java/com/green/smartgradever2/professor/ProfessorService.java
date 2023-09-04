@@ -2,8 +2,10 @@ package com.green.smartgradever2.professor;
 import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
+import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.professor.model.*;
 import com.green.smartgradever2.utils.FileUtils;
+import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class ProfessorService {
     private final ProfesserRepository professorRepository;
     private final LectureApplyRepository lectureApplyRepository;
     private final PasswordEncoder PW_ENCODER;
+    private final LectureStudentRepository lectureStudentRep;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -173,4 +176,33 @@ public class ProfessorService {
 
         return "비밀번호 변경이 완료 되었습니다.";
     }
+
+
+    public List<ProfessorStudentData> getStudentsWithObjectionAndScores(Long ilecture, int objection) {
+        List<LectureStudentEntity> studentsData = lectureStudentRep.findByLectureApplyEntityIlectureAndObjection(ilecture, objection);
+
+        List<ProfessorStudentData> professorStudentDataList = new ArrayList<>();
+
+        for (LectureStudentEntity entity : studentsData) {
+            GradeUtils gradeUtils = new GradeUtils();
+            ProfessorStudentData professorStudentData = new ProfessorStudentData();
+            professorStudentData.setStudentNum(entity.getStudentEntity().getStudentNum());
+            professorStudentData.setStudentName(entity.getStudentEntity().getNm());
+            professorStudentData.setTotalScore(entity.getTotalScore());
+
+            String grade = gradeUtils.totalGradeFromScore1(professorStudentData.getTotalScore());
+            professorStudentData.setGrade(grade);
+
+            if (objection == 1) {
+                professorStudentDataList.add(professorStudentData);
+            }
+        }
+
+        return professorStudentDataList;
+    }
+
+
+
+
+
 }
