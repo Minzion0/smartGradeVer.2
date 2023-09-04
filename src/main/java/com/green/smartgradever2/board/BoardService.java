@@ -46,6 +46,7 @@ public class BoardService {
         entity.setTitle(dto.getTitle());
         entity.setCtnt(dto.getCtnt());
         entity.setImportance(dto.getImportance());
+        entity.setBoardView(0L);
 
         BoardEntity result = BOARD_REP.save(entity);
 
@@ -152,15 +153,54 @@ public class BoardService {
     }
 
     /** 공지사항 수정 **/
-    public BoardInsVo updBoard (BoardUpdDto dto) {
+    public BoardInsVo updBoard (BoardUpdDto dto, List<MultipartFile> pics) {
         BoardEntity entity = BOARD_REP.getReferenceById(dto.getIboard());
         entity.setTitle(dto.getTitle());
         entity.setCtnt(dto.getCtnt());
         entity.setImportance(dto.getImportance());
         entity.setUpdatedAt(LocalDateTime.now());
 
-        BOARD_REP.save(entity);
 
+        BoardEntity result = BOARD_REP.save(entity);
+
+
+        List<Long> ipic = dto.getIpic();
+
+        List<BoardPicEntity> picList = new ArrayList<>();
+
+        if (result != null) {
+            if (pics != null) {
+                for (Long picPk : ipic) {
+                    BoardPicEntity pic = BOARD_PIC_REP.findById(picPk).get();
+                    BOARD_PIC_REP.delete(pic);
+                }
+
+                String centerPath = String.format("boardPic/%d", result.getIboard());
+                String targetPath = String.format("%s/%s", FileUtils.getAbsolutePath(fileDir),centerPath);
+
+                File targetFile = new File(targetPath);
+                if (!targetFile.exists()) {
+                    targetFile.mkdirs();
+                }
+
+                for (int i = 0; i < pics.size(); i++) {
+                    String originFile = pics.get(i).getOriginalFilename();
+                    String saveName = FileUtils.makeRandomFileNm(originFile);
+
+                    File targetFilePath = new File(targetPath + "/" + saveName);
+                    try {
+                        pics.get(i).transferTo(targetFilePath);
+                    } catch (IOException e) {
+                        throw new RuntimeException("파일저장을 실패했습니다.");
+                    }
+                    BoardPicEntity picEntity = new BoardPicEntity();
+                    picEntity.setBoardEntity(result);
+                    picEntity.setPic(saveName);
+                    picList.add(picEntity);
+                    BOARD_PIC_REP.save(picEntity);
+                }
+            }
+        }
         return BoardInsVo.builder()
                 .iboard(entity.getIboard())
                 .iadmin(entity.getAdminEntity().getIadmin())
@@ -168,6 +208,7 @@ public class BoardService {
                 .ctnt(entity.getCtnt())
                 .updatedAt(entity.getUpdatedAt())
                 .importance(entity.getImportance())
+                .pisc(picList)
                 .build();
     }
 
@@ -176,9 +217,13 @@ public class BoardService {
         BoardEntity entity = BOARD_REP.findById(iboard).get();
         List<BoardPicEntity> picEntity = BOARD_PIC_REP.findByBoardEntity(entity);
 
-        List<String> picList = new ArrayList<>();
-        for (BoardPicEntity pic : picEntity) {
-            picList.add(pic.getPic());
+        List<BoardPicVo> picList = new ArrayList<>();
+        for (int i = 0; i < picEntity.size(); i++) {
+         BoardPicVo vo = new BoardPicVo();
+         vo.setIpic(picEntity.get(i).getIpic());
+         vo.setPic(picEntity.get(i).getPic());
+         picList.add(vo);
+
         }
 
         BOARD_REP.updateView(entity.getIboard());
