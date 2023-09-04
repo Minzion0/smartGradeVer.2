@@ -7,7 +7,7 @@ import com.green.smartgradever2.admin.semester.SemesterRepository;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.model.*;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
-import com.green.smartgradever2.professor.ProfesserRepository;
+import com.green.smartgradever2.professor.ProfessorRepository;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -38,7 +38,7 @@ public class LectureApplyService {
     private final AdminProfessorRepository PROFESSOR_RPS;
     private final LectureScheduleRepository LECTURE_SCHEDULE_RPS;
     private final EntityManager EM;
-    private final ProfesserRepository professerRep;
+    private final ProfessorRepository professerRep;
 
 
 
