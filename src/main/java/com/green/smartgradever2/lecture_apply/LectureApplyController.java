@@ -1,11 +1,13 @@
 package com.green.smartgradever2.lecture_apply;
 
 import com.green.smartgradever2.lecture_apply.model.*;
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,20 +28,20 @@ public class LectureApplyController {
             + "attendace : 출결 배점<br>" + "midtermExamination : 중간고사 배점<br>" + "finalExamination : 기말고사 배점<br>"
             + "lectureMaxPeople : 강의최대 인원 1~30<br>" + "gradeLimit : 신청할수있는 학년범위 1~4<br>" + "delYn : 삭제 여부<br>"
             + "<br>" + "기본 배점 출결(20),중간고사(40),기말고사(40)<br>")
-    public LectureApplyRes postApply(@RequestParam Long iprofessor, @RequestBody LectureAppllyInsParam param) throws Exception {
+    public LectureApplyRes postApply(@AuthenticationPrincipal MyUserDetails details, @RequestBody LectureAppllyInsParam param) throws Exception {
 
-        return service.InsApply(iprofessor,param);
+        return service.InsApply(details.getIuser(), param);
     }
 
 
     @GetMapping("/lecture/list")
     @Operation(summary = "신청중인 강의 리스트")
-    private ResponseEntity<LectureSelAllRes> getLecture(@RequestParam Long iprofessor,@RequestParam(required = false) Integer openingProceudres) {
+    private ResponseEntity<LectureSelAllRes> getLecture(@AuthenticationPrincipal MyUserDetails details, @RequestParam(required = false) Integer openingProceudres) {
         if (openingProceudres != null && (openingProceudres < 0 || openingProceudres > 4)) {
             return ResponseEntity.badRequest().build(); // 잘못된 파라미터 값일 경우 400 Bad Request 반환
         }
 
-        LectureSelAllRes lectureSelAllRes = service.getList(iprofessor,openingProceudres);
+        LectureSelAllRes lectureSelAllRes = service.getList(details.getIuser(), openingProceudres);
 
         return ResponseEntity.ok(lectureSelAllRes);
     }

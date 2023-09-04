@@ -53,8 +53,6 @@ public class LectureApplyEntity extends BaseEntity{
     @ColumnDefault("1")
     private Integer openingProceudres;
 
-    @Column(name = "lecture_end_date", updatable = false)
-    private LocalDate lectureEndDate;
 
     @Column(name = "attendance", length = 10)
     private int attendance;

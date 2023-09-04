@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +40,8 @@ public class StudentService {
     private String fileDir;
 
     @Transactional
-    public StudentUpRes upStudent(MultipartFile pic, StudentParam param) {
-        StudentEntity student = studentRep.findBystudentNum(param.getStudentNum());
+    public StudentUpRes upStudent(MultipartFile pic, StudentParam param,Long StudentNum) {
+        StudentEntity student = studentRep.findBystudentNum(StudentNum);
 
         if (student == null) {
             return null;
@@ -154,7 +155,11 @@ public class StudentService {
                 .build();
         lectureStudentRep.save(lectureStudent);
 
-
+        if (lectureApply.getOpeningProceudres() != 2 || LocalDate.now().isAfter(lectureApply.getStudentsApplyDeadline())) {
+            response.setSuccess(false);
+            response.setMessage("신청 기간이 종료되었거나 강의 신청이 불가능한 강의입니다.");
+            return response;
+        }
 
 
 
