@@ -4,6 +4,7 @@ import com.green.smartgradever2.admin.grade_mngmn.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,7 +37,7 @@ public class GradeMngmnController {
 //
     @GetMapping
     @Operation(summary = " 학번으로 조회")
-    public GradeMngmnFindRes getGradeMngmn(@PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
+    public GradeMngmnFindRes getGradeMngmn(@ParameterObject @PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
                                            @RequestParam(required = false, defaultValue = "0") int grade,
                                            @RequestParam Long studentNum) {
 
