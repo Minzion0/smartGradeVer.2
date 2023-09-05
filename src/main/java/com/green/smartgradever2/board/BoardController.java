@@ -30,14 +30,14 @@ public class BoardController {
     @PostMapping(value = "/pics", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
-    public BoardInsRes insBoard(@RequestPart BoardInsParam params,
+    public BoardInsRes insBoard(@RequestPart BoardInsParam param,
                                 @RequestPart(required = false) List<MultipartFile> pics,
             @AuthenticationPrincipal MyUserDetails details ) {
         BoardInsDto dto = new BoardInsDto();
-        dto.setCtnt(params.getCtnt());
+        dto.setCtnt(param.getCtnt());
         dto.setIadmin(details.getIuser());
-        dto.setImportance(params.getImportance());
-        dto.setTitle(params.getTitle());
+        dto.setImportance(param.getImportance());
+        dto.setTitle(param.getTitle());
         return SERVICE.insBoard(dto, pics);
     }
 
