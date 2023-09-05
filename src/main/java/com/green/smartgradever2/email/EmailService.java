@@ -45,7 +45,7 @@ public class EmailService {
             entity = STUDENT_REP.findById(dto.getId()).get();
             msg.append("<img src = " + entity.getOtpUrl() + ">");
         } else if (dto.getRole().equals("ROLE_PROFESSOR")){
-            // Todo 교수 opt qr 이미지 안뜸 해결 잘 모르겠음...
+
            professor = PROFESSOR_REP.findById(dto.getId()).get();
             msg.append("<img src = " + professor.getOtpUrl() + ">");
         }

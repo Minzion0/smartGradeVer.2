@@ -68,7 +68,7 @@ public class NaverOpenApiService {
                 .bodyToMono(String.class)
                 .block();
 
-        // JSON 파싱
+        // JSON 파싱 및 가장 중요한 설정
         ObjectMapper om = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         BookVo vo = null;
 
@@ -76,8 +76,6 @@ public class NaverOpenApiService {
 
             JsonNode jsonNode = om.readTree(json);
             vo = om.convertValue(jsonNode.at("/items/0"), new TypeReference<BookVo>() {});
-
-
 
         } catch (Exception e) {
             e.printStackTrace();

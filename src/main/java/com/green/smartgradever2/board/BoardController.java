@@ -57,9 +57,9 @@ public class BoardController {
     }
 
     /** update **/
-    @PutMapping
+    @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "공지 수정")
-    public BoardInsVo updBoard(@RequestBody BoardUpdParam param
+    public BoardInsVo updBoard(@RequestPart BoardUpdParam param, @RequestPart(required = false) List<MultipartFile> pics
             /*  @AuthenticationPrincipal MyUserDetails details*/) {
         BoardUpdDto dto = new BoardUpdDto();
         dto.setIboard(param.getIboard());
@@ -68,12 +68,14 @@ public class BoardController {
         dto.setTitle(param.getTitle());
         dto.setCtnt(param.getCtnt());
         dto.setImportance(param.getImportance());
+        dto.setIpic(param.getIpic());
         dto.setUpdatedAt(LocalDateTime.now());
 
-        return SERVICE.updBoard(dto);
+        return SERVICE.updBoard(dto, pics);
     }
 
     /** update DelYn **/
+    // Todo 리턴 타입 박스갈이
     @DeleteMapping
     @Operation(summary = "공지삭제", description = "ibaord : pk값 , 1 = 삭제")
     public BoardEntity delBoardYn (BoardDelYnDto dto){
