@@ -353,7 +353,16 @@ public class StudentService {
     public void updateObjection(Long studentNum, Long ilectureStudent, StudentObjectionDto objectionDto)  {
         LectureStudentEntity lectureStudentEntity = lectureStudentRep.findByStudentEntityStudentNumAndIlectureStudent(studentNum, ilectureStudent);
         if (lectureStudentEntity != null) {
+
+            LocalDate currentDateTime = LocalDate.now();
+            LocalDate correctionAt = lectureStudentEntity.getCorrectionAt();
+
+            if (correctionAt != null && currentDateTime.isAfter(correctionAt)) {
+                throw new IllegalArgumentException("이의 신청 기간이 종료되었습니다.");
+            }
+
             int objection = objectionDto.getObjection();
+
             if (objection >= 0 && objection <= 1) {
                 lectureStudentEntity.setObjection(objection);
                 lectureStudentRep.save(lectureStudentEntity);
@@ -363,6 +372,7 @@ public class StudentService {
         } else {
             throw new IllegalArgumentException("학생과 강의 학생이 일치하지 않습니다.");
         }
+
 
 
 
