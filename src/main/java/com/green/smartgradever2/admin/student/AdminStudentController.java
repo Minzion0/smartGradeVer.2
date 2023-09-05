@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +31,7 @@ public class AdminStudentController {
 
     @GetMapping("/students")
     @Operation(summary = "학생 검색", description = "학번이나 이름 둘중 하나로 찾기가능")
-    public ResponseEntity<AdminStudentRes> searchStudent(@RequestParam(required = false) Integer studentNum, @RequestParam(required = false)String nm, @PageableDefault(sort="studentNum", direction = Sort.Direction.DESC, size=10 )Pageable page
+    public ResponseEntity<AdminStudentRes> searchStudent(@RequestParam(required = false) Integer studentNum, @RequestParam(required = false)String nm,@ParameterObject @PageableDefault(sort="studentNum", direction = Sort.Direction.DESC, size=10 )Pageable page
             , @RequestParam (defaultValue = "0") int grade, @RequestParam (defaultValue = "0",required = false) int finishedYn
             , @RequestParam (required = false,defaultValue = "0")Long imajor){
 

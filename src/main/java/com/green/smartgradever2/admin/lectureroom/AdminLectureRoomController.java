@@ -8,6 +8,7 @@ import com.green.smartgradever2.config.entity.LectureRoomEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -32,7 +33,7 @@ public class AdminLectureRoomController {
 
     @GetMapping
     @Operation(summary = "강의실 리스트 보기")
-    public AdminLectureRoomFindRes getLectureRoom(@PageableDefault(sort="ifeed", direction = Sort.Direction.DESC) Pageable pageable,
+    public AdminLectureRoomFindRes getLectureRoom(@ParameterObject @PageableDefault(sort="ifeed", direction = Sort.Direction.DESC) Pageable pageable,
                                                        @RequestParam (required = false) String buildingName,
                                                        @RequestParam (required = false) String lectureRoomName) {
         AdminLectureRoomDto dto = new AdminLectureRoomDto();
