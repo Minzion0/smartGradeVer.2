@@ -33,14 +33,12 @@ import java.util.Map;
 @Service
 public class NaverOpenApiService {
 
-    private final   String clientId ; //애플리케이션 클라이언트 아이디
-   private final String clientSecret ; //애플리케이션 클라이언트 시크릿
+    //애플리케이션 클라이언트 시크릿
     private final WebClient webClient;
 
     @Autowired
     public NaverOpenApiService(@Value("${open-api.client-id}") String clientId,@Value("${open-api.client-secret}") String clientSecret) {
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
+
         TcpClient tcpClient = TcpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                 .doOnConnected(conn -> {
@@ -59,7 +57,7 @@ public class NaverOpenApiService {
 
 
 
-
+    /**naver open api**/
     public BookVo getTimetable(String isbn) {
         // 네이버 책 검색 API 호출 및 응답 받기
         String json = webClient.get()

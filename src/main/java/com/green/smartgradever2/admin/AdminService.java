@@ -55,6 +55,8 @@ public class AdminService {
     private final AdminStudentRepository STUDENT_RPS;
     private final AdminMajorRepository MAJOR_RPS;
 
+
+    /**학기 등록**/
     @Transactional(rollbackFor = Exception.class)
     public AdminInsSemesterVo semesterIns(AdminInsSemesterParam param) {
         SemesterEntity semesterEntity = new SemesterEntity();
@@ -85,7 +87,7 @@ public class AdminService {
         vo.setLectureApplyDeadline(semester.getLectureApplyDeadline());
         return vo;
     }
-
+    /**강의명 등록**/
     @Transactional(rollbackFor = AdminException.class)
     public AdminLectureInsNameVo insLectureName(AdminLectureInsNameParam param) {
         if (param.getScore() <= 0) {
@@ -114,7 +116,7 @@ public class AdminService {
         return vo;
 
     }
-
+    /**강의명 검색**/
     public List<AdminLectureNameFindVo> findLectureName(String lectureName) {
         List<LectureNameEntity> regex = null;
         if (lectureName != null) {
@@ -219,7 +221,7 @@ public class AdminService {
 
         return ResponseEntity.ok().body(vo);
     }
-
+    /**강의 리스트 확인**/
     public AdminSelRes selLecture(AdminSelLectureParam param, Pageable page) {
         AdminSelLectureDto dto = new AdminSelLectureDto(param);
         int maxpage = MAPPER.countLceture(dto);
@@ -237,7 +239,7 @@ public class AdminService {
         return AdminSelRes.builder().lectures(res).page(utils).build();
 
     }
-
+/**강의 상태 변경**/
     public AdminUpdLectureRes lectureModify(AdminUpdLectureDto dto) {
 
         Optional<LectureApplyEntity> optionalLectureApplyEntity = APPLY_RPS.findById(dto.getIlecture());

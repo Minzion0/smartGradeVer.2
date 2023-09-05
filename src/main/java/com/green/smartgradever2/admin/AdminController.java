@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     @GetMapping("/lecture/{ilecture}")
-    @Operation(summary = "해당 강의 수강학생 리스트")
+    @Operation(summary = "해당 강의내용 확인 if 강의 개강 반려 당한 강의면 반려 사유를 보여준다")
     public ResponseEntity<?> findProfessors(@PathVariable Long ilecture){
         return SERVICE.findLectureStudent(ilecture);
     }
