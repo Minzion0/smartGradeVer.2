@@ -110,14 +110,14 @@ public class SignController {
         return ResponseEntity.ok().body(otpe);
     }
 
-    @PutMapping("/forgetPassword")
+    @PutMapping("/forget-password")
     @Operation(summary = "비밀번호 찾기(변경) 아이디와 OTP 확인")
     public ResponseEntity<?> updForgetPassword(String uid, String role, String inputCode) {
         boolean result = SERVICE.updForgetPassword(uid, role, inputCode);
         return result ?  ResponseEntity.ok().body(result) : ResponseEntity.status(405).body(result);
     }
 
-    @PutMapping("/changPassword")
+    @PutMapping("/chang-password")
     @Operation(summary = "비밀번호 변경")
     public String updPasswordNew(@RequestBody SignSelPasswordTrueDto dto) {
         return SERVICE.updPasswordNew(dto);

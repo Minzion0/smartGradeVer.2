@@ -6,6 +6,7 @@ import com.green.smartgradever2.settings.security.config.security.model.MyUserDe
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -43,7 +44,7 @@ public class BoardController {
     /** select **/
     @GetMapping("/keyword")
     @Operation(summary = "전체게시판 리스트 출력 & 제목검색")
-    public BoardRes selBoard(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC,size = 10) Pageable page,
+    public BoardRes selBoard(@ParameterObject @PageableDefault(sort = "iboard", direction = Sort.Direction.DESC, size = 10) Pageable page,
              @RequestParam(required = false) String keyword) {
         return SERVICE.selBoard(page, keyword);
     }
