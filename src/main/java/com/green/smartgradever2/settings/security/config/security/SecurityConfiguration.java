@@ -21,12 +21,12 @@ public class SecurityConfiguration {
     private final RedisService redisService;
 
     //webSecurityCustomizer를 제외한 모든 것, 시큐리티를 거친다. 보안과 연관
+    /** 권한 설정 **/
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(authz ->
                             authz.requestMatchers(
-                                    "/**"
-                                    ,"/"
+                                    "/"
                                     ,"/admin/**"
                                     ,"/professor/**"
                                     ,"/student/**"
@@ -53,7 +53,7 @@ public class SecurityConfiguration {
                             .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
                             .requestMatchers("**exception**").permitAll()
                             .requestMatchers("/api/professor/**").hasRole("PROFESSOR") // 권한있는 사람만 필터링 한거다
-//                            .requestMatchers("/api/student/**").hasAnyRole("STUDENT", "ADMIN") // 권한있는 사람만 필터링 한거다
+                            .requestMatchers("/api/student/**").hasRole("STUDENT") // 권한있는 사람만 필터링 한거다
                             .anyRequest().hasRole("ADMIN") // anyRequest 는 거의 마지막에 작성 되어야함
                 ) //사용 권한 체크
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //세션 사용 X
@@ -67,14 +67,4 @@ public class SecurityConfiguration {
 
         return httpSecurity.build();
     }
-
-    //시큐리티를 거치지 않는다. 보안과 전혀 상관없는 페이지 및 리소스
-
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        //함수형 인터페이스 람다
-//        WebSecurityCustomizer lamda = (web) -> web.ignoring()
-//                    .requestMatchers(HttpMethod.GET, "/sign-api/refresh-token");
-//        return lamda;
-//    }
 }

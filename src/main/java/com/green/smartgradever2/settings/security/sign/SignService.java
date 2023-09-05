@@ -47,6 +47,7 @@ public class SignService {
     private final ProfessorRepository PROFESSOR_REP;
 
 
+    /** 로그인 **/
     public SignInResultDto signIn(SignInParam param) throws Exception {
 
         SignInResultDto dto = SignInResultDto.builder().build();
@@ -79,7 +80,7 @@ public class SignService {
 
     }
 
-
+    /** 리프레쉬 토큰 발행 **/
     public SignInResultDto refreshToken(HttpServletRequest req, String refreshToken) {
         if (!(JWT_PROVIDER.isValidateToken(refreshToken, JWT_PROVIDER.REFRESH_KEY))) {
             return null;
@@ -123,6 +124,7 @@ public class SignService {
         return null;
     }
 
+    /** 로그인 성공 시 **/
     private void setSuccessResult(SignUpResultDto result) {
         result.setSuccess(true);
         result.setSecretKey(true);
@@ -136,6 +138,7 @@ public class SignService {
         result.setMsg(CommonRes.FAIL.getMsg());
     }
 
+    /** 로그아웃 **/
     public void logout(HttpServletRequest req) {
 
         String accessToken = JWT_PROVIDER.resolveToken(req, JWT_PROVIDER.TOKEN_TYPE);
@@ -154,6 +157,7 @@ public class SignService {
         REDIS_SERVICE.setValuesWithTimeout(accessToken, "logout", expiration);  //남은시간 이후가 되면 삭제가 되도록 함.
     }
 
+    /** OTP 발행 및 DB OPT 큐알 이미지 저장 **/
     public OtpRes otp(String uid, String role, Long iuser) throws Exception {
         ProfessorEntity professor = null;
         StudentEntity student = null;
@@ -188,7 +192,7 @@ public class SignService {
         return res;
     }
 
-
+    /** OTP 시크릿키 발급 **/
     public int updSecretKey(String uid, String role, String secretKey) throws Exception {
         UserUpdSecretKeyDto dto = new UserUpdSecretKeyDto();
         dto.setRole(role);
@@ -201,6 +205,7 @@ public class SignService {
         return result;
     }
 
+    /** OTP 확인 등록 **/
     public SignInResultDto otpValid(HttpServletRequest req, OtpValidParam param) throws Exception {
         String ip = req.getRemoteAddr();
         String inputCode = param.getOtpNum();
@@ -222,6 +227,7 @@ public class SignService {
         return issueToken(uid, role);
     }
 
+    /** OTP 코드 발행 **/
     private String getOtpCode(String secretKey) {
 
         Base32 base32 = new Base32();
@@ -279,6 +285,7 @@ public class SignService {
         return dto;
     }
 
+    /** 비밀번호 변경 **/
     public boolean updForgetPassword(String uid, String role, String inputCode) {
         UserEntity entity = MAPPER.getByUid(uid, role);
         String otpCode = getOtpCode(entity.getSecretKey());
@@ -291,6 +298,7 @@ public class SignService {
         return false;
     }
 
+    /** 새로운 비밀번호 변경 **/
     public String updPasswordNew(SignSelPasswordTrueDto dto) {
         SignSelPasswordTrueVo result = MAPPER.selTruePassword(dto);
 

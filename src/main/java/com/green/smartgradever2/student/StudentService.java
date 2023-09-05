@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +40,8 @@ public class StudentService {
     private String fileDir;
 
     @Transactional
-    public StudentUpRes upStudent(MultipartFile pic, StudentParam param) {
-        StudentEntity student = studentRep.findBystudentNum(param.getStudentNum());
+    public StudentUpRes upStudent(MultipartFile pic, StudentParam param,Long StudentNum) {
+        StudentEntity student = studentRep.findBystudentNum(StudentNum);
 
         if (student == null) {
             return null;
@@ -154,7 +155,11 @@ public class StudentService {
                 .build();
         lectureStudentRep.save(lectureStudent);
 
-
+        if (lectureApply.getOpeningProceudres() != 2 || LocalDate.now().isAfter(lectureApply.getStudentsApplyDeadline())) {
+            response.setSuccess(false);
+            response.setMessage("신청 기간이 종료되었거나 강의 신청이 불가능한 강의입니다.");
+            return response;
+        }
 
 
 
@@ -348,7 +353,16 @@ public class StudentService {
     public void updateObjection(Long studentNum, Long ilectureStudent, StudentObjectionDto objectionDto)  {
         LectureStudentEntity lectureStudentEntity = lectureStudentRep.findByStudentEntityStudentNumAndIlectureStudent(studentNum, ilectureStudent);
         if (lectureStudentEntity != null) {
+
+            LocalDate currentDateTime = LocalDate.now();
+            LocalDate correctionAt = lectureStudentEntity.getCorrectionAt();
+
+            if (correctionAt != null && currentDateTime.isAfter(correctionAt)) {
+                throw new IllegalArgumentException("이의 신청 기간이 종료되었습니다.");
+            }
+
             int objection = objectionDto.getObjection();
+
             if (objection >= 0 && objection <= 1) {
                 lectureStudentEntity.setObjection(objection);
                 lectureStudentRep.save(lectureStudentEntity);
@@ -358,6 +372,7 @@ public class StudentService {
         } else {
             throw new IllegalArgumentException("학생과 강의 학생이 일치하지 않습니다.");
         }
+
 
 
 

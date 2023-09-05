@@ -13,5 +13,5 @@ public class BoardDetailVo {
     private String title;
     private String ctnt;
     private int importance;
-    private List<String> pisc;
+    private List<BoardPicVo> pisc;
 }

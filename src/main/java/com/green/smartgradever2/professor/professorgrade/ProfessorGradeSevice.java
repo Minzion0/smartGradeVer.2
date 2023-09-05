@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +53,19 @@ public class ProfessorGradeSevice {
             existingGrade.setAttendance(updatedAttendance);
             existingGrade.setMidtermExamination(updatedMidterm);
             existingGrade.setFinalExamination(updatedFinalExam);
+            existingGrade.setFinishedYn(1);
+            existingGrade.setUpdatedAt(LocalDateTime.now());
+            // 현재 시간 가져오기
+            LocalDateTime now = LocalDateTime.now();
+            existingGrade.setUpdatedAt(now);
+
+
+            LocalDateTime correctionAt = now.plusWeeks(2);
+            existingGrade.setCorrectionAt(LocalDate.from(correctionAt));
+            existingGrade.setFinishedAt(lectureApply.getSemesterEntity().getSemesterEndDate());
+
+
+
             int totalScore = updatedAttendance + updatedMidterm + updatedFinalExam;
 
             // 등급 계산
@@ -187,7 +202,7 @@ public class ProfessorGradeSevice {
 
     }
 
-    public void updateObjection(Long ilecture, Long ilectureStudent, int newObjection) {
+    public void updateObjection(Long ilecture, Long ilectureStudent, int newObjection, Long iuser) {
         newObjection = 2;
         LectureStudentEntity lectureStudentEntity = lectureStudentRep.findByLectureApplyEntityIlectureAndIlectureStudent(ilecture, ilectureStudent);
         if (lectureStudentEntity != null) {
