@@ -26,6 +26,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static java.awt.Color.BLUE;
+import static java.awt.Color.GRAY;
 
 @RequiredArgsConstructor
 @Service
@@ -274,66 +278,100 @@ public class AdminService {
      **/
     public void excelTest(HttpServletResponse response, Integer grade) throws IOException {
 
-        int rowCount = 0;
-        int cellCount=0;
+
+//
+//
+//        List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
+//        XSSFWorkbook workBook = new XSSFWorkbook();
+//
+//        for (MajorEntity majorEntity : majorEntityList) {
+//            XSSFSheet sheet = workBook.createSheet(majorEntity.getMajorName());
+//            int rowCount = 0;
+//            int cellCount=0;
+//            XSSFRow row = sheet.createRow(rowCount++);
+//
+//            XSSFCellStyle cellStyle = workBook.createCellStyle();
+//            sheet.setColumnWidth(0, 100 * 50);
+//
+//
+//
+//
+//            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+//
+//            cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+//            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//
+//            XSSFFont font = workBook.createFont();
+//            font.setFontName("나눔고딕");
+//            font.setFontHeight(30); // 사이즈
+//            font.setBold(true); // 굵게
+//            cellStyle.setFont(font);
+//
+//            XSSFCell cell = row.createCell(cellCount++);
+//
+//            cell.setCellStyle(cellStyle);
+//
+//            cell.setCellValue("학번");
+//
+//            XSSFCell cell1 = row.createCell(cellCount++);
+//            cell1.setCellStyle(cellStyle);
+//
+//            cell1.setCellValue("이름");
+//
+//
+//        }
+//        String format = String.format("attachment;filename=%s_studentList.xls", LocalDate.now());
+//        response.setContentType("ms-vnd/excel");
+//        response.setHeader("Content-Disposition", format);
+//
+//        workBook.write(response.getOutputStream());
+//        workBook.close();
+//
+//
+
 
         List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
-        XSSFWorkbook workBook = new XSSFWorkbook();
-
+        Workbook workbook = new HSSFWorkbook();
         for (MajorEntity majorEntity : majorEntityList) {
-            XSSFSheet sheet = workBook.createSheet(majorEntity.getMajorName());
-
-            XSSFRow row = sheet.createRow(rowCount++);
-
-            XSSFCellStyle cellStyle = workBook.createCellStyle();
+            int rowCount = 0;
+            int cellCount = 0;
 
 
-            XSSFFont font = workBook.createFont();
-            font.setFontName("나눔고딕");
-            font.setFontHeight((short)(20)); // 사이즈
-            font.setBold(true); // 굵게
+            Sheet sheet = workbook.createSheet(majorEntity.getMajorName());
+            Row headerRow = sheet.createRow(rowCount++);
+            Font font = workbook.createFont();
+            font.setFontName(HSSFFont.FONT_ARIAL);
+            font.setBold(true);
+            font.setFontHeight((short) 1000);
+
+            CellStyle cellStyle = workbook.createCellStyle();
+
+
 
             cellStyle.setFont(font);
 
 
+            Cell cell = headerRow.createCell(cellCount++);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue("학번");
+
+            Cell cell1 = headerRow.createCell(cellCount++);
+            cell1.setCellStyle(cellStyle);
+            cell1.setCellValue("이름");
+
+            Cell cell2 = headerRow.createCell(cellCount++);
+            cell2.setCellStyle(cellStyle);
+            cell2.setCellValue("학년");
+
+            Cell cell3 = headerRow.createCell(cellCount++);
+            cell3.setCellStyle(cellStyle);
+            cell3.setCellValue("성별");
+
+            Cell cell4 = headerRow.createCell(cellCount++);
+            cell4.setCellStyle(cellStyle);
+            cell4.setCellValue("학과");
 
 
-
-
-        }
-
-
-
-
-//        List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
-//        Workbook workbook = new HSSFWorkbook();
-//        for (MajorEntity majorEntity : majorEntityList) {
-//            int rowCount = 0;
-//            int cellCount = 0;
-//
-//
-//            Sheet sheet = workbook.createSheet(majorEntity.getMajorName());
-//            Row headerRow = sheet.createRow(rowCount++);
-//            Font font = workbook.createFont();
-//            font.setFontName(HSSFFont.FONT_ARIAL);
-//            font.setFontHeightInPoints((short) 20);
-//
-//            CellStyle cellStyle = workbook.createCellStyle();
-//
-//            new Color();
-//
-//
-//            cellStyle.setFont(font);
-//
-//
-//            Cell cell = headerRow.createCell(cellCount++);
-//            cell.setCellStyle(cellStyle);
-//            cell.setCellValue("학번");
-//
-//            Cell cell1 = headerRow.createCell(cellCount++);
-//            cell1.setCellStyle(cellStyle);
-//
-//
 //            headerRow.createCell(0).setCellStyle(cellStyle);
 //            headerRow.getCell(0).setCellValue("학번");
 //            headerRow.createCell(1).setCellStyle(cellStyle);
@@ -347,25 +385,25 @@ public class AdminService {
 //
 //            headerRow.createCell(4).setCellStyle(cellStyle);
 //            headerRow.getCell(4).setCellValue("전공");
-//
-//
-//            List<StudentEntity> studentEntities = STUDENT_RPS.findByMajorEntity(majorEntity);
-//
-//            for (StudentEntity studentEntity : studentEntities) {
-//                Row row = sheet.createRow(rowNo++);
-//                row.createCell(0).setCellValue(studentEntity.getStudentNum());
-//                row.createCell(1).setCellValue(studentEntity.getNm());
-//                row.createCell(2).setCellValue(studentEntity.getGrade());
-//                row.createCell(3).setCellValue(studentEntity.getGender().toString());
-//                row.createCell(4).setCellValue(studentEntity.getMajorEntity().getMajorName());
-//            }
-//        }
-//        String format = String.format("attachment;filename=%s studentList.xls", LocalDate.now());
-//        response.setContentType("ms-vnd/excel");
-//        response.setHeader("Content-Disposition", format);
-//
-//        workbook.write(response.getOutputStream());
-//        workbook.close();
+
+
+            List<StudentEntity> studentEntities = STUDENT_RPS.findByMajorEntity(majorEntity);
+
+            for (StudentEntity studentEntity : studentEntities) {
+                Row row = sheet.createRow(rowCount++);
+                row.createCell(0).setCellValue(studentEntity.getStudentNum());
+                row.createCell(1).setCellValue(studentEntity.getNm());
+                row.createCell(2).setCellValue(studentEntity.getGrade());
+                row.createCell(3).setCellValue(studentEntity.getGender().toString());
+                row.createCell(4).setCellValue(studentEntity.getMajorEntity().getMajorName());
+            }
+        }
+        String format = String.format("attachment;filename=%s studentList.xls", LocalDate.now());
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", format);
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
 }
