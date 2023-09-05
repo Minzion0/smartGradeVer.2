@@ -213,7 +213,7 @@ public class AdminService {
                 .attendance(lectureApplyEntity.getAttendance())
                 .midtermExamination(lectureApplyEntity.getMidtermExamination())
                 .finalExamination(lectureApplyEntity.getFinalExamination())
-                .textBook(lectureApplyEntity.getBookUrl())
+                .textBook(lectureApplyEntity.getTextbook())
                 .ctnt(lectureApplyEntity.getCtnt())
                 .bookUrl(lectureApplyEntity.getBookUrl())
                 .build();
