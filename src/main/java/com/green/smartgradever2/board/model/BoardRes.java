@@ -11,5 +11,5 @@ import java.util.List;
 @Builder
 public class BoardRes {
     private List<BoardVo> list;
-    private Pageable page;
+    private PagingUtils page;
 }
