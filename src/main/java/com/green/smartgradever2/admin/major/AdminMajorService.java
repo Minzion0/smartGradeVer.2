@@ -50,8 +50,8 @@ public class AdminMajorService {
     }
 
     public AdminMajorFindRes selMajor(AdminMajorDto dto) {
-        int maxPage = MAPPER.countMajor();
-        PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
+        long maxPage = MAJOR_REP.count();
+        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
         List<AdminMajorVo> list = MAPPER.selMajor(dto);
