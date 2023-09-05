@@ -5,6 +5,7 @@ import com.green.smartgradever2.config.entity.MajorEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -33,7 +34,7 @@ public class AdminMajorController {
 
     @GetMapping
     @Operation(summary = "전공 리스트 SELECT")
-    public AdminMajorFindRes getMajor(@PageableDefault(sort = "imajor", direction = Sort.Direction.DESC) Pageable pageable,
+    public AdminMajorFindRes getMajor(@ParameterObject @PageableDefault(sort = "imajor", direction = Sort.Direction.DESC) Pageable pageable,
                                       @RequestParam (required = false) String majorName,
                                       @RequestParam (required = false, defaultValue = "0") int delYn) {
         AdminMajorDto dto = new AdminMajorDto();

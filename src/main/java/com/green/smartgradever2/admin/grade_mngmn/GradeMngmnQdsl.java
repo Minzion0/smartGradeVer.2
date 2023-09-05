@@ -38,7 +38,8 @@ public class GradeMngmnQdsl {
                 .join(la.lectureNameEntity, ln)
                 .join(la.professorEntity, pr)
                 .where(st.studentNum.eq(dto.getStudentNum())
-                        ,sssc.grade.eq(dto.getGrade()));
+                        ,sssc.grade.eq(dto.getGrade()))
+                .limit(dto.getStaIdx());
 
         return query.fetch();
 
