@@ -9,6 +9,7 @@ import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class AdminMajorService {
 
     private final AdminMajorRepository MAJOR_REP;
     private final AdminMajorMapper MAPPER;
+    private final AdminMajorQdsl adminMajorQdsl;
 
     /**
      * 전공 INSERT
@@ -61,6 +63,19 @@ public class AdminMajorService {
                 .vo(list)
                 .build();
     }
+
+//    public AdminMajorFindRes selMajor2(AdminMajorDto dto, Pageable pageable) {
+//        long maxPage = MAJOR_REP.count();
+//        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+//        dto.setStaIdx(utils.getStaIdx());
+//
+//        List<AdminMajorVo> list = adminMajorQdsl.majorVos(dto, pageable);
+//
+//        return AdminMajorFindRes.builder()
+//                .paging(utils)
+//                .vo(list)
+//                .build();
+//    }
 
 
     public AdminMajorVo updMajor(MajorEntity entity) {
