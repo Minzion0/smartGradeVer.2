@@ -35,7 +35,6 @@ public class StudentController {
         dto.setAddress(param.getAddress());
         dto.setEmail(param.getEmail());
 
-
         try {
             //기존 사진 삭제
             SERVICE.studentDelPic(details.getIuser());
@@ -148,7 +147,7 @@ public class StudentController {
            SERVICE.updateObjection(details.getIuser(), ilectureStudent, objectionDto);
             return ResponseEntity.status(HttpStatus.OK).body("학생의 이의제의가 신청되었습니다.");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이의신청기간이 지났습니다.");
         }
     }
 }

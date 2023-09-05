@@ -30,12 +30,11 @@ public class BoardController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
     public BoardInsRes insBoard(@RequestPart BoardInsParam param,
-                                @RequestPart(required = false) List<MultipartFile> pics
-            /* @AuthenticationPrincipal MyUserDetails details */) {
+                                @RequestPart(required = false) List<MultipartFile> pics,
+            @AuthenticationPrincipal MyUserDetails details ) {
         BoardInsDto dto = new BoardInsDto();
         dto.setCtnt(param.getCtnt());
-//        dto.setIadmin(details.getIuser());
-        dto.setIadmin(param.getIadmin());
+        dto.setIadmin(details.getIuser());
         dto.setImportance(param.getImportance());
         dto.setTitle(param.getTitle());
         return SERVICE.insBoard(dto, pics);
@@ -59,12 +58,11 @@ public class BoardController {
     /** update **/
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "공지 수정")
-    public BoardInsVo updBoard(@RequestPart BoardUpdParam param, @RequestPart(required = false) List<MultipartFile> pics
-            /*  @AuthenticationPrincipal MyUserDetails details*/) {
+    public BoardInsVo updBoard(@RequestPart BoardUpdParam param, @RequestPart(required = false) List<MultipartFile> pics,
+            @AuthenticationPrincipal MyUserDetails details) {
         BoardUpdDto dto = new BoardUpdDto();
         dto.setIboard(param.getIboard());
-//        dto.setIadmin(details.getIuser());
-        dto.setIadmin(param.getIadmin());
+        dto.setIadmin(details.getIuser());;
         dto.setTitle(param.getTitle());
         dto.setCtnt(param.getCtnt());
         dto.setImportance(param.getImportance());
