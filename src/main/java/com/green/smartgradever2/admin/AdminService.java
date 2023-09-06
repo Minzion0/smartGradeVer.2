@@ -296,130 +296,7 @@ public class AdminService {
      **/
     public void excelTest(HttpServletResponse response, Integer grade) throws IOException {
 
-//
-//        List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
-//        Workbook workbook = new XSSFWorkbook();
-//        for (MajorEntity majorEntity : majorEntityList) {
-//            int rowCount = 0;
-//            int cellCount = 0;
-//
-//
-//            Sheet sheet = workbook.createSheet(majorEntity.getMajorName());
-//            Row headerRow = sheet.createRow(rowCount++);
-//            Font font = workbook.createFont();
-//            font.setFontName(HSSFFont.FONT_ARIAL);
-//            font.setBold(true);
-//            font.setFontHeight((short) 1000);
-//            for (int i = 0; i < headerRow.getPhysicalNumberOfCells(); i++) {
-//                sheet.autoSizeColumn(i);
-//            }
-//
-////            sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), headerRow.getRowNum(), 0, headerRow.getPhysicalNumberOfCells() - 1));
-//
-//
-//            CellStyle headerCellStyle = workbook.createCellStyle();
-//            Font headerFont = workbook.createFont();
-//            headerFont.setBold(true);
-//            headerFont.setFontHeightInPoints((short) 12);
-//            headerCellStyle.setFont(headerFont);
-//            headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
-//            headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-//            headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-//            headerCellStyle.setBorderBottom(BorderStyle.THIN);
-//            headerCellStyle.setBorderTop(BorderStyle.THIN);
-//            headerCellStyle.setBorderLeft(BorderStyle.THIN);
-//            headerCellStyle.setBorderRight(BorderStyle.THIN);
-//
-//
-//            Cell cell = headerRow.createCell(cellCount++);
-//            cell.setCellStyle(headerCellStyle);
-//            cell.setCellValue("        학번        ");
-//
-//            Cell cell1 = headerRow.createCell(cellCount++);
-//            cell1.setCellStyle(headerCellStyle);
-//            cell1.setCellValue("  이름  ");
-//
-//            Cell cell2 = headerRow.createCell(cellCount++);
-//            cell2.setCellStyle(headerCellStyle);
-//            cell2.setCellValue("  학년  ");
-//
-//            Cell cell3 = headerRow.createCell(cellCount++);
-//            cell3.setCellStyle(headerCellStyle);
-//            cell3.setCellValue("  성별  ");
-//
-//            Cell cell4 = headerRow.createCell(cellCount++);
-//            cell4.setCellStyle(headerCellStyle);
-//            cell4.setCellValue("    학과    ");
-//
-//
-////            headerRow.createCell(0).setCellStyle(cellStyle);
-////            headerRow.getCell(0).setCellValue("학번");
-////            headerRow.createCell(1).setCellStyle(cellStyle);
-////            headerRow.getCell(1).setCellValue("이름");
-////
-////            headerRow.createCell(2).setCellStyle(cellStyle);
-////            headerRow.getCell(2).setCellValue("학년");
-////
-////            headerRow.createCell(3).setCellStyle(cellStyle);
-////            headerRow.getCell(3).setCellValue("성별");
-////
-////            headerRow.createCell(4).setCellStyle(cellStyle);
-////            headerRow.getCell(4).setCellValue("전공");
-//
-//            CellStyle cellCellStyle = workbook.createCellStyle();
-//
-//            Font cellFont = workbook.createFont();
-//            cellFont.setFontName("맑은 고딕");
-//            cellFont.setBold(false);
-//            cellFont.setFontHeight((short) 250);
-//
-//
-//
-//            cellCellStyle.setAlignment(HorizontalAlignment.CENTER);
-////            cellCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-////            cellCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-////            cellCellStyle.setBorderBottom(BorderStyle.THIN);
-//            cellCellStyle.setFont(cellFont);
-//            cellCellStyle.setBorderTop(BorderStyle.THIN);
-//            cellCellStyle.setBorderLeft(BorderStyle.THIN);
-//            cellCellStyle.setBorderRight(BorderStyle.THIN);
-//
-//
-//            List<StudentEntity> studentEntities = STUDENT_RPS.findByMajorEntity(majorEntity);
-//            for (StudentEntity studentEntity : studentEntities) {
-//                cellCount=0;
-//                Row row = sheet.createRow(rowCount++);
-//
-//
-//                Cell cell5 = row.createCell(cellCount++);
-//                cell5.setCellStyle(cellCellStyle);
-//                cell5.setCellValue(studentEntity.getStudentNum());
-//
-//
-//                Cell cell6 = row.createCell(cellCount++);
-//                cell6.setCellStyle(cellCellStyle);
-//                cell6.setCellValue(studentEntity.getNm());
-//
-//                Cell cell7 = row.createCell(cellCount++);
-//                cell7.setCellStyle(cellCellStyle);
-//                cell7.setCellValue(studentEntity.getGrade());
-//
-//                Cell cell8 = row.createCell(cellCount++);
-//                cell8.setCellStyle(cellCellStyle);
-//                cell8.setCellValue(studentEntity.getGender().toString());
-//
-//                Cell cell9 = row.createCell(cellCount++);
-//                cell9.setCellStyle(cellCellStyle);
-//                cell9.setCellValue(studentEntity.getMajorEntity().getMajorName());
-//            }
-//
-//        }
-//        String format = String.format("attachment;filename=%s studentList.xlsx", LocalDate.now());
-//        response.setContentType("ms-vnd/excel");
-//        response.setHeader("Content-Disposition", format);
-//
-//        workbook.write(response.getOutputStream());
-//        workbook.close();
+
 // 엑셀 워크북 생성
         Workbook workbook = new XSSFWorkbook();
         List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
@@ -468,6 +345,9 @@ public class AdminService {
             cellCellStyle.setBorderRight(BorderStyle.THIN);
 
 
+            CellStyle numericCellStyle = workbook.createCellStyle();
+            CreationHelper createHelper = workbook.getCreationHelper();
+            numericCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0")); // 숫자 형식 지정
             int rowCount = 1; // 첫 번째 행은 제목 행이므로 1부터 시작
 
             List<StudentEntity> studentEntities = STUDENT_RPS.findByMajorEntity(majorEntity);
@@ -487,13 +367,16 @@ public class AdminService {
 
                 Cell cell4 = row.createCell(3);
                 cell4.setCellValue(studentEntity.getGender().toString());
+                cell4.setCellStyle(numericCellStyle);
                 cell4.setCellStyle(cellCellStyle);
 
                 Cell cell5 = row.createCell(4);
                 cell5.setCellValue(studentEntity.getMajorEntity().getMajorName());
+                cellCellStyle.setBorderBottom(BorderStyle.THIN);
                 cell5.setCellStyle(cellCellStyle);
-            }
 
+                sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), headerRow.getRowNum(),cell3.getColumnIndex() ,cell3.getColumnIndex()));
+            }
             // 열 너비 자동 조정
             for (int i = 0; i < headers.length; i++) {
                 sheet.autoSizeColumn(i);

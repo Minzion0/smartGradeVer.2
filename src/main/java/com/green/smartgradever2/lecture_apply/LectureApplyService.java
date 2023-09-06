@@ -1,5 +1,6 @@
 package com.green.smartgradever2.lecture_apply;
 
+import com.green.smartgradever2.admin.AdminQdsl;
 import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
 import com.green.smartgradever2.admin.lectureroom.AdminLectureRoomRepository;
 import com.green.smartgradever2.admin.professor.AdminProfessorRepository;
@@ -39,6 +40,7 @@ public class LectureApplyService {
     private final LectureScheduleRepository LECTURE_SCHEDULE_RPS;
     private final EntityManager EM;
     private final ProfessorRepository professerRep;
+    private final LectureApplyQdsl lectureApplyQdsl;
 
 
 
@@ -65,10 +67,10 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
     }
 
 //  지금 학기의 요일 강의실 시간정보 호출
-    String query = "SELECT ls from LectureScheduleEntity ls  where ls.lectureApplyEntity.lectureRoomEntity.ilectureRoom = :ilectureRoom and ls.dayWeek = :dayWeek";
-    List<LectureScheduleEntity> lectureScheduleEntity = EM.createQuery(query).setParameter("ilectureRoom",param.getIlectureRoom()).setParameter("dayWeek",param.getDayWeek()).getResultList();
-
-    for (LectureScheduleEntity schedule : lectureScheduleEntity) {
+//    String query = "SELECT ls from LectureScheduleEntity ls  where ls.lectureApplyEntity.lectureRoomEntity.ilectureRoom = :ilectureRoom and ls.dayWeek = :dayWeek";
+//    List<LectureScheduleEntity> lectureScheduleEntity = EM.createQuery(query).setParameter("ilectureRoom",param.getIlectureRoom()).setParameter("dayWeek",param.getDayWeek()).getResultList();
+    List<LectureScheduleEntity> lectureSchedule = lectureApplyQdsl.findLectureSchedule(param);
+    for (LectureScheduleEntity schedule : lectureSchedule) {
         LocalTime lectureStrTime = schedule.getLectureStrTime();
         LocalTime lectureEndTime = schedule.getLectureEndTime();
 
@@ -76,7 +78,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
        if ((strTime.isAfter(lectureStrTime) && strTime.isBefore(lectureEndTime)) || strTime.equals(lectureStrTime) ){
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
        }
-       if (endTime.equals(lectureEndTime) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime)) || (strTime.isBefore(lectureStrTime) && endTime.isBefore(lectureEndTime) )  ) {
+       if (endTime.equals(lectureEndTime) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime)) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime) )  ) {
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
        }
     }
@@ -104,7 +106,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             new Exception("강의실 정원 초과입니다");
         }
 
-        if (param.getGradeLimit()<5){
+        if (param.getGradeLimit()>4){
             new Exception("학년은 1~4학년 까지 입니다");
         }
 
@@ -183,7 +185,9 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
         String query = "SELECT sh FROM LectureScheduleEntity sh INNER JOIN sh.lectureApplyEntity la " +
                 "INNER JOIN la.lectureRoomEntity rm WHERE sh.semesterEntity = :semester AND rm.ilectureRoom = :ilectureRoom  ";
 
-        List<LectureScheduleEntity> resultList = EM.createQuery(query).setParameter("semester", currentSemester).setParameter("ilectureRoom", ilectureRoom).getResultList();
+      //  List<LectureScheduleEntity> resultList = EM.createQuery(query).setParameter("semester", currentSemester).setParameter("ilectureRoom", ilectureRoom).getResultList();
+
+        List<LectureScheduleEntity> resultList = lectureApplyQdsl.findLectureRoomSchedule(ilectureRoom);
 
         LectureRoomEntity lectureRoomEntity= null;
 
