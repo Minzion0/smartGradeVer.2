@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 @Builder
 public class BoardRes {
-    private List<BoardVo> list;
     private PagingUtils page;
+    private List<BoardVo> list;
 }

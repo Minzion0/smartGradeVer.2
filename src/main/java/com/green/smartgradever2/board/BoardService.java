@@ -97,27 +97,27 @@ public class BoardService {
     /** 전체리스트 출력  및 제목 검색 **/
     public BoardRes selBoard(Pageable page, String title) {
 
-        Pageable pageable = PageRequest.of(page.getPageNumber(), 10);
+        page = PageRequest.of(page.getPageNumber(), page.getPageSize(),Sort.by(Sort.Direction.DESC, "iboard"));
 
         long totalPage = BOARD_REP.count();
 
         int row = 10;
         int importanceRow = 3;
-        int pageSize = pageable.getPageSize();
+        int pageSize = page.getPageSize();
 
         Page<BoardEntity> list;
 
         if (title == null){
            if (selImportanceBoard().size() < importanceRow) {
                pageSize = row - selImportanceBoard().size();
-               pageable = PageRequest.of(page.getPageNumber() ,pageSize);
-               list = BOARD_REP.findByImportanceAndDelYn(0,0,pageable);
+               page = PageRequest.of(page.getPageNumber() ,pageSize, Sort.by(Sort.Direction.DESC, "iboard"));
+               list = BOARD_REP.findByImportanceAndDelYn(0,0,page);
            } else {
-               pageable = PageRequest.of(page.getPageNumber(), pageSize - 3);
-               list = BOARD_REP.findByImportanceAndDelYn( 0,0,pageable);
+               page = PageRequest.of(page.getPageNumber(), pageSize - 3 , Sort.by(Sort.Direction.DESC, "iboard"));
+               list = BOARD_REP.findByImportanceAndDelYn( 0,0,page);
            }
         } else {
-            list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, 0,0, pageable);
+            list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, 0,0, page);
         }
 
        List<BoardVo> result = list.stream().map(item -> BoardVo.builder()
@@ -130,11 +130,11 @@ public class BoardService {
                 .build()
         ).toList();
 
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)totalPage, pageable.getPageSize());
+        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)totalPage, page.getPageSize());
 
         return BoardRes.builder()
-                .list(result)
                 .page(utils)
+                .list(result)
                 .build();
     }
 
