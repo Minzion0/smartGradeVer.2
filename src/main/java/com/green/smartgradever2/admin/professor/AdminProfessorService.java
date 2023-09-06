@@ -62,7 +62,7 @@ public class AdminProfessorService {
         EM.detach(professor);
 
         ProfessorEntity entity = RPS.findById(professor.getIprofessor()).get();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String format = entity.getCreatedAt().format(formatter);
 
         return AdminProfessorInsVo.builder().iprofessor(entity.getIprofessor())
@@ -96,7 +96,7 @@ public class AdminProfessorService {
 
         PagingUtils pagingUtils = new PagingUtils(pageable.getPageNumber(),(int)list.getTotalElements());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         List<AdminProfessorFindVo> professors = list.getContent().stream().map(item -> AdminProfessorFindVo.builder()
                 .iprofessor(item.getIprofessor())
@@ -159,7 +159,7 @@ public AdminProfessorInsVo patchProfessor(Long iprofessor, AdminProfessorPatchPa
 
     RPS.save(professorEntity);
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     String format = professorEntity.getCreatedAt().format(formatter);
 
     return   AdminProfessorInsVo.builder().iprofessor(professorEntity.getIprofessor())

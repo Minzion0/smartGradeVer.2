@@ -8,10 +8,12 @@ import com.green.smartgradever2.config.entity.AdminEntity;
 import com.green.smartgradever2.config.entity.BoardEntity;
 import com.green.smartgradever2.config.entity.BoardPicEntity;
 import com.green.smartgradever2.utils.FileUtils;
+import com.green.smartgradever2.utils.PagingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -94,22 +96,28 @@ public class BoardService {
 
     /** 전체리스트 출력  및 제목 검색 **/
     public BoardRes selBoard(Pageable page, String title) {
+
+        page = PageRequest.of(page.getPageNumber(), page.getPageSize(),Sort.by(Sort.Direction.DESC, "iboard"));
+
+        long totalPage = BOARD_REP.count();
+
         int row = 10;
         int importanceRow = 3;
+        int pageSize = page.getPageSize();
 
         Page<BoardEntity> list;
 
         if (title == null){
            if (selImportanceBoard().size() < importanceRow) {
-               page.withPage(row - selImportanceBoard().size());
+               pageSize = row - selImportanceBoard().size();
+               page = PageRequest.of(page.getPageNumber() ,pageSize, Sort.by(Sort.Direction.DESC, "iboard"));
                list = BOARD_REP.findByImportanceAndDelYn(0,0,page);
            } else {
-               page.withPage(7);
+               page = PageRequest.of(page.getPageNumber(), pageSize - 3 , Sort.by(Sort.Direction.DESC, "iboard"));
                list = BOARD_REP.findByImportanceAndDelYn( 0,0,page);
            }
         } else {
-            page.withPage(10);
-            list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, importance,delYn,page);
+            list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, 0,0, page);
         }
 
        List<BoardVo> result = list.stream().map(item -> BoardVo.builder()
@@ -122,9 +130,11 @@ public class BoardService {
                 .build()
         ).toList();
 
+        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)totalPage, page.getPageSize());
+
         return BoardRes.builder()
+                .page(utils)
                 .list(result)
-                .page(page)
                 .build();
     }
 

@@ -73,7 +73,7 @@ public class AdminStudentService {
         EM.clear();
 
         StudentEntity student = RPS.findById(entity.getStudentNum()).get();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime createdAt = student.getCreatedAt();
         String format = createdAt.format(formatter);
 
@@ -174,7 +174,7 @@ public class AdminStudentService {
         studentEntity.setNm(param.getName());
 
         RPS.save(studentEntity);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
      return    AdminInsStudentVo.builder().studentNum(studentEntity.getStudentNum())
                 .nm(studentEntity.getNm())

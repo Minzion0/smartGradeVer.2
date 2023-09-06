@@ -6,6 +6,7 @@ import com.green.smartgradever2.settings.security.config.security.model.MyUserDe
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,12 +31,11 @@ public class BoardController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시판 등록")
     public BoardInsRes insBoard(@RequestPart BoardInsParam param,
-                                @RequestPart(required = false) List<MultipartFile> pics
-            /* @AuthenticationPrincipal MyUserDetails details */) {
+                                @RequestPart(required = false) List<MultipartFile> pics,
+            @AuthenticationPrincipal MyUserDetails details ) {
         BoardInsDto dto = new BoardInsDto();
         dto.setCtnt(param.getCtnt());
-//        dto.setIadmin(details.getIuser());
-        dto.setIadmin(param.getIadmin());
+        dto.setIadmin(details.getIuser());
         dto.setImportance(param.getImportance());
         dto.setTitle(param.getTitle());
         return SERVICE.insBoard(dto, pics);
@@ -44,7 +44,7 @@ public class BoardController {
     /** select **/
     @GetMapping("/keyword")
     @Operation(summary = "전체게시판 리스트 출력 & 제목검색")
-    public BoardRes selBoard(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC,size = 10) Pageable page,
+    public BoardRes selBoard(@ParameterObject @PageableDefault(sort = "iboard", direction = Sort.Direction.DESC, size = 10) Pageable page,
              @RequestParam(required = false) String keyword) {
         return SERVICE.selBoard(page, keyword);
     }
@@ -59,12 +59,11 @@ public class BoardController {
     /** update **/
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "공지 수정")
-    public BoardInsVo updBoard(@RequestPart BoardUpdParam param, @RequestPart(required = false) List<MultipartFile> pics
-            /*  @AuthenticationPrincipal MyUserDetails details*/) {
+    public BoardInsVo updBoard(@RequestPart BoardUpdParam param, @RequestPart(required = false) List<MultipartFile> pics,
+            @AuthenticationPrincipal MyUserDetails details) {
         BoardUpdDto dto = new BoardUpdDto();
         dto.setIboard(param.getIboard());
-//        dto.setIadmin(details.getIuser());
-        dto.setIadmin(param.getIadmin());
+        dto.setIadmin(details.getIuser());;
         dto.setTitle(param.getTitle());
         dto.setCtnt(param.getCtnt());
         dto.setImportance(param.getImportance());

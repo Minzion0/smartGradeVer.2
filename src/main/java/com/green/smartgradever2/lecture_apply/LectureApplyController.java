@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class LectureApplyController {
 
     @GetMapping("/lecture/list")
     @Operation(summary = "신청중인 강의 리스트")
-    private ResponseEntity<LectureSelAllRes> getLecture(@AuthenticationPrincipal MyUserDetails details, @RequestParam(required = false) Integer openingProceudres) {
+    private ResponseEntity<LectureSelAllRes> getLecture(@AuthenticationPrincipal MyUserDetails details,@ParameterObject @RequestParam(required = false) Integer openingProceudres) {
         if (openingProceudres != null && (openingProceudres < 0 || openingProceudres > 4)) {
             return ResponseEntity.badRequest().build(); // 잘못된 파라미터 값일 경우 400 Bad Request 반환
         }

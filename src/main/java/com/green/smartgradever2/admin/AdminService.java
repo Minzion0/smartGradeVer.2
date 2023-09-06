@@ -13,29 +13,35 @@ import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.xssf.usermodel.IndexedColorMap;
-import org.apache.poi.xssf.usermodel.XSSFColor;
+
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellUtil;
+import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static java.awt.Color.BLUE;
+import static java.awt.Color.GRAY;
 
 @RequiredArgsConstructor
 @Service
@@ -53,6 +59,8 @@ public class AdminService {
     private final AdminStudentRepository STUDENT_RPS;
     private final AdminMajorRepository MAJOR_RPS;
 
+
+    /**학기 등록**/
     @Transactional(rollbackFor = Exception.class)
     public AdminInsSemesterVo semesterIns(AdminInsSemesterParam param) {
         SemesterEntity semesterEntity = new SemesterEntity();
@@ -83,7 +91,7 @@ public class AdminService {
         vo.setLectureApplyDeadline(semester.getLectureApplyDeadline());
         return vo;
     }
-
+    /**강의명 등록**/
     @Transactional(rollbackFor = AdminException.class)
     public AdminLectureInsNameVo insLectureName(AdminLectureInsNameParam param) {
         if (param.getScore() <= 0) {
@@ -112,7 +120,7 @@ public class AdminService {
         return vo;
 
     }
-
+    /**강의명 검색**/
     public List<AdminLectureNameFindVo> findLectureName(String lectureName) {
         List<LectureNameEntity> regex = null;
         if (lectureName != null) {
@@ -209,7 +217,7 @@ public class AdminService {
                 .attendance(lectureApplyEntity.getAttendance())
                 .midtermExamination(lectureApplyEntity.getMidtermExamination())
                 .finalExamination(lectureApplyEntity.getFinalExamination())
-                .textBook(lectureApplyEntity.getBookUrl())
+                .textBook(lectureApplyEntity.getTextbook())
                 .ctnt(lectureApplyEntity.getCtnt())
                 .bookUrl(lectureApplyEntity.getBookUrl())
                 .build();
@@ -217,7 +225,7 @@ public class AdminService {
 
         return ResponseEntity.ok().body(vo);
     }
-
+    /**강의 리스트 확인**/
     public AdminSelRes selLecture(AdminSelLectureParam param, Pageable page) {
         AdminSelLectureDto dto = new AdminSelLectureDto(param);
         int maxpage = MAPPER.countLceture(dto);
@@ -235,7 +243,7 @@ public class AdminService {
         return AdminSelRes.builder().lectures(res).page(utils).build();
 
     }
-
+/**강의 상태 변경**/
     public AdminUpdLectureRes lectureModify(AdminUpdLectureDto dto) {
 
         Optional<LectureApplyEntity> optionalLectureApplyEntity = APPLY_RPS.findById(dto.getIlecture());
@@ -271,30 +279,118 @@ public class AdminService {
     public void excelTest(HttpServletResponse response, Integer grade) throws IOException {
 
 
+//
+//
+//        List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
+//        XSSFWorkbook workBook = new XSSFWorkbook();
+//
+//        for (MajorEntity majorEntity : majorEntityList) {
+//            XSSFSheet sheet = workBook.createSheet(majorEntity.getMajorName());
+//            int rowCount = 0;
+//            int cellCount=0;
+//            XSSFRow row = sheet.createRow(rowCount++);
+//
+//            XSSFCellStyle cellStyle = workBook.createCellStyle();
+//            sheet.setColumnWidth(0, 100 * 50);
+//
+//
+//
+//
+//            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+//
+//            cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+//            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//
+//            XSSFFont font = workBook.createFont();
+//            font.setFontName("나눔고딕");
+//            font.setFontHeight(30); // 사이즈
+//            font.setBold(true); // 굵게
+//            cellStyle.setFont(font);
+//
+//            XSSFCell cell = row.createCell(cellCount++);
+//
+//            cell.setCellStyle(cellStyle);
+//
+//            cell.setCellValue("학번");
+//
+//            XSSFCell cell1 = row.createCell(cellCount++);
+//            cell1.setCellStyle(cellStyle);
+//
+//            cell1.setCellValue("이름");
+//
+//
+//        }
+//        String format = String.format("attachment;filename=%s_studentList.xls", LocalDate.now());
+//        response.setContentType("ms-vnd/excel");
+//        response.setHeader("Content-Disposition", format);
+//
+//        workBook.write(response.getOutputStream());
+//        workBook.close();
+//
+//
+
 
         List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
         Workbook workbook = new HSSFWorkbook();
         for (MajorEntity majorEntity : majorEntityList) {
-            int rowNo = 0;
+            int rowCount = 0;
+            int cellCount = 0;
+
+
             Sheet sheet = workbook.createSheet(majorEntity.getMajorName());
-            Row headerRow = sheet.createRow(rowNo++);
+            Row headerRow = sheet.createRow(rowCount++);
             Font font = workbook.createFont();
             font.setFontName(HSSFFont.FONT_ARIAL);
-            font.setFontHeightInPoints((short) 20);
+            font.setBold(true);
+            font.setFontHeight((short) 1000);
 
             CellStyle cellStyle = workbook.createCellStyle();
+
+
+
             cellStyle.setFont(font);
 
-            headerRow.createCell(0).setCellValue("학번");
-            headerRow.createCell(1).setCellValue("이름");
-            headerRow.createCell(2).setCellValue("학년");
-            headerRow.createCell(3).setCellValue("성별");
-            headerRow.createCell(4).setCellValue("전공");
+
+            Cell cell = headerRow.createCell(cellCount++);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue("학번");
+
+            Cell cell1 = headerRow.createCell(cellCount++);
+            cell1.setCellStyle(cellStyle);
+            cell1.setCellValue("이름");
+
+            Cell cell2 = headerRow.createCell(cellCount++);
+            cell2.setCellStyle(cellStyle);
+            cell2.setCellValue("학년");
+
+            Cell cell3 = headerRow.createCell(cellCount++);
+            cell3.setCellStyle(cellStyle);
+            cell3.setCellValue("성별");
+
+            Cell cell4 = headerRow.createCell(cellCount++);
+            cell4.setCellStyle(cellStyle);
+            cell4.setCellValue("학과");
+
+
+//            headerRow.createCell(0).setCellStyle(cellStyle);
+//            headerRow.getCell(0).setCellValue("학번");
+//            headerRow.createCell(1).setCellStyle(cellStyle);
+//            headerRow.getCell(1).setCellValue("이름");
+//
+//            headerRow.createCell(2).setCellStyle(cellStyle);
+//            headerRow.getCell(2).setCellValue("학년");
+//
+//            headerRow.createCell(3).setCellStyle(cellStyle);
+//            headerRow.getCell(3).setCellValue("성별");
+//
+//            headerRow.createCell(4).setCellStyle(cellStyle);
+//            headerRow.getCell(4).setCellValue("전공");
+
 
             List<StudentEntity> studentEntities = STUDENT_RPS.findByMajorEntity(majorEntity);
 
             for (StudentEntity studentEntity : studentEntities) {
-                Row row = sheet.createRow(rowNo++);
+                Row row = sheet.createRow(rowCount++);
                 row.createCell(0).setCellValue(studentEntity.getStudentNum());
                 row.createCell(1).setCellValue(studentEntity.getNm());
                 row.createCell(2).setCellValue(studentEntity.getGrade());

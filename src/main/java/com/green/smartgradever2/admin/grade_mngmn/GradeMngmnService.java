@@ -12,13 +12,10 @@ import com.green.smartgradever2.student.StudentRepository;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +35,7 @@ public class GradeMngmnService {
     private final LectureApplyRepository APPLY_REP;
     private final LectureNameRepository NAME_REP;
     private final EntityManager EM;
+    private final GradeMngmnQdsl gradeMngmnQdsl;
 
 
 //    public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
@@ -138,39 +136,38 @@ public class GradeMngmnService {
 //        List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
         GradeUtils utils = new GradeUtils();
 
-            for (int i = 0; i < studentEntities.size(); i++) {
-                List<LectureStudentEntity> studentEntityList = LS_REP.findAllByStudentEntityAndFinishedYn(studentEntities.get(i), 1);
-                StudentSemesterScoreEntity entity = null;
-                int temp = 0;
-                int index = 0;
-                int score = 0;
+        for (int i = 0; i < studentEntities.size(); i++) {
+            List<LectureStudentEntity> studentEntityList = LS_REP.findAllByStudentEntityAndFinishedYn(studentEntities.get(i), 1);
+            StudentSemesterScoreEntity entity = null;
+            int temp = 0;
+            int index = 0;
+            int score = 0;
 
-                for (int z = 0; z < studentEntityList.size(); z++) {
-                    temp += studentEntityList.get(z).getTotalScore();
-                    score += studentEntityList.get(z).getLectureApplyEntity().getLectureNameEntity().getScore();
-                    index++;
-                }
-                if (studentEntityList.size() != 0) {
-                    avg = utils.totalScore2(temp / index);
-                    log.info("avg : {}", avg);
-                    entity = StudentSemesterScoreEntity.builder()
-                            .grade(studentEntities.get(i).getGrade()) // 학년
-                            .rating(avg) // 평점
-                            .score(score) // 학점
-                            .avgScore(temp / index) // 평균 총점
-                            .semesterEntity(semesterEntity) // semester pk
-                            .studentEntity(studentEntities.get(i)) // studentEntities pk
-                            .build();
-                    try {
-                        GM_REP.save(entity);
-                    } catch (Exception e) {
-                        throw new RuntimeException("중복된 값이 존재합니다.");
-                    }
+            for (int z = 0; z < studentEntityList.size(); z++) {
+                temp += studentEntityList.get(z).getTotalScore();
+                score += studentEntityList.get(z).getLectureApplyEntity().getLectureNameEntity().getScore();
+                index++;
+            }
+            if (studentEntityList.size() != 0) {
+                avg = utils.totalScore2(temp / index);
+                log.info("avg : {}", avg);
+                entity = StudentSemesterScoreEntity.builder()
+                        .grade(studentEntities.get(i).getGrade()) // 학년
+                        .rating(avg) // 평점
+                        .score(score) // 학점
+                        .avgScore(temp / index) // 평균 총점
+                        .semesterEntity(semesterEntity) // semester pk
+                        .studentEntity(studentEntities.get(i)) // studentEntities pk
+                        .build();
+                try {
+                    GM_REP.save(entity);
+                } catch (Exception e) {
+                    throw new RuntimeException("중복된 값이 존재합니다.");
                 }
             }
+        }
         return null;
     }
-
 
 
     public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {
@@ -197,7 +194,7 @@ public class GradeMngmnService {
                 .voList(voList)
                 .student(vo)
                 .avgVo(avg)
-                .paging(utils)
+                .page(utils)
                 .build();
     }
 
@@ -206,14 +203,13 @@ public class GradeMngmnService {
 //        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
 //        dto.setStaIdx(utils.getStaIdx());
 //
-//        Optional<StudentEntity> student = ST_REP.findById(dto.getStudentNum());
-//        Optional<StudentEntity> byId = ST_REP.findById(student.get().getStudentNum());
-//        List<Optional<GradeMngmnAvgVo>> avg = GM_REP.selAvg(dto.getPageable(), dto.getStudentNum());
+//        List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto);
+//        GradeMngmnStudentVo studentVo = gradeMngmnQdsl.mngmnStudentVo(dto);
+//        List<GradeMngmnAvgVo> avg = gradeMngmnQdsl.avgVo(dto);
 //
 //        int point;
 //        double score;
-//        String rate = "";
-//        List<GradeMngmnVo> voList = GM_REP.selGradeFindStudent(dto.getPageable(), student.get().getStudentNum());
+//        String rate;
 //        for (GradeMngmnVo a : voList) {
 //            point = a.getTotalScore();
 //            GradeUtils utils2 = new GradeUtils(point);
@@ -221,16 +217,17 @@ public class GradeMngmnService {
 //            rate = utils2.totalRating(score);
 //            a.setRating(rate);
 //        }
-//        GradeMngmnStudentVo studentVo = new GradeMngmnStudentVo(student.get().getStudentNum(), student.get().getNm());
 //
 //        return GradeMngmnFindRes.builder()
-//                .avgVo(avg)
 //                .voList(voList)
 //                .student(studentVo)
+//                .avgVo(avg)
 //                .paging(utils)
 //                .build();
+//
 //    }
 
+//
 //    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
 //        return MAPPER.selGradeFindStudentDetail(dto);
 //    }

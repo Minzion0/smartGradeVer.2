@@ -128,7 +128,7 @@ public class StudentController {
         return SERVICE.getStudentInfo(details.getIuser());
     }
 
-    @PutMapping("/changPassword")
+    @PutMapping("/chang-password")
     @Operation(summary = "비밀번호 변경",
             description = "studentPassword : 바꿀 비밀번호 <br>" + "currentStudentPassword : 현재 비밀번호")
     public ResponseEntity<?> updPassword(@AuthenticationPrincipal MyUserDetails details,

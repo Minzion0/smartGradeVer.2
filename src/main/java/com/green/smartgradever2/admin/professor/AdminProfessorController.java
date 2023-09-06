@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +31,7 @@ public class AdminProfessorController {
 
     @GetMapping("/professor")
     @Operation(summary = "교수 검색")
-    public ResponseEntity<AdminProfessorFindRes> findP(@PageableDefault(sort = "majorEntity",direction = Sort.Direction.DESC) Pageable page, @RequestParam(required = false) String name, @RequestParam (required = false,defaultValue = "0")Long imajor) {
+    public ResponseEntity<AdminProfessorFindRes> findP(@ParameterObject @PageableDefault(sort = "majorEntity",direction = Sort.Direction.DESC) Pageable page, @RequestParam(required = false) String name, @RequestParam (required = false,defaultValue = "0")Long imajor) {
 
         AdminProfessorFindParam param = new AdminProfessorFindParam();
         param.setImajor(imajor);

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/sendEmail")
+@RequestMapping("/api/send-email")
 @RequiredArgsConstructor
 @Tag(name = "이메일 전송")
 public class EmailController {
