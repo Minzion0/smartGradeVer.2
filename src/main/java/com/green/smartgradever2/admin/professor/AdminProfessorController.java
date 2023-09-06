@@ -31,7 +31,7 @@ public class AdminProfessorController {
 
     @GetMapping("/professor")
     @Operation(summary = "교수 검색")
-    public ResponseEntity<AdminProfessorFindRes> findP(@ParameterObject @PageableDefault(sort = "majorEntity",direction = Sort.Direction.DESC) Pageable page, @RequestParam(required = false) String name, @RequestParam (required = false,defaultValue = "0")Long imajor) {
+    public ResponseEntity<AdminProfessorFindRes> findP(@ParameterObject @PageableDefault(sort = "iprofessor",direction = Sort.Direction.DESC) Pageable page, @RequestParam(required = false) String name, @RequestParam (required = false,defaultValue = "0")Long imajor) {
 
         AdminProfessorFindParam param = new AdminProfessorFindParam();
         param.setImajor(imajor);
