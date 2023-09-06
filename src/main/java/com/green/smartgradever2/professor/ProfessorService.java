@@ -168,6 +168,7 @@ public class ProfessorService {
                     lectureDto.setLectureMaxPeople(lectureEntity.getLectureMaxPeople());
                     lectureDto.setScore(lectureEntity.getLectureNameEntity().getScore());
                     lectureDto.setDelYn(lectureEntity.getDelYn());
+                    lectureDto.setDayWeek(lectureEntity.getLectureScheduleEntity().getDayWeek());
                     lectureDto.setYear(lectureEntity.getSemesterEntity().getYear());
                     return lectureDto;
                 })
