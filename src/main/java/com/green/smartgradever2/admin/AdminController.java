@@ -106,9 +106,5 @@ public class AdminController {
         return SERVICE.lectureModify(dto);
     }
 
-    @GetMapping("/student-file")
-    @Operation(summary = "테스트용")
-public void excelTest(HttpServletResponse request,@RequestParam(required = false) Integer grade) throws IOException {
-        SERVICE.excelTest(request,grade);
-    }
+
 }

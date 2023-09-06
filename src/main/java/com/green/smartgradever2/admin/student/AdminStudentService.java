@@ -7,14 +7,19 @@ import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -189,6 +194,102 @@ public class AdminStudentService {
                 .build();
 
 
+    }
+    public void studentListFile(HttpServletResponse response) throws IOException {
+
+
+// 엑셀 워크북 생성
+        Workbook workbook = new XSSFWorkbook();
+        List<MajorEntity> majorEntityList = MAJOR_RPS.findAll();
+        for (MajorEntity majorEntity : majorEntityList) {
+            // 시트 생성
+            Sheet sheet = workbook.createSheet(majorEntity.getMajorName());
+
+
+            // 제목 행 생성
+            Row headerRow = sheet.createRow(0);
+
+            // 제목 행 스타일 설정
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerFont.setFontHeightInPoints((short) 12);
+            headerCellStyle.setFont(headerFont);
+            headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            headerCellStyle.setBorderBottom(BorderStyle.THIN);
+            headerCellStyle.setBorderTop(BorderStyle.THIN);
+            headerCellStyle.setBorderLeft(BorderStyle.THIN);
+            headerCellStyle.setBorderRight(BorderStyle.THIN);
+
+            String[] headers = { "학번", "이름", "학년", "성별", "학과" };
+
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+            }
+
+            // 데이터 행 생성 및 셀 스타일 설정
+            CellStyle cellCellStyle = workbook.createCellStyle();
+            Font cellFont = workbook.createFont();
+
+            cellFont.setFontName("맑은 고딕");
+            cellFont.setBold(false);
+            cellFont.setFontHeight((short) 250);
+            cellFont.setFontHeightInPoints((short) 14);
+            cellCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellCellStyle.setFont(cellFont);
+            cellCellStyle.setBorderTop(BorderStyle.THIN);
+            cellCellStyle.setBorderLeft(BorderStyle.THIN);
+            cellCellStyle.setBorderRight(BorderStyle.THIN);
+
+
+            CellStyle numericCellStyle = workbook.createCellStyle();
+            CreationHelper createHelper = workbook.getCreationHelper();
+            numericCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0")); // 숫자 형식 지정
+            int rowCount = 1; // 첫 번째 행은 제목 행이므로 1부터 시작
+
+            List<StudentEntity> studentEntities = RPS.findByMajorEntity(majorEntity);
+            for (StudentEntity studentEntity : studentEntities) {
+                Row row = sheet.createRow(rowCount++);
+                Cell cell1 = row.createCell(0);
+                cell1.setCellValue(studentEntity.getStudentNum());
+                cell1.setCellStyle(cellCellStyle);
+
+                Cell cell2 = row.createCell(1);
+                cell2.setCellValue(studentEntity.getNm());
+                cell2.setCellStyle(cellCellStyle);
+
+                Cell cell3 = row.createCell(2);
+                cell3.setCellValue(studentEntity.getGrade());
+                cell3.setCellStyle(cellCellStyle);
+
+                Cell cell4 = row.createCell(3);
+                cell4.setCellValue(studentEntity.getGender().toString());
+                cell4.setCellStyle(numericCellStyle);
+                cell4.setCellStyle(cellCellStyle);
+
+                Cell cell5 = row.createCell(4);
+                cell5.setCellValue(studentEntity.getMajorEntity().getMajorName());
+                cellCellStyle.setBorderBottom(BorderStyle.THIN);
+                cell5.setCellStyle(cellCellStyle);
+
+                sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), headerRow.getRowNum(),cell3.getColumnIndex() ,cell3.getColumnIndex()));
+            }
+            // 열 너비 자동 조정
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+        }
+
+        String format = String.format("attachment;filename=%s studentList.xlsx", LocalDate.now());
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", format);
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 
 
