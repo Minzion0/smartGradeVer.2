@@ -78,7 +78,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
        if ((strTime.isAfter(lectureStrTime) && strTime.isBefore(lectureEndTime)) || strTime.equals(lectureStrTime) ){
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
        }
-       if (endTime.equals(lectureEndTime) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime)) || (strTime.isBefore(lectureStrTime) && endTime.isBefore(lectureEndTime) )  ) {
+       if (endTime.equals(lectureEndTime) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime)) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime) )  ) {
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
        }
     }
@@ -106,7 +106,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             new Exception("강의실 정원 초과입니다");
         }
 
-        if (param.getGradeLimit()<5){
+        if (param.getGradeLimit()>4){
             new Exception("학년은 1~4학년 까지 입니다");
         }
 
