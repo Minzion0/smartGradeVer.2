@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,10 +44,12 @@ public class ProfessorService {
         dto.setName(professor.getNm());  // 이름 추가
         dto.setGender(professor.getGender());  // 성별 추가
         dto.setPic(professor.getPic());  // 사진 추가
-        dto.setBirthDate(professor.getBirthDate());  // 생년월일 추가
+        dto.setBirthdate(professor.getBirthDate());  // 생년월일 추가
         dto.setPhone(professor.getPhone());  // 폰번호 추가
         dto.setEmail(professor.getEmail());  // 이메일 추가
         dto.setAddress(professor.getAddress());  // 주소 추가
+        dto.setCreatedAt(professor.getCreatedAt());
+        dto.setDelYn(professor.getDelYn());
 
 
         List<LectureApplyEntity> lectureApplyEntityList = lectureApplyRepository.findByProfessorEntity(professor);
@@ -131,26 +133,49 @@ public class ProfessorService {
     }
 
     //본인의 강의 조회
-    public ProfessorSelLectureRes selProfessorLecture(ProfessorSelLectureDto dto) {
-        int itemsPerPage = 10; // 한 페이지당 수
-        Pageable pageable = PageRequest.of(dto.getPage() - 1, itemsPerPage);
-        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findAllByProfessorEntityIprofessor(dto.getIprofessor(), pageable);
-        List<ProfessorSelAllDto> lectures = new ArrayList<>();
-        for (LectureApplyEntity lectureEntity : lecturePage.getContent()) {
-            ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
-            lectureDto.setIlecture(lectureEntity.getIlecture());
-            lectureDto.setLectureName(lectureEntity.getLectureNameEntity().getLectureName());
-            lectureDto.setLectureRoomName(lectureEntity.getLectureRoomEntity().getLectureRoomName());
-            lectureDto.setIsemester(lectureEntity.getSemesterEntity().getIsemester());
-            lectureDto.setOpeningProceudres(lectureEntity.getOpeningProceudres());
-            lectureDto.setGradeLimit(lectureEntity.getGradeLimit());
-            lectureDto.setLectureMaxPeople(lectureEntity.getLectureMaxPeople());
-            lectureDto.setScore(lectureEntity.getLectureNameEntity().getScore());
-            lectureDto.setDelYn(lectureEntity.getDelYn());
-            lectures.add(lectureDto);
-        }
-        int maxPage = lecturePage.getTotalPages();
-        PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
+    public ProfessorSelLectureRes selProfessorLecture(ProfessorSelLectureDto dto,Pageable pageable) {
+//        int itemsPerPage = 10; // 한 페이지당 수
+//        Pageable pageable = PageRequest.of(dto.getPage() - 1, itemsPerPage);
+//        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findAllByProfessorEntityIprofessor(dto.getIprofessor(), pageable);
+//        List<ProfessorSelAllDto> lectures = new ArrayList<>();
+//        for (LectureApplyEntity lectureEntity : lecturePage.getContent()) {
+//            ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
+//            lectureDto.setIlecture(lectureEntity.getIlecture());
+//            lectureDto.setLectureName(lectureEntity.getLectureNameEntity().getLectureName());
+//            lectureDto.setLectureRoomName(lectureEntity.getLectureRoomEntity().getLectureRoomName());
+//            lectureDto.setIsemester(lectureEntity.getSemesterEntity().getIsemester());
+//            lectureDto.setOpeningProceudres(lectureEntity.getOpeningProceudres());
+//            lectureDto.setGradeLimit(lectureEntity.getGradeLimit());
+//            lectureDto.setLectureMaxPeople(lectureEntity.getLectureMaxPeople());
+//            lectureDto.setScore(lectureEntity.getLectureNameEntity().getScore());
+//            lectureDto.setDelYn(lectureEntity.getDelYn());
+//            lectureDto.setYear(lectureEntity.getSemesterEntity().getYear());
+//            lectures.add(lectureDto);
+//        }
+
+        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).get();
+        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findByProfessorEntity(entity, pageable);
+
+        List<ProfessorSelAllDto> lectures = lecturePage.getContent().stream()
+                .map(lectureEntity -> {
+                    ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
+                    lectureDto.setIlecture(lectureEntity.getIlecture());
+                    lectureDto.setLectureName(lectureEntity.getLectureNameEntity().getLectureName());
+                    lectureDto.setLectureRoomName(lectureEntity.getLectureRoomEntity().getLectureRoomName());
+                    lectureDto.setIsemester(lectureEntity.getSemesterEntity().getIsemester());
+                    lectureDto.setOpeningProceudres(lectureEntity.getOpeningProceudres());
+                    lectureDto.setGradeLimit(lectureEntity.getGradeLimit());
+                    lectureDto.setLectureMaxPeople(lectureEntity.getLectureMaxPeople());
+                    lectureDto.setScore(lectureEntity.getLectureNameEntity().getScore());
+                    lectureDto.setDelYn(lectureEntity.getDelYn());
+                    lectureDto.setYear(lectureEntity.getSemesterEntity().getYear());
+                    return lectureDto;
+                })
+                .toList();
+
+        long maxPage =lectureApplyRepository.count();
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage,10);
+
         return ProfessorSelLectureRes.builder()
                 .page(utils)
                 .lectureList(lectures)
@@ -188,6 +213,8 @@ public class ProfessorService {
             professorStudentData.setStudentNum(entity.getStudentEntity().getStudentNum());
             professorStudentData.setStudentName(entity.getStudentEntity().getNm());
             professorStudentData.setTotalScore(entity.getTotalScore());
+            professorStudentData.setIlectureStudent(entity.getIlectureStudent());
+            professorStudentData.setMajorName(entity.getStudentEntity().getMajorEntity().getMajorName());
 
             String grade = gradeUtils.totalGradeFromScore1(professorStudentData.getTotalScore());
             professorStudentData.setGrade(grade);
@@ -199,6 +226,8 @@ public class ProfessorService {
 
         return professorStudentDataList;
     }
+
+
 
 
 

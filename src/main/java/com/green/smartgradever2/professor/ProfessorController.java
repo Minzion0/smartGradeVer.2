@@ -6,6 +6,10 @@ import com.green.smartgradever2.settings.security.config.security.model.MyUserDe
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -62,7 +66,7 @@ public class ProfessorController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @GetMapping("/lecture-List")
+    @GetMapping("/lecture-list")
     @Operation(summary = "본인의 강의 조회",description = "ilecture : 강의pk<br>"+
             "lectureName : 강의명<br>"+
             "lectureRoomName : 강의실<br>"+
@@ -73,13 +77,13 @@ public class ProfessorController {
             "score : 강의 학점<br>"+
             "delYn : 삭제 여부 <br>")
     public ProfessorSelLectureRes getLecturePro( @AuthenticationPrincipal MyUserDetails details
-            ,@RequestParam (defaultValue = "1") int page
+            ,@ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page
             ,@RequestParam(required = false ) String openingProcedures) {
         ProfessorSelLectureDto dto = new ProfessorSelLectureDto();
         dto.setIprofessor(details.getIuser());
-        dto.setPage(page);
+
         dto.setOpeningProcedures(openingProcedures);
-        return SERVICE.selProfessorLecture(dto);
+        return SERVICE.selProfessorLecture(dto,page);
     }
 
     @PutMapping("/changPassword")
@@ -113,6 +117,5 @@ public class ProfessorController {
 
         return ResponseEntity.ok(studentsWithObjectionAndScores);
     }
-
 
 }

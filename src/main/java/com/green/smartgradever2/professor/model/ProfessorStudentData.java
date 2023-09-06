@@ -8,4 +8,6 @@ public class ProfessorStudentData {
     private String StudentName;
     private String grade;
     private int totalScore;
+    private String majorName;
+    private Long ilectureStudent;
 }

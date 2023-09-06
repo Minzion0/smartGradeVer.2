@@ -12,7 +12,7 @@ public class StudentProfileVo {
     private Enum gender;
     private String address;
     private String phone;
-    private LocalDate birthDate;
+    private LocalDate birthdate;
     private String email;
     private String pic;
     private int finishedYn;
