@@ -19,5 +19,6 @@ public class ProfessorProfileDto {
     private String address;  // 주소
     private LocalDateTime createdAt;
     private int delYn;
+    private String secretKey;
 
 }

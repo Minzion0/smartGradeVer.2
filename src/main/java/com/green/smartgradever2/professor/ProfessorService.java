@@ -50,7 +50,7 @@ public class ProfessorService {
         dto.setAddress(professor.getAddress());  // 주소 추가
         dto.setCreatedAt(professor.getCreatedAt());
         dto.setDelYn(professor.getDelYn());
-
+        dto.setSecretKey( dto.getSecretKey() == null ? "false" : "true");
 
         List<LectureApplyEntity> lectureApplyEntityList = lectureApplyRepository.findByProfessorEntity(professor);
 
