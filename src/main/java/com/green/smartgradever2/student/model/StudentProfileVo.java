@@ -17,4 +17,6 @@ public class StudentProfileVo {
     private String pic;
     private int finishedYn;
     private int score;
+    private String secretKey;
+
 }
