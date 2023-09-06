@@ -49,6 +49,8 @@ public class SecurityConfiguration {
                             .requestMatchers("/api/logout").hasAnyRole("STUDENT", "PROFESSOR", "ADMIN")
 
                             .requestMatchers(HttpMethod.GET, "/api/refresh-token").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/lectureroom/list").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/major/list").permitAll()
 
                             .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
                             .requestMatchers("**exception**").permitAll()
