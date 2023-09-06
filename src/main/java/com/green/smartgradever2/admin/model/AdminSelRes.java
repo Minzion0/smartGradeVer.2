@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @Builder
 public class AdminSelRes {
-    private List<AdminSelLectureVo>lectures;
+    private List<AdminSelLectureRes>lectures;
     private PagingUtils page;
 }
