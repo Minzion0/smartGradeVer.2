@@ -7,5 +7,4 @@ public class ProfessorUpdDto {
     private String phone;
     private String email;
     private String address;
-    private Long iprofessor;
 }

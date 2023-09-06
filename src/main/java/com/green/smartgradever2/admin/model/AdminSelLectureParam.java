@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class AdminSelLectureParam {
     private int procedures;
-    private int ilectureName;
+    private Long ilectureName;
     private String nm;
 
 }

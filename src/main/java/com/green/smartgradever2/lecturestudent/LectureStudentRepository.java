@@ -3,6 +3,8 @@ package com.green.smartgradever2.lecturestudent;
 import com.green.smartgradever2.config.entity.LectureApplyEntity;
 import com.green.smartgradever2.config.entity.LectureStudentEntity;
 import com.green.smartgradever2.config.entity.StudentEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +24,5 @@ public interface LectureStudentRepository extends JpaRepository<LectureStudentEn
     List<LectureStudentEntity> findByLectureApplyEntityIlectureAndObjection(Long ilecture, int objection);
 
     LectureStudentEntity findByLectureApplyEntityIlectureAndIlectureStudent(Long ilecture, Long ilectureStudent);
+    Page<LectureStudentEntity> findByStudentEntity(StudentEntity entity, Pageable pageable);
 }

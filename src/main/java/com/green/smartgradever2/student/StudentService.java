@@ -8,11 +8,14 @@ import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.student.model.*;
 import com.green.smartgradever2.utils.FileUtils;
 import com.green.smartgradever2.utils.GradeUtils;
+import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -207,13 +210,15 @@ public class StudentService {
         profile.setMajorName(student.getMajorEntity().getMajorName());
         profile.setGrade(student.getGrade());
         profile.setGender(student.getGender());
-        profile.setBirthDate(student.getBirthdate());
+        profile.setBirthdate(student.getBirthdate());
         profile.setAddress(student.getAddress());
         profile.setPhone(student.getPhone());
         profile.setEmail(student.getEmail());
         profile.setGender(student.getGender());
         profile.setPic(student.getPic());
         profile.setFinishedYn(student.getFinishedYn());
+
+        profile.setSecretKey( profile.getSecretKey() == null ? "false" : "true");
 
         List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
         List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().filter(lecture ->lecture.getFinishedYn() ==0 ).map(lecture -> {
@@ -257,7 +262,7 @@ public class StudentService {
 
 
     // 학생 강의별 성적
-    public List<StudentSelVo> getStudentLectureGrades(StudentEntity studentEntity) {
+    public List<StudentSelVo> getStudentLectureGrades(StudentEntity studentEntity, Pageable page) {
         List<LectureStudentEntity> lectureGrades = lectureStudentRep.findByStudentEntity(studentEntity);
         List<StudentSelVo> studentSelVos = new ArrayList<>(); // 각 강의별 성적 정보를 담을 리스트
 
@@ -389,7 +394,28 @@ public class StudentService {
 //        }
     }
 
+    public StudentHistoryRes studentHistoryRes(StudentHistoryOpenDto dto,Pageable pageable) {
+        StudentEntity entity = studentRep.findById(dto.getStudentNum()).get();
+        Page<LectureStudentEntity> studentpage = lectureStudentRep.findByStudentEntity(entity, pageable);
 
+        List<StudentHistoryDto> studentList = studentpage.getContent().stream().map(student -> {
+            StudentHistoryDto studentHistoryDto = new StudentHistoryDto();
+            studentHistoryDto.setIsemester(student.getLectureApplyEntity().getSemesterEntity().getIsemester());
+            studentHistoryDto.setYear(student.getLectureApplyEntity().getLectureScheduleEntity().getSemesterEntity().getYear());
+            studentHistoryDto.setScore(student.getLectureApplyEntity().getLectureNameEntity().getScore());
+            studentHistoryDto.setLectureName(student.getLectureApplyEntity().getLectureNameEntity().getLectureName());
+            studentHistoryDto.setProfessorName(student.getLectureApplyEntity().getProfessorEntity().getNm());
+            studentHistoryDto.setDayWeek(student.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
+            studentHistoryDto.setLectureStrTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
+            studentHistoryDto.setLectureEndTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
+            studentHistoryDto.setFinishedYn(student.getFinishedYn());
+            return studentHistoryDto;
+        }).toList();
+        long maxpage = studentRep.count();
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxpage, 10);
+
+        return StudentHistoryRes.builder().page(utils).lectureList(studentList).build();
+    }
 
 
 }

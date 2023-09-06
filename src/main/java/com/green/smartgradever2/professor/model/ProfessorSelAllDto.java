@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class ProfessorSelAllDto {
     private Long ilecture;
+    private int year;
     private String lectureName;
     private String lectureRoomName;
     private Long isemester;
@@ -13,4 +14,5 @@ public class ProfessorSelAllDto {
     private int lectureMaxPeople;
     private int score;
     private int delYn;
+    private int dayWeek;
 }

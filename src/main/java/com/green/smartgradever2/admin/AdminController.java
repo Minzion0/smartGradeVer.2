@@ -61,6 +61,7 @@ public class AdminController {
         return SERVICE.findLectureStudent(ilecture);
     }
 
+
     @GetMapping("/lecture")
     @Operation(summary = "강의 리스트" ,
             description = "ilecture\": pk,<br>\n" +
@@ -81,10 +82,10 @@ public class AdminController {
                     "      \"procedures\": 강의 상태 0 : 반려 1강의 개설 신청 2개설 인가 수강신청 가능 3 개강 -2 개강중 빼고 모두 보기 ,<br>\n" +
                     "      \"delYn\": 삭제여부<br>")
     public AdminSelRes selLecture(
-                                    @ParameterObject @PageableDefault(sort="student_num", direction = Sort.Direction.DESC, size=10 ) Pageable page
-                                    , @RequestParam (required = false,defaultValue = "-1")int  procedures, @RequestParam (required = false) String nm
-                                    , @RequestParam(required = false,defaultValue = "0")int ilectureName
-                                                                                                        ){
+            @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page
+            , @RequestParam (required = false,defaultValue = "-1")int  procedures, @RequestParam (required = false) String nm
+            , @RequestParam(required = false,defaultValue = "0")Long ilectureName
+    ){
 
 
         AdminSelLectureParam param = new AdminSelLectureParam();
@@ -94,6 +95,7 @@ public class AdminController {
 
         return SERVICE.selLecture(param,page);
     }
+
 
     @PatchMapping("/lecture")
     @Operation(summary = "강의상태 변경",description = "procedures= 0이 강의 신청 반려 0일때는 ctnt에 반려사유 작성<br><br>" +
