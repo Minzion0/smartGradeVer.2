@@ -14,6 +14,7 @@ import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -130,7 +131,7 @@ public class GradeMngmnService {
 //        log.info("list.size() : {}", list.size());
 
         int total;
-        double avg;
+
 
         List<StudentEntity> studentEntities = ST_REP.findAll();
 //        List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
@@ -142,18 +143,20 @@ public class GradeMngmnService {
             int temp = 0;
             int index = 0;
             int score = 0;
+            double avg = 0;
 
             for (int z = 0; z < studentEntityList.size(); z++) {
                 temp += studentEntityList.get(z).getTotalScore();
                 score += studentEntityList.get(z).getLectureApplyEntity().getLectureNameEntity().getScore();
+                avg += utils.totalScore2(temp);
                 index++;
             }
             if (studentEntityList.size() != 0) {
-                avg = utils.totalScore2(temp / index);
+
                 log.info("avg : {}", avg);
                 entity = StudentSemesterScoreEntity.builder()
                         .grade(studentEntities.get(i).getGrade()) // 학년
-                        .rating(avg) // 평점
+                        .rating(avg / index) // 평점
                         .score(score) // 학점
                         .avgScore(temp / index) // 평균 총점
                         .semesterEntity(semesterEntity) // semester pk
@@ -198,31 +201,32 @@ public class GradeMngmnService {
                 .build();
     }
 
-//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {
+//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto, Pageable pageable) {
 //        long maxPage = GM_REP.count();
 //        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
 //        dto.setStaIdx(utils.getStaIdx());
 //
-//        List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto);
+//
+//        List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto, pageable);
 //        GradeMngmnStudentVo studentVo = gradeMngmnQdsl.mngmnStudentVo(dto);
 //        List<GradeMngmnAvgVo> avg = gradeMngmnQdsl.avgVo(dto);
 //
 //        int point;
 //        double score;
-//        String rate;
+//        String rating;
 //        for (GradeMngmnVo a : voList) {
 //            point = a.getTotalScore();
 //            GradeUtils utils2 = new GradeUtils(point);
 //            score = utils2.totalScore();
-//            rate = utils2.totalRating(score);
-//            a.setRating(rate);
+//            rating = utils2.totalRating(score);
+//            a.setRating(rating);
 //        }
 //
 //        return GradeMngmnFindRes.builder()
 //                .voList(voList)
 //                .student(studentVo)
 //                .avgVo(avg)
-//                .paging(utils)
+//                .page(utils)
 //                .build();
 //
 //    }

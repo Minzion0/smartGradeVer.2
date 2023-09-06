@@ -38,7 +38,7 @@ public class GradeMngmnController {
     @GetMapping
     @Operation(summary = " 학번으로 조회")
     public GradeMngmnFindRes getGradeMngmn(@ParameterObject @PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
-                                           @RequestParam(required = false, defaultValue = "0") int grade,
+                                           @RequestParam(required = false, defaultValue = "1") int grade,
                                            @RequestParam Long studentNum) {
 
         GradeMngmnDto dto = new GradeMngmnDto();

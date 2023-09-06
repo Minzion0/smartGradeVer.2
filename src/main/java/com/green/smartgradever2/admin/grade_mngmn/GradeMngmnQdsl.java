@@ -6,10 +6,13 @@ import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnStudentVo;
 import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnVo;
 import com.green.smartgradever2.config.entity.*;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,16 +22,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GradeMngmnQdsl {
     private final JPAQueryFactory jpaQueryFactory;
+    QStudentSemesterScoreEntity sssc = QStudentSemesterScoreEntity.studentSemesterScoreEntity;
+    QStudentEntity st = QStudentEntity.studentEntity;
+    QSemesterEntity sem = QSemesterEntity.semesterEntity;
+    QLectureStudentEntity ls = QLectureStudentEntity.lectureStudentEntity;
+    QLectureApplyEntity la = QLectureApplyEntity.lectureApplyEntity;
+    QLectureNameEntity ln = QLectureNameEntity.lectureNameEntity;
+    QProfessorEntity pr = QProfessorEntity.professorEntity;
 
-    public List<GradeMngmnVo> studentVo(GradeMngmnDto dto) {
-        QStudentSemesterScoreEntity sssc = QStudentSemesterScoreEntity.studentSemesterScoreEntity;
-        QStudentEntity st = QStudentEntity.studentEntity;
-        QSemesterEntity sem = QSemesterEntity.semesterEntity;
-        QLectureStudentEntity ls = QLectureStudentEntity.lectureStudentEntity;
-        QLectureApplyEntity la = QLectureApplyEntity.lectureApplyEntity;
-        QLectureNameEntity ln = QLectureNameEntity.lectureNameEntity;
-        QProfessorEntity pr = QProfessorEntity.professorEntity;
-
+    public List<GradeMngmnVo> studentVo(GradeMngmnDto dto, Pageable pageable) {
         JPQLQuery<GradeMngmnVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnVo.class, sssc.grade, sem.semester, ln.lectureName, pr.nm, ln.score, ls.totalScore))
                 .from(sssc)
                 .join(sssc.studentEntity, st)
@@ -37,9 +39,9 @@ public class GradeMngmnQdsl {
                 .join(ls.lectureApplyEntity, la)
                 .join(la.lectureNameEntity, ln)
                 .join(la.professorEntity, pr)
-                .where(st.studentNum.eq(dto.getStudentNum())
-                        ,sssc.grade.eq(dto.getGrade()))
-                .limit(dto.getStaIdx());
+                .where(eqStudentNum(dto.getStudentNum()),eqGrade(dto.getGrade()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
 
         return query.fetch();
 
@@ -56,7 +58,7 @@ public class GradeMngmnQdsl {
                 .join(sssc.studentEntity, st)
                 .join(st.ls, ls)
                 .join(sssc.semesterEntity, sem)
-                .where(st.studentNum.eq(dto.getStudentNum()));
+                .where(eqStudentNum(dto.getStudentNum()));
 
         return query.fetch();
     }
@@ -64,10 +66,24 @@ public class GradeMngmnQdsl {
     public GradeMngmnStudentVo mngmnStudentVo(GradeMngmnDto dto) {
         QStudentEntity st = QStudentEntity.studentEntity;
 
-        JPQLQuery<GradeMngmnStudentVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnStudentVo.class, st.nm, st.studentNum))
+        JPQLQuery<GradeMngmnStudentVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnStudentVo.class, st.studentNum, st.nm))
                 .from(st)
-                .where(st.studentNum.eq(dto.getStudentNum()));
+                .where(eqStudentNum(dto.getStudentNum()));
 
         return query.fetchOne();
+    }
+
+    private BooleanExpression eqStudentNum(Long studentNum) {
+        if (StringUtils.isNullOrEmpty(studentNum.toString())) {
+            return null;
+        }
+        return st.studentNum.eq(studentNum);
+    }
+
+    private BooleanExpression eqGrade(Integer grade) {
+        if (StringUtils.isNullOrEmpty(grade.toString())) {
+            return null;
+        }
+        return st.grade.eq(grade);
     }
 }
