@@ -50,17 +50,34 @@ public class AdminMajorService {
             throw new EntityNotFoundException("not found");
         }
     }
+    public AdminMajorFindRes selMajor(AdminMajorDto dto,Pageable pageable) {
+        long maxPage = MAJOR_REP.count();
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage);
+        dto.setStaIdx(utils.getStaIdx());
 
-    public AdminMajorFindRes selMajor(AdminMajorDto dto) {
+        List<AdminMajorVo> major = MAPPER.selMajor(dto);
+        return AdminMajorFindRes.builder()
+                .vo(major)
+                .page(utils)
+                .build();
+    }
+
+    public AdminMajorFindRes selMajor2(AdminMajorDto dto, Pageable pageable) {
         long maxPage = MAJOR_REP.count();
         PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
-        List<AdminMajorVo> list = MAPPER.selMajor(dto);
+        List<AdminMajorVo> list = adminMajorQdsl.majorVos(dto, pageable);
 
         return AdminMajorFindRes.builder()
-                .paging(utils)
-                .vo(list)
+                .page(utils)
+                .vo(list.stream().map(item -> AdminMajorVo.builder()
+                        .majorName(item.getMajorName())
+                        .graduationScore(item.getGraduationScore())
+                        .imajor(item.getImajor())
+                        .delYn(item.getDelYn())
+                        .remarks(item.getRemarks())
+                        .build()).toList())
                 .build();
     }
 
@@ -90,14 +107,24 @@ public class AdminMajorService {
                 majorEntity.setMajorName(entity.getMajorName());
                 majorEntity.setGraduationScore(entity.getGraduationScore());
                 save = MAJOR_REP.save(majorEntity);
+
+                return AdminMajorVo.builder()
+                        .imajor(entity.getImajor())
+                        .majorName(save.getMajorName())
+                        .remarks(entity.getMajorName())
+                        .graduationScore(entity.getGraduationScore())
+                        .build();
             } else {
-                throw new RuntimeException("이미 존재하는 학과입니다.");
+                majorEntity.setGraduationScore(entity.getGraduationScore());
+                save = MAJOR_REP.save(majorEntity);
+                return AdminMajorVo.builder()
+                        .majorName(entity.getMajorName())
+                        .remarks(entity.getRemarks())
+                        .imajor(entity.getImajor())
+                        .graduationScore(save.getGraduationScore())
+                        .build();
             }
-            return AdminMajorVo.builder()
-                    .majorName(save.getMajorName())
-                    .remarks(entity.getMajorName())
-                    .graduationScore(entity.getGraduationScore())
-                    .build();
+
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }

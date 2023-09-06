@@ -42,7 +42,7 @@ public class AdminMajorController {
         dto.setDelYn(delYn);
         dto.setPage(pageable.getPageNumber());
         dto.setSize(pageable.getPageSize());
-        return SERVICE.selMajor(dto);
+        return SERVICE.selMajor(dto,pageable);
     }
 
 

@@ -45,7 +45,7 @@ public class AdminMajorQdsl {
         if (StringUtils.isNullOrEmpty(name)) {
             return null;
         }
-        return m.majorName.eq(name);
+        return m.majorName.contains(name);
     }
 
     private BooleanExpression eqDelYn(Integer delYn) {

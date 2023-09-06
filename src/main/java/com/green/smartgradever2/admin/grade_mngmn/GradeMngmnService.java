@@ -12,13 +12,10 @@ import com.green.smartgradever2.student.StudentRepository;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Optional;
 
@@ -197,7 +194,7 @@ public class GradeMngmnService {
                 .voList(voList)
                 .student(vo)
                 .avgVo(avg)
-                .paging(utils)
+                .page(utils)
                 .build();
     }
 
