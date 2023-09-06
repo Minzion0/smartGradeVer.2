@@ -133,8 +133,8 @@ public class BoardService {
         PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)totalPage, page.getPageSize());
 
         return BoardRes.builder()
-                .list(result)
                 .page(utils)
+                .list(result)
                 .build();
     }
 
