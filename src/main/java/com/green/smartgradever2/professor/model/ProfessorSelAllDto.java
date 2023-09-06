@@ -14,4 +14,5 @@ public class ProfessorSelAllDto {
     private int lectureMaxPeople;
     private int score;
     private int delYn;
+    private int dayWeek;
 }

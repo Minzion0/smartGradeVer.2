@@ -14,4 +14,5 @@ public class StudentHistoryDto {
     private LocalTime lectureStrTime;
     private LocalTime lectureEndTime;
     private int finishedYn;
+    private int dayWeek;
 }

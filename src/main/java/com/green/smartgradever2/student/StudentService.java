@@ -405,6 +405,7 @@ public class StudentService {
             studentHistoryDto.setScore(student.getLectureApplyEntity().getLectureNameEntity().getScore());
             studentHistoryDto.setLectureName(student.getLectureApplyEntity().getLectureNameEntity().getLectureName());
             studentHistoryDto.setProfessorName(student.getLectureApplyEntity().getProfessorEntity().getNm());
+            studentHistoryDto.setDayWeek(student.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
             studentHistoryDto.setLectureStrTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
             studentHistoryDto.setLectureEndTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
             studentHistoryDto.setFinishedYn(student.getFinishedYn());
