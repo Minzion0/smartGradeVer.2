@@ -10,6 +10,10 @@ public class ProStudentLectureDto {
     private Long ilectureStudent;
     private Long ilecture;
     private Long sudentNum;
+    private String majorName;
+    private Enum gender;
+    private String phone;
+    private String StudentName;
     private LocalDate lectureEndDate;
     private int attendance;
     private int midtermExamination;
