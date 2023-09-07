@@ -27,6 +27,7 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(authz ->
                             authz.requestMatchers(
                                     "/"
+                                    ,"/api/send-email/**"
                                     ,"/admin/**"
                                     ,"/professor/**"
                                     ,"/student/**"
@@ -53,7 +54,8 @@ public class SecurityConfiguration {
                             .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
                             .requestMatchers("**exception**").permitAll()
                             .requestMatchers("/api/professor/**").hasRole("PROFESSOR") // 권한있는 사람만 필터링 한거다
-                            .requestMatchers("/api/student/**").hasRole("STUDENT") // 권한있는 사람만 필터링 한거다
+                            .requestMatchers("/api/student/**").hasRole("STUDENT")
+//                            .requestMatchers("/api/send-email/**").hasAnyRole("PROFESSOR","STUDENT")
                             .anyRequest().hasRole("ADMIN") // anyRequest 는 거의 마지막에 작성 되어야함
                 ) //사용 권한 체크
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //세션 사용 X
