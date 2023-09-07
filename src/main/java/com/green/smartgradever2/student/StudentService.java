@@ -218,7 +218,7 @@ public class StudentService {
         profile.setPic(student.getPic());
         profile.setFinishedYn(student.getFinishedYn());
 
-        profile.setSecretKey( student.getSecretKey() == null ? "false" : "true");
+        profile.setSecretKey(student.getSecretKey() == null ? "false" : "true");
 
         List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
         List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().filter(lecture ->lecture.getFinishedYn() ==0 ).map(lecture -> {
