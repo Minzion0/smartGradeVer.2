@@ -34,9 +34,9 @@ public class AdminMajorController {
 
     @GetMapping("/admin/major")
     @Operation(summary = "전공 리스트 SELECT")
-    public AdminMajorFindRes getMajor(@ParameterObject @PageableDefault(sort = "imajor", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseEntity<AdminMajorFindRes> getMajor(@ParameterObject @PageableDefault(sort = "imajor", direction = Sort.Direction.ASC) Pageable pageable,
                                       @RequestParam (required = false) String majorName,
-                                      @RequestParam (required = false, defaultValue = "0") int delYn) {
+                                      @RequestParam (required = false) Integer delYn) {
         AdminMajorDto dto = new AdminMajorDto();
         dto.setMajorName(majorName);
         dto.setDelYn(delYn);

@@ -15,7 +15,7 @@ public class AdminMajorDto {
     private Long imajor;
     private String majorName;
     private int graduationScore;
-    private int delYn;
+    private Integer delYn;
     private String remarks;
     private int size;
     private int staIdx;
