@@ -1,14 +1,15 @@
-package com.green.smartgradever2.admin.model;
+package com.green.smartgradever2.student.model;
 
 import com.green.smartgradever2.utils.PagingUtils;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 @Builder
-public class AdminSelRes {
-    private List<AdminSelLectureRes>lectures;
+public class StudentHistoryRes {
     private PagingUtils page;
+    List<StudentHistoryDto> lectureList;
 }

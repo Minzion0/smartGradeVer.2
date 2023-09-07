@@ -192,6 +192,10 @@ public class ProfessorGradeSevice {
                     studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
                     studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
                     studentLectureDto.setSudentNum(lectureStudentEntity.getStudentEntity().getStudentNum());
+                    studentLectureDto.setPhone(lectureStudentEntity.getStudentEntity().getPhone());
+                    studentLectureDto.setGender(lectureStudentEntity.getStudentEntity().getGender());
+                    studentLectureDto.setStudentName(lectureStudentEntity.getStudentEntity().getNm());
+                    studentLectureDto.setMajorName(lectureStudentEntity.getStudentEntity().getMajorEntity().getMajorName());
 
                     studentLectures.add(studentLectureDto);
                 }

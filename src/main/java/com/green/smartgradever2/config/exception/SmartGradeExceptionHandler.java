@@ -64,11 +64,10 @@ public class SmartGradeExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     //에러 발생시간
-    private String now() {
-        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-dd-MM HH:mm:ss"));
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd // HH:mm:ss z");
-        Date date = new Date(System.currentTimeMillis());
+    private String now() {     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-dd-MM HH:mm:ss"));
+       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd // HH:mm:ss z");
+       Date date = new Date(System.currentTimeMillis());
 
-        return formatter.format(date);
+       return formatter.format(date);
     }
 }

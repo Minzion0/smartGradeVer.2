@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class AdminSelLectureDto {
-    private int procedures;
-    private int ilectureName;
+    private Integer procedures;
+    private Long ilectureName;
     private String nm;
     private int strIdx;
     private int row;

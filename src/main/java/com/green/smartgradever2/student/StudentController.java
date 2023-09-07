@@ -6,6 +6,10 @@ import com.green.smartgradever2.student.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -102,13 +106,14 @@ public class StudentController {
             "year : 년도"+"professorName : 담당교수이름 <br>"+"lectureName : 강의 명"+"dayWeek : 요일<br>"+ "lectureStrTime : 강의 시작시간<br>"+"lectureEndTime : 강의 종료시간<br>"+
             "score : 해당강의 학점<br>"+ "finishedYn : 수료여부 0<- 수강중 1<-수강완료<br>"+ "objection : 이의신청 기본0 신청시1<br>"+ "attendance : 출석점수 <br>"+ "midtermExamination : 중간고사점수<br>"+
             "finalExamination : 기말고사 점수<br>"+ "totalScore : 총점수<br>"+ "grade : 평점<br>"+ "rating : 알파벳 등급<br>"+ "studentGrade : 학년")
-    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@AuthenticationPrincipal MyUserDetails details) {
+    public ResponseEntity<List<StudentSelVo>> getStudentGrades(@AuthenticationPrincipal MyUserDetails details,
+         @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page) {
         StudentEntity studentEntity = SERVICE.getStudentById(details.getIuser()); // 학생 정보 가져오기
         if (studentEntity == null) {
             return ResponseEntity.notFound().build(); // 학생이 존재하지 않으면 404 반환
         }
 
-        List<StudentSelVo> studentGrades = SERVICE.getStudentLectureGrades(studentEntity); // 성적 정보 가져오기
+        List<StudentSelVo> studentGrades = SERVICE.getStudentLectureGrades(studentEntity,page); // 성적 정보 가져오기
         return ResponseEntity.ok(studentGrades); // 성적 정보 리스트 반환
     }
 
@@ -149,5 +154,19 @@ public class StudentController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이의신청기간이 지났습니다.");
         }
+    }
+
+    @GetMapping("/lecture-list")
+    @Operation(summary = "학생 강의조회",description = "year : 년도<br>"+
+    "isemester : 학기<br>"+"lectureName : 강의명<br>"+"ProfessorName : 교수이름<br>"+"score : 학점<br>"
+    +"lectureStrTime : 강의시작 시간<br>"+"lectureEndTime : 강의종료 시간<br>"+
+    "finishedYn : 0수강중 1 수료<br>"+"openingProcedures : 강의 절차 1~4<br>")
+    public StudentHistoryRes getStudentHistory(@AuthenticationPrincipal MyUserDetails details
+    ,@ParameterObject @PageableDefault(sort="finishedYn", direction = Sort.Direction.DESC, size=10 ) Pageable page
+            ,@RequestParam(required = false ) String openingProcedures) {
+        StudentHistoryOpenDto dto =new StudentHistoryOpenDto();
+        dto.setStudentNum(details.getIuser());
+        dto.setOpeningProcedures(openingProcedures);
+        return SERVICE.studentHistoryRes(dto,page);
     }
 }

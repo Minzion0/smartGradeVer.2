@@ -65,11 +65,11 @@ public class StudentEntity extends BaseEntity {
     @Column(nullable = false)
     private LocalDate birthdate;
 
-    @Column(length = 13)
+    @Column(length = 13,nullable = false)
     @Size(min = 13)
     private String phone;
 
-    @Column(length = 50)
+    @Column(length = 50,unique = true,nullable = false)
     private String email;
 
     @Column(length = 100)

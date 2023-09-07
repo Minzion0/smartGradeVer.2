@@ -12,13 +12,12 @@ import com.green.smartgradever2.student.StudentRepository;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Member;
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -133,7 +132,7 @@ public class GradeMngmnService {
 //        log.info("list.size() : {}", list.size());
 
         int total;
-        double avg;
+
 
         List<StudentEntity> studentEntities = ST_REP.findAll();
 //        List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
@@ -145,18 +144,20 @@ public class GradeMngmnService {
             int temp = 0;
             int index = 0;
             int score = 0;
+            double avg = 0;
 
             for (int z = 0; z < studentEntityList.size(); z++) {
                 temp += studentEntityList.get(z).getTotalScore();
                 score += studentEntityList.get(z).getLectureApplyEntity().getLectureNameEntity().getScore();
+                avg += utils.totalScore2(temp);
                 index++;
             }
             if (studentEntityList.size() != 0) {
-                avg = utils.totalScore2(temp / index);
+
                 log.info("avg : {}", avg);
                 entity = StudentSemesterScoreEntity.builder()
                         .grade(studentEntities.get(i).getGrade()) // 학년
-                        .rating(avg) // 평점
+                        .rating(avg / index) // 평점
                         .score(score) // 학점
                         .avgScore(temp / index) // 평균 총점
                         .semesterEntity(semesterEntity) // semester pk
@@ -197,54 +198,54 @@ public class GradeMngmnService {
                 .voList(voList)
                 .student(vo)
                 .avgVo(avg)
-                .paging(utils)
+                .page(utils)
                 .build();
     }
 
-//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {
+//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto, Pageable pageable) {
 //        long maxPage = GM_REP.count();
 //        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
 //        dto.setStaIdx(utils.getStaIdx());
 //
-//        List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto);
+//
+//        List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto, pageable);
 //        GradeMngmnStudentVo studentVo = gradeMngmnQdsl.mngmnStudentVo(dto);
 //        List<GradeMngmnAvgVo> avg = gradeMngmnQdsl.avgVo(dto);
 //
 //        int point;
 //        double score;
-//        String rate;
+//        String rating;
 //        for (GradeMngmnVo a : voList) {
 //            point = a.getTotalScore();
 //            GradeUtils utils2 = new GradeUtils(point);
 //            score = utils2.totalScore();
-//            rate = utils2.totalRating(score);
-//            a.setRating(rate);
+//            rating = utils2.totalRating(score);
+//            a.setRating(rating);
 //        }
 //
 //        return GradeMngmnFindRes.builder()
 //                .voList(voList)
 //                .student(studentVo)
 //                .avgVo(avg)
-//                .paging(utils)
+//                .page(utils)
 //                .build();
 //
 //    }
 
-//
+
 //    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
 //        return MAPPER.selGradeFindStudentDetail(dto);
 //    }
 
-    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
-        try {
-            Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
-            if (gradeMngmnDetailVo.isPresent()) {
-                return gradeMngmnDetailVo.get();
-            } else {
-                throw new RuntimeException("비어있는 값이 있습니다.");
-            }
-        } catch (Exception e) {
-            throw new NullPointerException("null 값이 존재합니다.");
-        }
+    public Optional<GradeMngmnDetailVo> selStudentDetail(GradeMngmnDetailSelDto dto) throws NullPointerException {
+        Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = gradeMngmnQdsl.studentDetail(dto);
+        return gradeMngmnDetailVo;
+
+
+    }
+
+    public GradeMngmnDetailVo selStudentDetail2(GradeMngmnDetailSelDto dto) {
+        Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
+        return gradeMngmnDetailVo.orElse(new GradeMngmnDetailVo()); // 기본값으로 객체 생성
     }
 }

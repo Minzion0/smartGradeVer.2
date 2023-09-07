@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/admin/grade-mngmn")
 @RequiredArgsConstructor
@@ -38,7 +40,7 @@ public class GradeMngmnController {
     @GetMapping
     @Operation(summary = " 학번으로 조회")
     public GradeMngmnFindRes getGradeMngmn(@ParameterObject @PageableDefault(sort = "student_num", direction = Sort.Direction.DESC) Pageable pageable,
-                                           @RequestParam(required = false, defaultValue = "0") int grade,
+                                           @RequestParam(required = false, defaultValue = "1") int grade,
                                            @RequestParam Long studentNum) {
 
         GradeMngmnDto dto = new GradeMngmnDto();
@@ -51,7 +53,7 @@ public class GradeMngmnController {
 
     @GetMapping("/{studentNum}")
     @Operation(summary = "상세보기")
-    public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable Long studentNum) {
+    public Optional<GradeMngmnDetailVo> getGradeMngmnDetail(@PathVariable Long studentNum) {
         GradeMngmnDetailSelDto dto = new GradeMngmnDetailSelDto();
         dto.setStudentNum(studentNum);
         return SERVICE.selStudentDetail(dto);

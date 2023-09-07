@@ -8,19 +8,13 @@ import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.model.*;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
-import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -39,6 +33,7 @@ public class LectureApplyService {
     private final LectureScheduleRepository LECTURE_SCHEDULE_RPS;
     private final EntityManager EM;
     private final ProfessorRepository professerRep;
+    private final LectureApplyQdsl lectureApplyQdsl;
 
 
 
@@ -65,10 +60,10 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
     }
 
 //  지금 학기의 요일 강의실 시간정보 호출
-    String query = "SELECT ls from LectureScheduleEntity ls  where ls.lectureApplyEntity.lectureRoomEntity.ilectureRoom = :ilectureRoom and ls.dayWeek = :dayWeek";
-    List<LectureScheduleEntity> lectureScheduleEntity = EM.createQuery(query).setParameter("ilectureRoom",param.getIlectureRoom()).setParameter("dayWeek",param.getDayWeek()).getResultList();
-
-    for (LectureScheduleEntity schedule : lectureScheduleEntity) {
+//    String query = "SELECT ls from LectureScheduleEntity ls  where ls.lectureApplyEntity.lectureRoomEntity.ilectureRoom = :ilectureRoom and ls.dayWeek = :dayWeek";
+//    List<LectureScheduleEntity> lectureScheduleEntity = EM.createQuery(query).setParameter("ilectureRoom",param.getIlectureRoom()).setParameter("dayWeek",param.getDayWeek()).getResultList();
+    List<LectureScheduleEntity> lectureSchedule = lectureApplyQdsl.findLectureSchedule(param);
+    for (LectureScheduleEntity schedule : lectureSchedule) {
         LocalTime lectureStrTime = schedule.getLectureStrTime();
         LocalTime lectureEndTime = schedule.getLectureEndTime();
 
@@ -76,7 +71,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
        if ((strTime.isAfter(lectureStrTime) && strTime.isBefore(lectureEndTime)) || strTime.equals(lectureStrTime) ){
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
        }
-       if (endTime.equals(lectureEndTime) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime)) || (strTime.isBefore(lectureStrTime) && endTime.isBefore(lectureEndTime) )  ) {
+       if (endTime.equals(lectureEndTime) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime)) || (strTime.isBefore(lectureStrTime) && endTime.isAfter(lectureEndTime) )  ) {
                throw new Exception("해당 시간에 강의중인 강의가 있습니다");
        }
     }
@@ -104,7 +99,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             new Exception("강의실 정원 초과입니다");
         }
 
-        if (param.getGradeLimit()<5){
+        if (param.getGradeLimit()>4){
             new Exception("학년은 1~4학년 까지 입니다");
         }
 
@@ -180,10 +175,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
     public LectureApplyScheduleRes lectureRoomSchedule(Long ilectureRoom){
         SemesterEntity currentSemester = getCurrentSemester();
 
-        String query = "SELECT sh FROM LectureScheduleEntity sh INNER JOIN sh.lectureApplyEntity la " +
-                "INNER JOIN la.lectureRoomEntity rm WHERE sh.semesterEntity = :semester AND rm.ilectureRoom = :ilectureRoom  ";
-
-        List<LectureScheduleEntity> resultList = EM.createQuery(query).setParameter("semester", currentSemester).setParameter("ilectureRoom", ilectureRoom).getResultList();
+        List<LectureScheduleEntity> resultList = lectureApplyQdsl.findLectureRoomSchedule(ilectureRoom);
 
         LectureRoomEntity lectureRoomEntity= null;
 
@@ -226,7 +218,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
 
 
-    public LectureSelAllRes getList(Long iprofessor,Integer openingProceudres ) {
+    public LectureSelAllRes getList(Long iprofessor, Integer openingProceudres,String LectureName) {
         ProfessorEntity professor = professerRep.findById(iprofessor).orElse(null);
 
         if (professor == null) {
@@ -234,28 +226,37 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
         }
 
         List<LectureApplyEntity> lectureApplyEntityList = null;
-        if (openingProceudres != null) {
+        if (LectureName != null ) {
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndLectureNameEntityLectureName(professor, LectureName);
+        } else if (openingProceudres != null) {
             lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudres(professor, openingProceudres);
-        }else if (openingProceudres == null) {
+        } else if (openingProceudres == null) {
             lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntity(professor);
         }
+
+
+
+
+
 
         List<LectureApplySelDto> seldto = new ArrayList<>();
 
         for (LectureApplyEntity lectureApplyEntity : lectureApplyEntityList) {
             LectureApplySelDto dto = new LectureApplySelDto();
             dto.setIlecture(lectureApplyEntity.getIlecture());
-            dto.setOpeningProceudres(lectureApplyEntity.getOpeningProceudres());
+            dto.setOpeningProcedures(lectureApplyEntity.getOpeningProceudres());
             dto.setIlectureName(lectureApplyEntity.getLectureNameEntity().getIlectureName());
             dto.setLectureName(lectureApplyEntity.getLectureNameEntity().getLectureName());
             dto.setScore(lectureApplyEntity.getLectureNameEntity().getScore());
             dto.setIlectureRoom(lectureApplyEntity.getLectureRoomEntity().getIlectureRoom());
+            dto.setLectureRoomName(lectureApplyEntity.getLectureNameEntity().getLectureName());
+            dto.setDayWeek(lectureApplyEntity.getLectureScheduleEntity().getDayWeek());
             dto.setIsemester(lectureApplyEntity.getSemesterEntity().getIsemester());
             dto.setAttendance(lectureApplyEntity.getAttendance());
             dto.setMidtermExamination(lectureApplyEntity.getMidtermExamination());
             dto.setFinalExamination(lectureApplyEntity.getFinalExamination());
-            dto.setLectureStrTime(lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime());
-            dto.setLectureEndTime(lectureApplyEntity.getLectureScheduleEntity().getLectureEndTime());
+            dto.setLectureStrTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime()));
+            dto.setLectureEndTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureEndTime()));
             dto.setGradeLimit(lectureApplyEntity.getGradeLimit());
             dto.setLectureMaxPeople(lectureApplyEntity.getLectureMaxPeople());
             dto.setCtnt(lectureApplyEntity.getCtnt());

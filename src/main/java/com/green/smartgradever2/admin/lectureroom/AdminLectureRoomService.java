@@ -41,7 +41,7 @@ public class AdminLectureRoomService {
         return AdminLectureRoomFindRes.builder()
                 .lectureRoomList(voList)
                 .lectureRoom(vo)
-                .paging(utils)
+                .page(utils)
                 .build();
     }
 

@@ -1,34 +1,48 @@
 package com.green.smartgradever2.admin.grade_mngmn;
 
-import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnAvgVo;
-import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnDto;
-import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnStudentVo;
-import com.green.smartgradever2.admin.grade_mngmn.model.GradeMngmnVo;
+import com.green.smartgradever2.admin.grade_mngmn.model.*;
 import com.green.smartgradever2.config.entity.*;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class GradeMngmnQdsl {
     private final JPAQueryFactory jpaQueryFactory;
+    QStudentSemesterScoreEntity sssc = QStudentSemesterScoreEntity.studentSemesterScoreEntity;
+    QStudentEntity st = QStudentEntity.studentEntity;
+    QSemesterEntity sem = QSemesterEntity.semesterEntity;
+    QLectureStudentEntity ls = QLectureStudentEntity.lectureStudentEntity;
+    QLectureApplyEntity la = QLectureApplyEntity.lectureApplyEntity;
+    QLectureNameEntity ln = QLectureNameEntity.lectureNameEntity;
+    QProfessorEntity pr = QProfessorEntity.professorEntity;
+    QMajorEntity m = QMajorEntity.majorEntity;
 
-    public List<GradeMngmnVo> studentVo(GradeMngmnDto dto) {
-        QStudentSemesterScoreEntity sssc = QStudentSemesterScoreEntity.studentSemesterScoreEntity;
-        QStudentEntity st = QStudentEntity.studentEntity;
-        QSemesterEntity sem = QSemesterEntity.semesterEntity;
-        QLectureStudentEntity ls = QLectureStudentEntity.lectureStudentEntity;
-        QLectureApplyEntity la = QLectureApplyEntity.lectureApplyEntity;
-        QLectureNameEntity ln = QLectureNameEntity.lectureNameEntity;
-        QProfessorEntity pr = QProfessorEntity.professorEntity;
+    public Optional<GradeMngmnDetailVo> studentDetail(GradeMngmnDetailSelDto dto) {
+        JPQLQuery<GradeMngmnDetailVo> query = jpaQueryFactory.selectDistinct(Projections.bean(GradeMngmnDetailVo.class,
+                        st.nm.as("name"), st.gender, st.phone, st.studentNum, m.majorName, st.createdAt,
+                        sssc.score.coalesce(0).as("scoreStudent"), m.graduationScore ))
+                .from(st)
+                .leftJoin(st.ssscList, sssc)
+                .leftJoin(st.majorEntity, m)
+                .leftJoin(st.ls, ls)
+                .where(eqStudentNum(dto.getStudentNum()));
+        return Optional.ofNullable(query.fetchOne());
+    }
 
+    public List<GradeMngmnVo> studentVo(GradeMngmnDto dto, Pageable pageable) {
         JPQLQuery<GradeMngmnVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnVo.class, sssc.grade, sem.semester, ln.lectureName, pr.nm, ln.score, ls.totalScore))
                 .from(sssc)
                 .join(sssc.studentEntity, st)
@@ -37,9 +51,9 @@ public class GradeMngmnQdsl {
                 .join(ls.lectureApplyEntity, la)
                 .join(la.lectureNameEntity, ln)
                 .join(la.professorEntity, pr)
-                .where(st.studentNum.eq(dto.getStudentNum())
-                        ,sssc.grade.eq(dto.getGrade()))
-                .limit(dto.getStaIdx());
+                .where(eqStudentNum(dto.getStudentNum()),eqGrade(dto.getGrade()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
 
         return query.fetch();
 
@@ -56,7 +70,7 @@ public class GradeMngmnQdsl {
                 .join(sssc.studentEntity, st)
                 .join(st.ls, ls)
                 .join(sssc.semesterEntity, sem)
-                .where(st.studentNum.eq(dto.getStudentNum()));
+                .where(eqStudentNum(dto.getStudentNum()));
 
         return query.fetch();
     }
@@ -64,10 +78,24 @@ public class GradeMngmnQdsl {
     public GradeMngmnStudentVo mngmnStudentVo(GradeMngmnDto dto) {
         QStudentEntity st = QStudentEntity.studentEntity;
 
-        JPQLQuery<GradeMngmnStudentVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnStudentVo.class, st.nm, st.studentNum))
+        JPQLQuery<GradeMngmnStudentVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnStudentVo.class, st.studentNum, st.nm))
                 .from(st)
-                .where(st.studentNum.eq(dto.getStudentNum()));
+                .where(eqStudentNum(dto.getStudentNum()));
 
         return query.fetchOne();
+    }
+
+    private BooleanExpression eqStudentNum(Long studentNum) {
+        if (StringUtils.isNullOrEmpty(studentNum.toString())) {
+            return null;
+        }
+        return st.studentNum.eq(studentNum);
+    }
+
+    private BooleanExpression eqGrade(Integer grade) {
+        if (StringUtils.isNullOrEmpty(grade.toString())) {
+            return null;
+        }
+        return st.grade.eq(grade);
     }
 }
