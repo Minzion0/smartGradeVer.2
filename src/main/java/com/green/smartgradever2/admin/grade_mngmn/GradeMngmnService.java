@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -231,21 +232,21 @@ public class GradeMngmnService {
 //
 //    }
 
-//
+
 //    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
 //        return MAPPER.selGradeFindStudentDetail(dto);
 //    }
 
-    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
-        try {
-            Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
-            if (gradeMngmnDetailVo.isPresent()) {
-                return gradeMngmnDetailVo.get();
-            } else {
-                throw new RuntimeException("비어있는 값이 있습니다.");
-            }
-        } catch (Exception e) {
-            throw new NullPointerException("null 값이 존재합니다.");
-        }
+    public Optional<GradeMngmnDetailVo> selStudentDetail(GradeMngmnDetailSelDto dto) throws NullPointerException {
+        Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = gradeMngmnQdsl.studentDetail(dto);
+
+        return gradeMngmnDetailVo;
+
+
+    }
+
+    public GradeMngmnDetailVo selStudentDetail2(GradeMngmnDetailSelDto dto) {
+        Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
+        return gradeMngmnDetailVo.orElse(new GradeMngmnDetailVo()); // 기본값으로 객체 생성
     }
 }
