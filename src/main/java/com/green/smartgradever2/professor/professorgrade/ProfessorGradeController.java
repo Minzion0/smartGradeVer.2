@@ -6,6 +6,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -59,8 +63,10 @@ public class ProfessorGradeController {
             "totalScore : 총점수 <br>"+
             "grade : 알파벳등급 <br>"+
             "rating : 평점" )
-    public ProfessorGradeStudentDto getProfessorStudents(@AuthenticationPrincipal MyUserDetails details,@RequestParam Long isemester) {
-        return service.getProGraStu(details.getIuser(), isemester);
+    public ProfessorGradeStudentDto getProfessorStudents(@AuthenticationPrincipal MyUserDetails details
+            ,@RequestParam(required = false) Long ilecture
+    , @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page) {
+        return service.getProGraStu(details.getIuser(), ilecture ,page);
     }
 
 
@@ -79,9 +85,13 @@ public class ProfessorGradeController {
             "totalScore : 총점수 <br>"+
             "grade : 알파벳등급 <br>"+
             "rating : 평점"  )
-    public List<ProStudentLectureDto> getProStuList(@AuthenticationPrincipal MyUserDetails details, @RequestParam Long isemester) {
-        return service.getProList(details.getIuser(), isemester);
+    public List<ProfessorStudentLectureDto> getProStuList(@AuthenticationPrincipal MyUserDetails details,
+                                                          @RequestParam(required = false) Long ilecture,
+                                                          @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page) {
+
+        return service.getProList(details.getIuser(),ilecture ,page);
     }
+
 
     @PutMapping("/objection")
     @Operation(summary = "교수 학생 이의신청 수정" ,description = "ilecture : 강의PK<br>"+

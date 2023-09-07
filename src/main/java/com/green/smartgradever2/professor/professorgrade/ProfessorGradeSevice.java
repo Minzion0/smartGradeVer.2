@@ -12,6 +12,7 @@ import com.green.smartgradever2.utils.GradeUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -95,7 +96,9 @@ public class ProfessorGradeSevice {
     }
 
     // 교수 학생 성적 리스트
-    public ProfessorGradeStudentDto getProGraStu(Long iprofessor, Long isemester) {
+    public ProfessorGradeStudentDto getProGraStu(Long iprofessor, Long ilecture,Pageable page) {
+
+
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {
             throw new EntityNotFoundException("교수를 찾을 수 없습니다: " + iprofessor);
@@ -111,9 +114,13 @@ public class ProfessorGradeSevice {
         ProfessorEntity professorEntity = new ProfessorEntity();
         professorEntity.setIprofessor(iprofessor);
 
-        SemesterEntity semesterEntity = new SemesterEntity();
-        semesterEntity.setIsemester(isemester);
-        List<LectureApplyEntity> professorLectures = lectureApplyRep.findAllByProfessorEntityAndSemesterEntity(professorEntity, semesterEntity);
+
+        List<LectureApplyEntity> professorLectures= null;
+        if (ilecture == null) {
+            professorLectures = lectureApplyRep.findAllByProfessorEntity(professorEntity,page);
+        }else{
+         professorLectures = lectureApplyRep.findAllByProfessorEntityAndIlecture(professorEntity,ilecture,page);}
+
 
         for (LectureApplyEntity lecture : professorLectures) {
             List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByLectureApplyEntity(lecture);
@@ -127,8 +134,8 @@ public class ProfessorGradeSevice {
                     studentLectureDto.setMidtermExamination(lectureStudentEntity.getMidtermExamination());
                     studentLectureDto.setFinalExamination(lectureStudentEntity.getFinalExamination());
                     studentLectureDto.setDayWeek(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getDayWeek());
-                    studentLectureDto.setLectureStrTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
-                    studentLectureDto.setLectureEndTime(lectureStudentEntity.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
+                    studentLectureDto.setStudentName(lectureStudentEntity.getStudentEntity().getNm());
+                    studentLectureDto.setMajorName(lectureStudentEntity.getStudentEntity().getMajorEntity().getMajorName());
                     studentLectureDto.setSudentNum(lectureStudentEntity.getStudentEntity().getStudentNum());
                     int totalScore = lectureStudentEntity.getAttendance() + lectureStudentEntity.getMidtermExamination() + lectureStudentEntity.getFinalExamination();
                     GradeUtils gradeUtils = new GradeUtils(totalScore);
@@ -140,23 +147,34 @@ public class ProfessorGradeSevice {
                     studentLectureDto.setRating(rating);
 
                     studentLectures.add(studentLectureDto);
+
+                    ratings.add(rating);
+                    grades.add(grade);
                 }
             }
         }
 
-        double averageRating = ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-        String averageGrade = new GradeUtils().totalRating(averageRating);
+        double averageRating = ratings.isEmpty() ? 0.0 : ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        String averageGrade = grades.isEmpty() ? "" : new GradeUtils().totalRating(averageRating);
 
         ProfessorGradeStudentDto professorGradeStudentDto = new ProfessorGradeStudentDto();
         professorGradeStudentDto.setIprofessor(iprofessor);
         professorGradeStudentDto.setLectureList(studentLectures);
 
 
+//        double averageRating = ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+//        String averageGrade = new GradeUtils().totalRating(averageRating);
+//
+//        ProfessorGradeStudentDto professorGradeStudentDto = new ProfessorGradeStudentDto();
+//        professorGradeStudentDto.setIprofessor(iprofessor);
+//        professorGradeStudentDto.setLectureList(studentLectures);
+
+
         return professorGradeStudentDto;
     }
 
 
-    public List<ProStudentLectureDto> getProList(Long iprofessor,Long isemester) {
+    public List<ProfessorStudentLectureDto> getProList(Long iprofessor, Long ilecture, Pageable page) {
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {
             throw new EntityNotFoundException("교수를 찾을 수 없습니다: " + iprofessor);
@@ -169,10 +187,18 @@ public class ProfessorGradeSevice {
         ProfessorEntity professorEntity = new ProfessorEntity();
         professorEntity.setIprofessor(iprofessor);
 
-        SemesterEntity semesterEntity = new SemesterEntity();
-        semesterEntity.setIsemester(isemester);
-        List<LectureApplyEntity> professorLectures = lectureApplyRep.findAllByProfessorEntityAndSemesterEntity(professorEntity, semesterEntity);
-        List<ProStudentLectureDto> studentLectures = new ArrayList<>();
+
+
+        List<LectureApplyEntity> professorLectures = null;
+        if (ilecture == null) {
+            professorLectures=  lectureApplyRep.findAllByProfessorEntity(professorEntity, page);
+
+        } else {
+            professorLectures = lectureApplyRep.findAllByProfessorEntityAndIlecture(professorEntity, ilecture, page);
+        }
+
+
+        List<ProfessorStudentLectureDto> studentLectures = new ArrayList<>();
 
         // 각 강의에 대한 학생 정보 추출
         for (LectureApplyEntity lecture : professorLectures) {
@@ -180,7 +206,7 @@ public class ProfessorGradeSevice {
 
             for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
                 if (lectureStudentEntity.getFinishedYn() == 0) {
-                    ProStudentLectureDto studentLectureDto = new ProStudentLectureDto();
+                    ProfessorStudentLectureDto studentLectureDto = new ProfessorStudentLectureDto();
                     studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
 
 
