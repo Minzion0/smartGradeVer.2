@@ -4,6 +4,8 @@ import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.student.model.*;
 import com.green.smartgradever2.config.entity.MajorEntity;
 import com.green.smartgradever2.config.entity.StudentEntity;
+import com.green.smartgradever2.config.exception.AdminException;
+import com.green.smartgradever2.utils.CheckUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -110,6 +112,14 @@ public class AdminStudentService {
             LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
             String year = setYear.toString().substring(2, 4);
 
+            CheckUtils utils = CheckUtils.builder().nm(param.getNm()).phoneNum(param.getPhone()).build();
+            String msg = utils.getMsg();
+            if (msg != null) {
+                String msgs = String.format("%s 오류가 있습니다", msg);
+
+                throw new AdminException(msgs);
+
+            }
 
             List<StudentEntity> majorCount = RPS.findAllByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
 
@@ -368,8 +378,7 @@ public class AdminStudentService {
 
         String format = String.format("attachment;filename=%s studentList.xlsx", LocalDate.now());
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", format);
-
+        response.setHeader("Content-Disposition", "attachment; filename=" + format);
         workbook.write(response.getOutputStream());
         workbook.close();
     }
