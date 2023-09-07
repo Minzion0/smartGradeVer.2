@@ -4,6 +4,7 @@ import com.green.smartgradever2.config.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 
 import java.util.List;
@@ -17,10 +18,11 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
 
 //    List<LectureApplyEntity> findByStudentEntity(StudentEntity student);
   List<LectureApplyEntity> findAllByProfessorEntityAndSemesterEntity(ProfessorEntity professorEntity, SemesterEntity semesterEntity);
-    List<LectureApplyEntity> findByProfessorEntityAndOpeningProceudres(ProfessorEntity professorEntity, int openingProceudres);
-    List<LectureApplyEntity> findByProfessorEntityAndLectureNameEntityLectureName(ProfessorEntity professorEntity, String lecturename);
+    List<LectureApplyEntity> findByProfessorEntityAndOpeningProceudres(ProfessorEntity professorEntity, int openingProceudres, Pageable pageable);
+    List<LectureApplyEntity> findByProfessorEntityAndLectureNameEntityLectureName(ProfessorEntity professorEntity, String lecturename, Pageable pageable);
 
+}
 
 //    int countLectureStudentsByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);
 
-}
+

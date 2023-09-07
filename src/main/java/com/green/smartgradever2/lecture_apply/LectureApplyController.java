@@ -1,5 +1,6 @@
 package com.green.smartgradever2.lecture_apply;
 
+import com.green.smartgradever2.config.entity.LectureApplyEntity;
 import com.green.smartgradever2.lecture_apply.model.*;
 import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,10 +8,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +27,7 @@ import java.util.List;
 @Tag(name = "교수 강의")
 public class LectureApplyController {
     private  final LectureApplyService service;
+    private final LectureApplyRepository lectureApplyRepository;
 
     @PostMapping("/lecture/apply")
     @Operation(summary = "강의 등록", description = "ilecture : 강의신청 pk<br>" +
@@ -38,15 +46,17 @@ public class LectureApplyController {
     @GetMapping("/lecture/list")
     @Operation(summary = "신청중인 강의 리스트")
     private ResponseEntity<LectureSelAllRes> getLecture(@AuthenticationPrincipal MyUserDetails details
-            ,@ParameterObject @RequestParam(required = false) Integer openingProceudres
-    ,@ParameterObject @RequestParam(required = false) String LectureName) {
-        if (openingProceudres != null && (openingProceudres < 0 || openingProceudres > 4)) {
+            ,@ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page
+            ,@ParameterObject @RequestParam(required = false) Integer openingProcedures
+    ,@ParameterObject @RequestParam(required = false) String LectureName
+    ) {
+        if (openingProcedures != null && (openingProcedures < 0 || openingProcedures > 4)) {
             return ResponseEntity.badRequest().build(); // 잘못된 파라미터 값일 경우 400 Bad Request 반환
         }
 
+        page = PageRequest.of(page.getPageNumber(), page.getPageSize(),Sort.by(Sort.Direction.DESC, "ilecture"));
 
-
-        LectureSelAllRes lectureSelAllRes = service.getList(details.getIuser(), openingProceudres,LectureName);
+        LectureSelAllRes lectureSelAllRes = service.getList(details.getIuser(), openingProcedures,LectureName,page);
 
         return ResponseEntity.ok(lectureSelAllRes);
     }
