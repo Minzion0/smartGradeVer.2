@@ -418,6 +418,9 @@ public class StudentService {
     }
 
     public void studentGradePrint(Long studentNum){
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setStudentNum(studentNum);
+        List<LectureStudentEntity> StudentEntity = lectureStudentRep.findByStudentEntity(studentEntity);
 
     }
 

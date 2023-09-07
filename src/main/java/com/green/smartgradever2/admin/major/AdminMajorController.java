@@ -16,13 +16,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/major")
+@RequestMapping("/api")
 @Tag(name = "관리자 전공 관리")
 public class AdminMajorController {
 
     private final AdminMajorService SERVICE;
 
-    @PostMapping
+    @PostMapping("/admin/major")
     @Operation(summary = "전공 INSERT")
     public Long postMajor(@RequestBody AdminMajorSaveDto dto) {
         MajorEntity entity = new MajorEntity();
@@ -32,7 +32,7 @@ public class AdminMajorController {
         return SERVICE.insMajor(entity);
     }
 
-    @GetMapping
+    @GetMapping("/admin/major")
     @Operation(summary = "전공 리스트 SELECT")
     public AdminMajorFindRes getMajor(@ParameterObject @PageableDefault(sort = "imajor", direction = Sort.Direction.DESC) Pageable pageable,
                                       @RequestParam (required = false) String majorName,
@@ -46,7 +46,7 @@ public class AdminMajorController {
     }
 
 
-    @DeleteMapping
+    @DeleteMapping("/admin/major")
     @Operation(summary = "전공 폐지 ( del_yn 0 1 변경 )")
     public AdminMajorVo delMajor(@RequestParam Long imajor) {
         MajorEntity entity = new MajorEntity();
@@ -54,7 +54,7 @@ public class AdminMajorController {
         return SERVICE.delMajor(entity);
     }
 
-    @PatchMapping
+    @PatchMapping("/admin/major")
     @Operation(summary = "전공 이름 수정")
     public AdminMajorVo patchMajor(@RequestBody AdminMajorPatchDto dto) {
         MajorEntity entity = new MajorEntity();
@@ -64,7 +64,7 @@ public class AdminMajorController {
         return SERVICE.updMajor(entity);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/major/list")
     @Operation(summary = "전공 x페이징")
     public ResponseEntity<List<MajorListVo>> getMajorList(){
         List<MajorListVo> majorList = SERVICE.getMajorList();
