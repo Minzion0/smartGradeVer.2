@@ -51,6 +51,7 @@ springdoc:
     path: /swagger.html
     operations-sorter : method
 
+
 #naver api 코드
 open-api:
   client-id: 6c1d_wx2wYAf73bPpAhj
@@ -92,3 +93,16 @@ file:
   dir: /home/smartGrade
 server:
   port: 8080
+  # e-mail config
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: qkqh970605@gmail.com
+    password: lbjwkwlsvbwwmcda
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
