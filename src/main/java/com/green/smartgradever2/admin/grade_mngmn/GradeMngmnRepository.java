@@ -18,11 +18,11 @@ public interface GradeMngmnRepository extends JpaRepository<StudentSemesterScore
 
     @Query(value = "select new com.green.smartgradever2" +
             ".admin.grade_mngmn.model.GradeMngmnDetailVo(s.pic, s.nm, s.gender, s.birthdate, s.phone, s.address," +
-            " s.studentNum, m.majorName, s.createdAt, s.email, sssc.score, m.graduationScore)," +
+            " s.studentNum, m.majorName, s.createdAt, s.email, sssc.score, m.graduationScore )," +
             "  s.pic, s.nm, s.gender, s.birthdate, s.phone, s.address, s.studentNum" +
             ", m.majorName, s.createdAt, s.email, sssc.score, m.graduationScore" +
             ", s.grade, sssc.semesterEntity, lc.lectureApplyEntity" +
-            ", sssc.avgScore, avg(sssc.rating)" +
+            ", sssc.avgScore, avg(sssc.rating) " +
             " from LectureStudentEntity lc " +
             "left join lc.studentEntity s " +
             "inner join s.majorEntity m " +
