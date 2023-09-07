@@ -209,6 +209,8 @@ public class AdminService {
                 .lectureRoomName(lectureApplyEntity.getLectureRoomEntity().getLectureRoomName())
                 .buildingName(lectureApplyEntity.getLectureRoomEntity().getBuildingName())
                 .currentPeople(applyEntity.size())
+                .dayWeek(lectureApplyEntity.getLectureScheduleEntity().getDayWeek())
+                .year(lectureApplyEntity.getSemesterEntity().getSemesterStrDate().toString().substring(0,4))
                 .score(lectureApplyEntity.getLectureNameEntity().getScore())
                 .lectureStrDate(lectureApplyEntity.getSemesterEntity().getSemesterStrDate())
                 .lectureEndDate(lectureApplyEntity.getSemesterEntity().getSemesterEndDate())
