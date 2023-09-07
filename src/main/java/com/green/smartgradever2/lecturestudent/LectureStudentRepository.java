@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface LectureStudentRepository extends JpaRepository<LectureStudentEntity,Long> {
     List<LectureStudentEntity> findByLectureApplyEntity(LectureApplyEntity entity);
-    long countByLectureApplyEntity(LectureApplyEntity lectureApply);
+    int countByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);
     List<LectureStudentEntity> findByStudentEntity(StudentEntity student);
     List<LectureStudentEntity> findByStudentEntityStudentNumAndFinishedYn(Long studentNum, int finishedYn);
     List<LectureStudentEntity> findAllByLectureApplyEntity(LectureApplyEntity entity);
@@ -25,4 +25,7 @@ public interface LectureStudentRepository extends JpaRepository<LectureStudentEn
 
     LectureStudentEntity findByLectureApplyEntityIlectureAndIlectureStudent(Long ilecture, Long ilectureStudent);
     Page<LectureStudentEntity> findByStudentEntity(StudentEntity entity, Pageable pageable);
+
+
+
 }

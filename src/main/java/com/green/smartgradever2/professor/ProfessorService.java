@@ -162,6 +162,9 @@ public class ProfessorService {
                     ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
                     lectureDto.setIlecture(lectureEntity.getIlecture());
                     lectureDto.setLectureName(lectureEntity.getLectureNameEntity().getLectureName());
+                    lectureDto.setBuildingName(lectureEntity.getLectureRoomEntity().getBuildingName());
+                    lectureDto.setLectureStrTime(String.valueOf(lectureEntity.getLectureScheduleEntity().getLectureStrTime()));
+                    lectureDto.setLectureEndTime(String.valueOf(lectureEntity.getLectureScheduleEntity().getLectureEndTime()));
                     lectureDto.setLectureRoomName(lectureEntity.getLectureRoomEntity().getLectureRoomName());
                     lectureDto.setIsemester(lectureEntity.getSemesterEntity().getIsemester());
                     lectureDto.setOpeningProceudres(lectureEntity.getOpeningProceudres());
@@ -171,6 +174,10 @@ public class ProfessorService {
                     lectureDto.setDelYn(lectureEntity.getDelYn());
                     lectureDto.setDayWeek(lectureEntity.getLectureScheduleEntity().getDayWeek());
                     lectureDto.setYear(lectureEntity.getSemesterEntity().getYear());
+
+                    int studentCount = lectureStudentRep.countByLectureApplyEntity(lectureEntity);
+                    lectureDto.setStudentCount(studentCount);
+
                     return lectureDto;
                 })
                 .toList();
