@@ -239,7 +239,6 @@ public class GradeMngmnService {
 
     public Optional<GradeMngmnDetailVo> selStudentDetail(GradeMngmnDetailSelDto dto) throws NullPointerException {
         Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = gradeMngmnQdsl.studentDetail(dto);
-
         return gradeMngmnDetailVo;
 
 
