@@ -51,7 +51,7 @@ public class SecurityConfiguration {
                             .requestMatchers(HttpMethod.GET, "/api/refresh-token").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/lectureroom/list").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/major/list").permitAll()
-
+                            .requestMatchers(HttpMethod.GET,"/api/professor/lecture/room").hasRole("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
                             .requestMatchers("**exception**").permitAll()
                             .requestMatchers("/api/professor/**").hasRole("PROFESSOR") // 권한있는 사람만 필터링 한거다

@@ -21,6 +21,7 @@ public class AdminSelLectureVo {
     private LocalTime strTime;
     private LocalTime  endTime;
     private int maxPeople;
+    private int dayWeek;
     private Long currentPeople;
     private int procedures;
     private int delYn;

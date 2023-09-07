@@ -13,6 +13,8 @@ public class AdminSelLectureRes {
     private String lectureNm;
     private int semester;
     private String majorName;
+    private String year;
+
     private String nm;
     private String lectureRoomNm;
     private String buildingNm;
@@ -24,6 +26,7 @@ public class AdminSelLectureRes {
     private String  endTime;
     private int maxPeople;
     private Long currentPeople;
+    private int dayWeek;
     private int procedures;
     private int delYn;
 }
