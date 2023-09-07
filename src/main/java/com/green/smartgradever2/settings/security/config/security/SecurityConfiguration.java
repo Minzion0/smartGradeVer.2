@@ -51,11 +51,11 @@ public class SecurityConfiguration {
                             .requestMatchers(HttpMethod.GET, "/api/refresh-token").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/lectureroom/list").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/major/list").permitAll()
-                            .requestMatchers(HttpMethod.GET,"/api/professor/lecture/room").hasRole("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
-                            .requestMatchers("**exception**").permitAll()
-                            .requestMatchers("/api/professor/**").hasRole("PROFESSOR") // 권한있는 사람만 필터링 한거다
-                            .requestMatchers("/api/student/**").hasRole("STUDENT") // 권한있는 사람만 필터링 한거다
+                                    .requestMatchers(HttpMethod.GET,"/api/professor/lecture/room").hasAnyRole("ADMIN","PROFESSOR")
+                                    .requestMatchers("**exception**").permitAll()
+                                    .requestMatchers("/api/professor/**").hasRole("PROFESSOR") // 권한있는 사람만 필터링 한거다
+                                    .requestMatchers("/api/student/**").hasRole("STUDENT") // 권한있는 사람만 필터링 한거다
                             .anyRequest().hasRole("ADMIN") // anyRequest 는 거의 마지막에 작성 되어야함
                 ) //사용 권한 체크
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //세션 사용 X

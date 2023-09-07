@@ -368,6 +368,7 @@ public class AdminStudentService {
                 cellCellStyle.setBorderBottom(BorderStyle.THIN);
                 cell5.setCellStyle(cellCellStyle);
 
+                //학년 cell에 정렬 함수 설정
                 sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), headerRow.getRowNum(),cell3.getColumnIndex() ,cell3.getColumnIndex()));
             }
             // 열 너비 자동 조정

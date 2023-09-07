@@ -2,6 +2,7 @@ package com.green.smartgradever2.email;
 
 import com.green.smartgradever2.config.entity.ProfessorEntity;
 import com.green.smartgradever2.config.entity.StudentEntity;
+import com.green.smartgradever2.email.model.CheckEmailDto;
 import com.green.smartgradever2.email.model.EmailDto;
 import com.green.smartgradever2.email.model.EmailVo;
 import com.green.smartgradever2.professor.ProfessorRepository;
@@ -10,10 +11,14 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,25 @@ public class EmailService {
     private final StudentRepository STUDENT_REP;
     private final ProfessorRepository PROFESSOR_REP;
 
+
+    /** 보낼 이메일 로직 **/
+    public void sendEmail(EmailMessage message) {
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,  true,"UTF-8");
+            mimeMessageHelper.setTo(message.getTo()); // 메일 수신자
+            mimeMessageHelper.setSubject(message.getSubject()); // 메일 제목
+            mimeMessageHelper.setFrom(message.getFrom());
+            mimeMessageHelper.setText(message.getMessage(), true);
+
+            javaMailSender.send(mimeMessage);
+            log.info("Email send successfully!");
+        } catch (MessagingException e) {
+            log.error("Failed to send email", e);
+            throw new RuntimeException(e);
+        }
+    }
 
     /** 직접적인 이메일 내용 **/
     public EmailVo sendMail(EmailDto dto) throws Exception{
@@ -106,25 +130,101 @@ public class EmailService {
                 .build();
     }
 
-    /** 보낼 이메일 로직 **/
-    public void sendEmail(EmailMessage message) {
 
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,  true,"UTF-8");
-            mimeMessageHelper.setTo(message.getTo()); // 메일 수신자
-            mimeMessageHelper.setSubject(message.getSubject()); // 메일 제목
-            mimeMessageHelper.setFrom(message.getFrom());
-            mimeMessageHelper.setText(message.getMessage(), true);
 
-            javaMailSender.send(mimeMessage);
-            log.info("Email send successfully!");
-        } catch (MessagingException e) {
-            log.error("Failed to send email", e);
-            throw new RuntimeException(e);
+    /** 이메일 인증 **/
+    public ResponseEntity checkEmail (CheckEmailDto dto) {
+
+        String apiAddress = null;
+
+
+        List<ProfessorEntity> professorMail = PROFESSOR_REP.findAll();
+
+        if (dto.getRole().equals("ROLE_PROFESSOR")) {
+            for (int i = 0; i < professorMail.size(); i++) {
+                if (dto.getMail().equals(professorMail.get(i).getEmail())) {
+                    return ResponseEntity.status(405).build();
+                }
+            }
+            ResponseEntity.ok().build();
+        } else if (dto.getRole().equals("ROLE_STUDENT")) {
+            List<StudentEntity> studentMail = STUDENT_REP.findAll();
+            for (int i = 0; i < studentMail.size(); i++) {
+                if (dto.getMail().equals(studentMail.get(i).getEmail())) {
+                    return ResponseEntity.status(405).build();
+                }
+            }
         }
+        String uuid = UUID.randomUUID().toString();
+
+        if (dto.getRole().equals("ROLE_STUDENT")) {
+            StudentEntity student = STUDENT_REP.findById(dto.getIuser()).get();
+            student.setEmail(uuid);
+            STUDENT_REP.save(student);
+            apiAddress = "?iuser=" + student.getStudentNum() + "&role=" + student.getRole() + "&uuid=" + student.getEmail();
+        } else {
+            ProfessorEntity professor = PROFESSOR_REP.findById(dto.getIuser()).get();
+            professor.setEmail(uuid);
+            PROFESSOR_REP.save(professor);
+            apiAddress = "?iuser=" + professor.getIprofessor() + "&role=" + professor.getRole() + "&uuid=" + professor.getEmail();
+        }
+        String address = "http://localhost:8080/api/send-email" + apiAddress;
+
+        StringBuffer msg = new StringBuffer();
+        msg.append("<html>");
+        msg.append("<body>");
+        msg.append("<div style='width: 500px;\n" +
+                "    border: 1px solid rgba(0,0,0,.3);\n" +
+                "    padding: 10px 10px 20px;\n" +
+                "    border-radius: 20px;\n" +
+                "    text-align: center;\n" +
+                "    margin: 50px auto;\n'>" +
+                "<a href='http://192.168.0.144:5002/'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
+        msg.append("<hr>");
+        msg.append("<h1>이메일 인증을 위한 메일입니다.</h1>");
+        msg.append("<p>본인이 아니시라면 메일 삭제를 해주시면 됩니다.</p>");
+        msg.append("<p style='margin: 0px 0 40px;'>이메일 인증을 원하신다면 <b>하단의 확인버튼</b>을 누르시면 됩니다.</p>");
+        msg.append("<a href='" + address + "' style = 'font-size: 16px;\n" +
+                "    text-decoration: none;\n" +
+                "    color: #fff;\n" +
+                "    background: #7aa5f1;\n" +
+                "    padding: 10px;\n" +
+                "    border-radius: 5px;' target= '_self' >확인하기</a> </div>");
+        msg.append("<p></p>");
+        msg.append("</body>");
+        msg.append("</html>");
+
+        // 실제 보낼 이메일 내용
+        EmailMessage message = EmailMessage.builder()
+                .to(dto.getMail())
+                .from("SMART_GRADE") // 누가
+                .subject("SMART_GRADE 이메인 인증 확인") // 제목
+                .message(msg.toString()) //내용
+                .build();
+
+        sendEmail(message);
+
+        return ResponseEntity.ok().build();
     }
 
-
+    /** 이메일 인증 확인 - api **/
+    public String checkApi(Long iuser, String role){
+        String uuid = null;
+        if (role.equals("ROLE_STUDENT")){
+            StudentEntity student = STUDENT_REP.findById(iuser).get();
+            uuid = student.getEmail();
+            if (!uuid.equals(student.getEmail())) {
+                throw new RuntimeException("확인이 완료되지 않습니다. 관리자에게 연락바랍니다.");
+            }
+            return "확인이 완료되었습니다. 전 페이지에서 이어서 작성해주시면 됩니다.";
+        } else {
+            ProfessorEntity professor = PROFESSOR_REP.findById(iuser).get();
+            uuid = professor.getEmail();
+            if (!uuid.equals(professor.getEmail())) {
+                throw new RuntimeException("확인이 완료되지 않습니다. 관리자에게 연락바랍니다.");
+            }
+        }
+        return "확인이 완료되었습니다. 전 페이지에서 이어서 작성해주시면 됩니다.";
+    }
 
 }
