@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,26 +51,27 @@ public class AdminMajorService {
             throw new EntityNotFoundException("not found");
         }
     }
-    public AdminMajorFindRes selMajor(AdminMajorDto dto,Pageable pageable) {
-        long maxPage = MAJOR_REP.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage);
-        dto.setStaIdx(utils.getStaIdx());
+//    public ResponseEntity<AdminMajorFindRes> selMajor(AdminMajorDto dto, Pageable pageable) {
+//        long maxPage = MAJOR_REP.count();
+//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage);
+//        dto.setStaIdx(utils.getStaIdx());
+//
+//        List<AdminMajorVo> major = MAPPER.selMajor(dto);
+//        AdminMajorFindRes build = AdminMajorFindRes.builder()
+//                .vo(major)
+//                .page(utils)
+//                .build();
+//        return ResponseEntity.ok(build);
+//    }
 
-        List<AdminMajorVo> major = MAPPER.selMajor(dto);
-        return AdminMajorFindRes.builder()
-                .vo(major)
-                .page(utils)
-                .build();
-    }
-
-    public AdminMajorFindRes selMajor2(AdminMajorDto dto, Pageable pageable) {
+    public ResponseEntity<AdminMajorFindRes> selMajor(AdminMajorDto dto, Pageable pageable) {
         long maxPage = MAJOR_REP.count();
         PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
         List<AdminMajorVo> list = adminMajorQdsl.majorVos(dto, pageable);
 
-        return AdminMajorFindRes.builder()
+        AdminMajorFindRes build = AdminMajorFindRes.builder()
                 .page(utils)
                 .vo(list.stream().map(item -> AdminMajorVo.builder()
                         .majorName(item.getMajorName())
@@ -79,6 +81,7 @@ public class AdminMajorService {
                         .remarks(item.getRemarks())
                         .build()).toList())
                 .build();
+        return ResponseEntity.ok(build);
     }
 
 //    public AdminMajorFindRes selMajor2(AdminMajorDto dto, Pageable pageable) {
