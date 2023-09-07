@@ -4,6 +4,7 @@ import com.green.smartgradever2.admin.lecturecondition.LectureConditionRepositor
 import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
 import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.model.*;
+import com.green.smartgradever2.admin.professor.AdminProfessorRepository;
 import com.green.smartgradever2.admin.semester.SemesterRepository;
 import com.green.smartgradever2.admin.student.AdminStudentRepository;
 import com.green.smartgradever2.config.entity.*;
@@ -18,15 +19,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.FontFamily;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.*;
-import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +37,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import static java.awt.Color.*;
+
+
 
 @RequiredArgsConstructor
 @Service
@@ -59,6 +56,7 @@ public class AdminService {
     private final AdminStudentRepository STUDENT_RPS;
     private final AdminMajorRepository MAJOR_RPS;
     private final AdminQdsl adminQdsl;
+    private final AdminProfessorRepository PRO_RPS;
 
 
     /**학기 등록**/
@@ -293,6 +291,202 @@ public class AdminService {
         APPLY_RPS.save(applyEntity);
 
         return AdminUpdLectureRes.builder().ilecture(applyEntity.getIlecture()).ctnt(applyEntity.getCtnt()).procedures(applyEntity.getOpeningProceudres()).build();
+    }
+
+
+    public void greenUniversityMember(HttpServletResponse response) throws IOException {
+
+
+// 엑셀 워크북 생성
+        Workbook workbook = new XSSFWorkbook();
+
+        // 시트 생성
+        Sheet sheet = workbook.createSheet("전교 학생 리스트");
+
+
+        // 제목 행 생성
+        Row headerRow = sheet.createRow(0);
+
+        // 제목 행 스타일 설정
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerCellStyle.setFont(headerFont);
+        headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerCellStyle.setBorderBottom(BorderStyle.THIN);
+        headerCellStyle.setBorderTop(BorderStyle.THIN);
+        headerCellStyle.setBorderLeft(BorderStyle.THIN);
+        headerCellStyle.setBorderRight(BorderStyle.THIN);
+
+
+        for (int i = 0; i < sheet.getLastRowNum(); i++) {
+            sheet.autoSizeColumn(i);
+            sheet.setColumnWidth(i, (sheet.getColumnWidth(i))+512);
+        }
+
+
+        String[] headers = { "학번", "이름", "학년", "성별", "학과" };
+
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        // 데이터 행 생성 및 셀 스타일 설정
+        CellStyle cellCellStyle = workbook.createCellStyle();
+        Font cellFont = workbook.createFont();
+
+        cellFont.setFontName("맑은 고딕");
+        cellFont.setBold(false);
+        cellFont.setFontHeight((short) 250);
+        cellFont.setFontHeightInPoints((short) 14);
+        cellCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellCellStyle.setFont(cellFont);
+        cellCellStyle.setBorderTop(BorderStyle.THIN);
+        cellCellStyle.setBorderLeft(BorderStyle.THIN);
+        cellCellStyle.setBorderRight(BorderStyle.THIN);
+
+
+
+        CellStyle numericCellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        numericCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0")); // 숫자 형식 지정
+        int rowCount = 1; // 첫 번째 행은 제목 행이므로 1부터 시작
+
+        List<StudentEntity> studentEntities = STUDENT_RPS.findAll();
+
+        int strIdx=0;
+        int endIdx=0;
+        for (int i = 0; i < studentEntities.size(); i++) {
+            Row row = sheet.createRow(rowCount++);
+            Cell cell1 = row.createCell(0);
+            cell1.setCellValue(studentEntities.get(i).getStudentNum());
+            cell1.setCellStyle(cellCellStyle);
+
+            Cell cell2 = row.createCell(1);
+            cell2.setCellValue(studentEntities.get(i).getNm());
+            cell2.setCellStyle(cellCellStyle);
+
+            Cell cell3 = row.createCell(2);
+            cell3.setCellValue(studentEntities.get(i).getGrade());
+            cell3.setCellStyle(cellCellStyle);
+
+            Cell cell4 = row.createCell(3);
+            cell4.setCellValue(studentEntities.get(i).getGender().toString());
+            cell4.setCellStyle(numericCellStyle);
+            cell4.setCellStyle(cellCellStyle);
+
+            Cell cell5 = row.createCell(4);
+            cell5.setCellValue(studentEntities.get(i).getMajorEntity().getMajorName());
+            cellCellStyle.setBorderBottom(BorderStyle.THIN);
+            cell5.setCellStyle(cellCellStyle);
+
+            if (i==0){
+                strIdx=row.getRowNum();
+                log.info("strIdx : {}",strIdx);
+            }
+            if (i==studentEntities.size()-1){
+                endIdx=row.getLastCellNum();
+                log.info("endIdx : {}",endIdx);
+            }
+            //학년 cell에 정렬 함수 설정
+        }
+        sheet.setAutoFilter(new CellRangeAddress(0, rowCount-1, 0, headers.length - 1));
+        //   sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), rowCount - 1, 4, 4));
+
+
+        // 열 너비 자동 조정
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // 시트 생성
+        Sheet sheet1 = workbook.createSheet("전교 교수 리스트");
+        for (int i = 0; i < sheet1.getLastRowNum(); i++) {
+            sheet1.autoSizeColumn(i);
+            sheet1.setColumnWidth(i, (sheet1.getColumnWidth(i))+512);
+        }
+
+        // 제목 행 생성
+        Row headerRow1 = sheet1.createRow(0);
+
+        // 제목 행 스타일 설정
+
+        String[] headers1 = { "교수번호", "이름", "  근속년수  ", "성별", "학과" };
+
+        for (int i = 0; i < headers1.length; i++) {
+            Cell cell = headerRow1.createCell(i);
+            cell.setCellValue(headers1[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+
+        List<ProfessorEntity> professorEntityList = PRO_RPS.findAll();
+
+        rowCount = 1;
+        for (int i = 0; i < professorEntityList.size(); i++) {
+            Row row = sheet1.createRow(rowCount++);
+            Cell cell1 = row.createCell(0);
+            cell1.setCellValue(professorEntityList.get(i).getIprofessor());
+            cell1.setCellStyle(cellCellStyle);
+
+            Cell cell2 = row.createCell(1);
+            cell2.setCellValue(professorEntityList.get(i).getNm());
+            cell2.setCellStyle(cellCellStyle);
+
+            Cell cell3 = row.createCell(2);
+            cell3.setCellValue(getValue(professorEntityList, i));
+            cell3.setCellStyle(cellCellStyle);
+
+            Cell cell4 = row.createCell(3);
+            cell4.setCellValue(professorEntityList.get(i).getGender().toString());
+            cell4.setCellStyle(numericCellStyle);
+            cell4.setCellStyle(cellCellStyle);
+
+            Cell cell5 = row.createCell(4);
+            cell5.setCellValue(professorEntityList.get(i).getMajorEntity().getMajorName());
+            cellCellStyle.setBorderBottom(BorderStyle.THIN);
+            cell5.setCellStyle(cellCellStyle);
+
+            if (i==0){
+                strIdx=row.getRowNum();
+                log.info("strIdx : {}",strIdx);
+            }
+            if (i==studentEntities.size()-1){
+                endIdx=row.getLastCellNum();
+                log.info("endIdx : {}",endIdx);
+            }
+            //학년 cell에 정렬 함수 설정
+        }
+        sheet1.setAutoFilter(new CellRangeAddress(0, rowCount-1, 0, headers.length - 1));
+
+
+
+        // 열 너비 자동 조정
+        for (int i = 0; i < headers.length; i++) {
+            sheet1.autoSizeColumn(i);
+        }
+
+        String fileName = "GreenUniversityMember.xlsx"; // 원하는 파일 이름을 지정합니다.
+        String format = String.format("attachment;filename=%s_%s",LocalDate.now().toString(), fileName);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", format);
+
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+    private static int getValue(List<ProfessorEntity> professorEntityList, int i) {
+        int year = LocalDate.now().getYear() - professorEntityList.get(i).getCreatedAt().getYear();
+
+        if (year==0){
+            return 1;
+        }
+        return year;
     }
 
 
