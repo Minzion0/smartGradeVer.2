@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/admin/grade-mngmn")
 @RequiredArgsConstructor
@@ -51,7 +53,7 @@ public class GradeMngmnController {
 
     @GetMapping("/{studentNum}")
     @Operation(summary = "상세보기")
-    public GradeMngmnDetailVo getGradeMngmnDetail(@PathVariable Long studentNum) {
+    public Optional<GradeMngmnDetailVo> getGradeMngmnDetail(@PathVariable Long studentNum) {
         GradeMngmnDetailSelDto dto = new GradeMngmnDetailSelDto();
         dto.setStudentNum(studentNum);
         return SERVICE.selStudentDetail(dto);

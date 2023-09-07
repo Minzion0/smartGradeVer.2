@@ -4,6 +4,8 @@ import com.green.smartgradever2.admin.major.AdminMajorRepository;
 import com.green.smartgradever2.admin.student.model.*;
 import com.green.smartgradever2.config.entity.MajorEntity;
 import com.green.smartgradever2.config.entity.StudentEntity;
+import com.green.smartgradever2.config.exception.AdminException;
+import com.green.smartgradever2.utils.CheckUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,6 +98,95 @@ public class AdminStudentService {
                                             .build();
 
     }
+
+    @Transactional
+    public List<AdminInsStudentVo> insStudentTest(List<AdminInsStudentParam> params) throws Exception {
+       List<StudentEntity> list= new ArrayList<>();
+        StudentEntity studentEntitys= null;
+        for (AdminInsStudentParam param : params) {
+            Optional<MajorEntity> major = MAJOR_RPS.findById(param.getImajor());
+
+            LocalDate now = LocalDate.now();
+            LocalDate setYear = LocalDate.of(now.getYear(), 1, 1);
+            LocalDateTime startOfDay = setYear.atStartOfDay();
+            LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
+            String year = setYear.toString().substring(2, 4);
+
+            CheckUtils utils = CheckUtils.builder().nm(param.getNm()).phoneNum(param.getPhone()).build();
+            String msg = utils.getMsg();
+            if (msg != null) {
+                String msgs = String.format("%s 오류가 있습니다", msg);
+
+                throw new AdminException(msgs);
+
+            }
+
+            List<StudentEntity> majorCount = RPS.findAllByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
+
+
+            String num = String.format("%s%02d%04d", year, major.get().getImajor(), majorCount.size() + 1);
+
+
+            Long studentNum = Long.parseLong(num);
+
+
+            String password = param.getBirthdate().toString().replaceAll("-", "");
+            String encode = PW_ENCODER.encode(password);
+
+            StudentEntity entity = new StudentEntity();
+            entity.setStudentNum(studentNum);
+            entity.setStudentPassword(encode);
+            entity.setNm(param.getNm());
+            entity.setGender(param.getGender());
+            entity.setMajorEntity(major.get());
+            entity.setBirthdate(param.getBirthdate());
+            entity.setPhone(param.getPhone());
+            try {
+
+                 studentEntitys = RPS.saveAndFlush(entity);
+            }catch (Exception e){
+                throw new Exception(entity.getNm()+"등록시 오류 발생");
+            }
+
+
+            list.add(studentEntitys);
+
+        }
+
+//        List<StudentEntity> studentEntityList = RPS.saveAllAndFlush(list);
+
+
+
+        EM.clear();
+
+        List<AdminInsStudentVo> res= new ArrayList<>();
+        for (StudentEntity studentEntity : list) {
+            StudentEntity student = RPS.findById(studentEntity.getStudentNum()).get();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+
+
+            AdminInsStudentVo studentVo = AdminInsStudentVo.builder().studentNum(student.getStudentNum())
+                    .nm(student.getNm())
+                    .grade(student.getGrade())
+                    .birthdate(student.getBirthdate())
+                    .delYn(student.getDelYn())
+                    .finishedYn(student.getFinishedYn())
+                    .phone(student.getPhone())
+                    .gender(student.getGender())
+                    .imajor(student.getMajorEntity().getImajor())
+                    .createdAt(student.getCreatedAt().format(formatter))
+                    .build();
+
+            res.add(studentVo);
+        }
+
+
+        return res;
+
+    }
+
+
 
 
     public AdminStudentRes findStudents(AdminStudentFindParam param,Pageable pageable){
@@ -286,8 +378,7 @@ public class AdminStudentService {
 
         String format = String.format("attachment;filename=%s studentList.xlsx", LocalDate.now());
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", format);
-
+        response.setHeader("Content-Disposition", "attachment; filename=" + format);
         workbook.write(response.getOutputStream());
         workbook.close();
     }

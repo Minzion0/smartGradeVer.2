@@ -25,13 +25,6 @@ public class CheckUtils {
         return true;
     }
 
-//    public boolean genderCheck(){
-//        String regx = "^[FM]$";
-//        Pattern pattern = Pattern.compile(regx);
-//        Matcher matcher = pattern.matcher(gender);
-//
-//        return matcher.matches();
-//    }
 
     public boolean emailCheck(){
         String regx = "^[a-zA-Z0-9_+&*-]+(?:\\." +

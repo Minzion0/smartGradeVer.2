@@ -60,7 +60,7 @@ public class ProfessorEntity extends BaseEntity {
     private String phone;
 
     //** 이메일 **/
-    @Column(length = 50, nullable = true)
+    @Column(length = 50, nullable = true,unique = true)
     private String email;
 
     //** 주소 **/

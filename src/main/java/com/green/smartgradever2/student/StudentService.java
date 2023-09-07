@@ -417,5 +417,9 @@ public class StudentService {
         return StudentHistoryRes.builder().page(utils).lectureList(studentList).build();
     }
 
+    public void studentGradePrint(Long studentNum){
+
+    }
+
 
 }

@@ -53,6 +53,7 @@ public class AdminQdsl {
                         , lectureSchedule.lectureEndTime.as("endTime")
                         , apply.lectureMaxPeople.as("maxPeople")
                         , apply.openingProceudres.as("procedures")
+                        ,lectureSchedule.dayWeek
                         , apply.delYn
                         , ExpressionUtils.as(jpaQueryFactory.select(lectureStudent.ilectureStudent.count()).from(lectureStudent).where(procedures(dto.getProcedures()),professorName(dto.getNm())),"currentPeople")))
                 .from(apply)
