@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                             authz.requestMatchers(
                                     "/"
                                     ,"/admin/**"
+                                    ,"/api/send-email/**"
                                     ,"/professor/**"
                                     ,"/student/**"
                                    ,"/api/sign-in"

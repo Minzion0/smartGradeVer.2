@@ -12,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
@@ -23,8 +25,8 @@ public class AdminProfessorController {
 
     @PostMapping("/professor")
     @Operation(summary = "교수등록")
-    public ResponseEntity<AdminProfessorInsVo> professorEnrollment(@RequestBody AdminProfessorInsParam param){
-        AdminProfessorInsVo res = SERVICE.insProfessor(param);
+    public ResponseEntity<List<AdminProfessorInsVo>> professorEnrollment(@RequestBody List<AdminProfessorInsParam> param){
+        List<AdminProfessorInsVo> res = SERVICE.insProfessor(param);
         return ResponseEntity.ok().body(res);
     }
 
