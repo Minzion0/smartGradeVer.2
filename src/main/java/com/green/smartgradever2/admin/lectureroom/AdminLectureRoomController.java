@@ -19,19 +19,19 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/lectureroom")
+@RequestMapping("/api")
 @Tag(name = "관리자 강의실 관리")
 public class AdminLectureRoomController {
 
     private final AdminLectureRoomService SERVICE;
 
-    @PostMapping
+    @PostMapping("/admin/lectureroom")
     @Operation(summary = "강의실 추가")
     public Long postLectureRoom(LectureRoomEntity entity) {
         return SERVICE.insLectureRoom(entity);
     }
 
-    @GetMapping
+    @GetMapping("/admin/lectureroom")
     @Operation(summary = "강의실 리스트 보기")
     public AdminLectureRoomFindRes getLectureRoom(@ParameterObject @PageableDefault(sort="ifeed", direction = Sort.Direction.DESC) Pageable pageable,
                                                        @RequestParam (required = false) String buildingName,
@@ -44,7 +44,7 @@ public class AdminLectureRoomController {
         return SERVICE.selLectureRoom(dto);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/admin/lectureroom")
     @Operation(summary = "강의실 삭제 (delYn 0 1 변경)")
     public AdminLectureRoomListVo patchLectureRoom(@RequestParam Long ilectureRoom) {
         LectureRoomEntity entity = new LectureRoomEntity();
@@ -53,7 +53,7 @@ public class AdminLectureRoomController {
         return SERVICE.delLectureRoom(entity);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/lectureroom/list")
     @Operation(summary = "강의실 리스트 페이징x")
     public ResponseEntity<List<LectureRoomVo>> getLectureRoomList(){
         List<LectureRoomVo> lectureRoomList = SERVICE.getLectureRoomList();
