@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/lectureroom")
+@RequestMapping("/api/admin/lectureroom")
 @Tag(name = "관리자 강의실 관리")
 public class AdminLectureRoomController {
 

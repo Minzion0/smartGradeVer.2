@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/major")
+@RequestMapping("/api/admin/major")
 @Tag(name = "관리자 전공 관리")
 public class AdminMajorController {
 
