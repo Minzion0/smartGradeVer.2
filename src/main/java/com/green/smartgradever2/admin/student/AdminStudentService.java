@@ -344,42 +344,82 @@ public class AdminStudentService {
             int rowCount = 1; // 첫 번째 행은 제목 행이므로 1부터 시작
 
             List<StudentEntity> studentEntities = RPS.findByMajorEntity(majorEntity);
-            for (StudentEntity studentEntity : studentEntities) {
+//            for (StudentEntity studentEntity : studentEntities) {
+//                Row row = sheet.createRow(rowCount++);
+//                Cell cell1 = row.createCell(0);
+//                cell1.setCellValue(studentEntity.getStudentNum());
+//                cell1.setCellStyle(cellCellStyle);
+//
+//                Cell cell2 = row.createCell(1);
+//                cell2.setCellValue(studentEntity.getNm());
+//                cell2.setCellStyle(cellCellStyle);
+//
+//                Cell cell3 = row.createCell(2);
+//                cell3.setCellValue(studentEntity.getGrade());
+//                cell3.setCellStyle(cellCellStyle);
+//
+//                Cell cell4 = row.createCell(3);
+//                cell4.setCellValue(studentEntity.getGender().toString());
+//                cell4.setCellStyle(numericCellStyle);
+//                cell4.setCellStyle(cellCellStyle);
+//
+//                Cell cell5 = row.createCell(4);
+//                cell5.setCellValue(studentEntity.getMajorEntity().getMajorName());
+//                cellCellStyle.setBorderBottom(BorderStyle.THIN);
+//                cell5.setCellStyle(cellCellStyle);
+//
+//                //학년 cell에 정렬 함수 설정
+//                sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), headerRow.getRowNum(),cell3.getColumnIndex() ,cell3.getColumnIndex()));
+//            }
+            int strIdx=0;
+            int endIdx=0;
+            for (int i = 0; i < studentEntities.size(); i++) {
                 Row row = sheet.createRow(rowCount++);
                 Cell cell1 = row.createCell(0);
-                cell1.setCellValue(studentEntity.getStudentNum());
+                cell1.setCellValue(studentEntities.get(i).getStudentNum());
                 cell1.setCellStyle(cellCellStyle);
 
                 Cell cell2 = row.createCell(1);
-                cell2.setCellValue(studentEntity.getNm());
+                cell2.setCellValue(studentEntities.get(i).getNm());
                 cell2.setCellStyle(cellCellStyle);
 
                 Cell cell3 = row.createCell(2);
-                cell3.setCellValue(studentEntity.getGrade());
+                cell3.setCellValue(studentEntities.get(i).getGrade());
                 cell3.setCellStyle(cellCellStyle);
 
                 Cell cell4 = row.createCell(3);
-                cell4.setCellValue(studentEntity.getGender().toString());
+                cell4.setCellValue(studentEntities.get(i).getGender().toString());
                 cell4.setCellStyle(numericCellStyle);
                 cell4.setCellStyle(cellCellStyle);
 
                 Cell cell5 = row.createCell(4);
-                cell5.setCellValue(studentEntity.getMajorEntity().getMajorName());
+                cell5.setCellValue(studentEntities.get(i).getMajorEntity().getMajorName());
                 cellCellStyle.setBorderBottom(BorderStyle.THIN);
                 cell5.setCellStyle(cellCellStyle);
-
+                if (i==0){
+                    strIdx=row.getRowNum();
+                    log.info("strIdx : {}",strIdx);
+                }
+                if (i==studentEntities.size()-1){
+                    endIdx=row.getLastCellNum();
+                    log.info("endIdx : {}",endIdx);
+                }
                 //학년 cell에 정렬 함수 설정
-                sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), headerRow.getRowNum(),cell3.getColumnIndex() ,cell3.getColumnIndex()));
             }
+            sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), endIdx,2 ,2));
+
+
             // 열 너비 자동 조정
             for (int i = 0; i < headers.length; i++) {
                 sheet.autoSizeColumn(i);
             }
         }
-
-        String format = String.format("attachment;filename=%s studentList.xlsx", LocalDate.now());
+        String fileName = "studentList.xlsx"; // 원하는 파일 이름을 지정합니다.
+        String format = String.format("attachment;filename=%s_%s",LocalDate.now().toString(), fileName);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=" + format);
+        response.setHeader("Content-Disposition", format);
+
+
         workbook.write(response.getOutputStream());
         workbook.close();
     }
