@@ -149,6 +149,12 @@ public class StudentService {
             return response;
         }
 
+        if (lectureApply.getOpeningProceudres() != 2 || LocalDate.now().isAfter(lectureApply.getStudentsApplyDeadline())) {
+            response.setSuccess(false);
+            response.setMessage("신청 기간이 종료되었거나 강의 신청이 불가능한 강의입니다.");
+            return response;
+        }
+
 
         // 학생과 강의 정보를 수강 신청 테이블에 등록
         LectureStudentEntity lectureStudent = LectureStudentEntity.builder()
@@ -158,11 +164,6 @@ public class StudentService {
                 .build();
         lectureStudentRep.save(lectureStudent);
 
-        if (lectureApply.getOpeningProceudres() != 2 || LocalDate.now().isAfter(lectureApply.getStudentsApplyDeadline())) {
-            response.setSuccess(false);
-            response.setMessage("신청 기간이 종료되었거나 강의 신청이 불가능한 강의입니다.");
-            return response;
-        }
 
 
 
