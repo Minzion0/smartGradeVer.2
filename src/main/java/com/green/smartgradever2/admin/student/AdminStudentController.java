@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -28,6 +29,13 @@ public class AdminStudentController {
     @Operation(summary = "학생등록")
     public ResponseEntity<?> studentEnrollment(@RequestBody AdminInsStudentParam param) throws Exception{
         AdminInsStudentVo vo = SERVICE.insStudent(param);
+
+        return ResponseEntity.ok().body(vo);
+    }
+    @PostMapping("/students/test")
+    @Operation(summary = "학생 다중 등록")
+    public ResponseEntity<?> studentEnrollmentTest(@RequestBody List<AdminInsStudentParam> param) throws Exception{
+        List<AdminInsStudentVo> vo = SERVICE.insStudentTest(param);
 
         return ResponseEntity.ok().body(vo);
     }

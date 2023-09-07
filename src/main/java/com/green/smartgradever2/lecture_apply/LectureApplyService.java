@@ -182,11 +182,6 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
     public LectureApplyScheduleRes lectureRoomSchedule(Long ilectureRoom){
         SemesterEntity currentSemester = getCurrentSemester();
 
-        String query = "SELECT sh FROM LectureScheduleEntity sh INNER JOIN sh.lectureApplyEntity la " +
-                "INNER JOIN la.lectureRoomEntity rm WHERE sh.semesterEntity = :semester AND rm.ilectureRoom = :ilectureRoom  ";
-
-      //  List<LectureScheduleEntity> resultList = EM.createQuery(query).setParameter("semester", currentSemester).setParameter("ilectureRoom", ilectureRoom).getResultList();
-
         List<LectureScheduleEntity> resultList = lectureApplyQdsl.findLectureRoomSchedule(ilectureRoom);
 
         LectureRoomEntity lectureRoomEntity= null;
