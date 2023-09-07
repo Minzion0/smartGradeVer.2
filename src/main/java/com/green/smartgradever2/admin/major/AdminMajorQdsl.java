@@ -28,9 +28,6 @@ public class AdminMajorQdsl {
     QMajorEntity m = QMajorEntity.majorEntity;
 
     public List<AdminMajorVo> majorVos(AdminMajorDto dto, Pageable pageable) {
-        String majorName = "";
-        Integer delYn = 0;
-
         JPAQuery<AdminMajorVo> query = jpaQueryFactory.select(Projections.bean(AdminMajorVo.class, m.imajor, m.majorName, m.graduationScore, m.delYn, m.remarks))
                 .from(m)
                 .where(eqMajorName(dto.getMajorName())

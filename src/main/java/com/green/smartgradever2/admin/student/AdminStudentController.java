@@ -71,10 +71,5 @@ public class AdminStudentController {
         return ResponseEntity.ok().body(vo);
     }
 
-    @GetMapping("/student-file")
-    @Operation(summary = "모든 학생들 정보 파일")
-    public void studentListFile(HttpServletResponse request) throws IOException {
-        SERVICE.studentListFile(request);
-    }
 
 }

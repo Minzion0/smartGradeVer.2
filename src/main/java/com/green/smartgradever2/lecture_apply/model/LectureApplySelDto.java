@@ -11,6 +11,7 @@ public class LectureApplySelDto {
     private String lectureName;
     private int score;
     private Long ilectureRoom;
+    private String buildingName;
     private String lectureRoomName;
     private Long isemester;
     private String lectureStrTime;
@@ -22,6 +23,7 @@ public class LectureApplySelDto {
     private int gradeLimit;
     private int dayWeek;
     private String ctnt;
-    private String booUrl;
+    private String bookUrl;
+    private String textBook;
     private int delYn;
 }

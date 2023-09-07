@@ -8,9 +8,13 @@ import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.model.*;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
+import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -218,25 +222,23 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
 
 
-    public LectureSelAllRes getList(Long iprofessor, Integer openingProceudres,String LectureName) {
+    public LectureSelAllRes getList(Long iprofessor, Integer openingProcedures, String LectureName, Pageable page) {
         ProfessorEntity professor = professerRep.findById(iprofessor).orElse(null);
 
         if (professor == null) {
             return null;
         }
 
+
         List<LectureApplyEntity> lectureApplyEntityList = null;
         if (LectureName != null ) {
-            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndLectureNameEntityLectureName(professor, LectureName);
-        } else if (openingProceudres != null) {
-            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudres(professor, openingProceudres);
-        } else if (openingProceudres == null) {
-            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntity(professor);
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndLectureNameEntityLectureName(professor, LectureName,page);
+        } else if (openingProcedures != null) {
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudres(professor, openingProcedures,page);
+        } else if (openingProcedures == null) {
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntity(professor, page).stream().toList();
+
         }
-
-
-
-
 
 
         List<LectureApplySelDto> seldto = new ArrayList<>();
@@ -249,7 +251,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             dto.setLectureName(lectureApplyEntity.getLectureNameEntity().getLectureName());
             dto.setScore(lectureApplyEntity.getLectureNameEntity().getScore());
             dto.setIlectureRoom(lectureApplyEntity.getLectureRoomEntity().getIlectureRoom());
-            dto.setLectureRoomName(lectureApplyEntity.getLectureNameEntity().getLectureName());
+            dto.setLectureRoomName(lectureApplyEntity.getLectureRoomEntity().getLectureRoomName());
             dto.setDayWeek(lectureApplyEntity.getLectureScheduleEntity().getDayWeek());
             dto.setIsemester(lectureApplyEntity.getSemesterEntity().getIsemester());
             dto.setAttendance(lectureApplyEntity.getAttendance());
@@ -260,11 +262,16 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             dto.setGradeLimit(lectureApplyEntity.getGradeLimit());
             dto.setLectureMaxPeople(lectureApplyEntity.getLectureMaxPeople());
             dto.setCtnt(lectureApplyEntity.getCtnt());
-            dto.setBooUrl(lectureApplyEntity.getBookUrl());
+            dto.setTextBook(lectureApplyEntity.getTextbook());
+            dto.setBuildingName(lectureApplyEntity.getLectureRoomEntity().getBuildingName());
+            dto.setBookUrl(lectureApplyEntity.getBookUrl());
             seldto.add(dto);
         }
+        long maxPage =LECTURE_APPLY_RPS.count();
+        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
 
         return LectureSelAllRes.builder()
+                .page(utils)
                 .lectureList(seldto)
                 .build();
     }

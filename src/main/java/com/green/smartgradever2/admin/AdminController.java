@@ -1,10 +1,8 @@
 package com.green.smartgradever2.admin;
 
 import com.green.smartgradever2.admin.model.*;
-import com.green.smartgradever2.config.exception.AdminException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,6 +103,13 @@ public class AdminController {
 
         return SERVICE.lectureModify(dto);
     }
+
+    @GetMapping("/member-file")
+    @Operation(summary = "대학 모든 구성원들 정보")
+    public void greenUniversityMember(HttpServletResponse request) throws IOException {
+        SERVICE.greenUniversityMember(request);
+    }
+
 
 
 }

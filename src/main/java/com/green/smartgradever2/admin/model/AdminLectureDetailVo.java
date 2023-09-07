@@ -13,6 +13,8 @@ public class AdminLectureDetailVo {
     private String lectureRoomName;
     private int currentPeople;
     private int score;
+    private int dayWeek;
+    private String year;
     private LocalDate lectureStrDate;
     private LocalDate lectureEndDate;
     private String lectureStrTime;
