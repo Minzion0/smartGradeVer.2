@@ -8,6 +8,5 @@ import java.util.List;
 @Data
 public class ProfessorGradeStudentDto {
     private Long iprofessor;
-    private Long isemester;
     private List<ProStudentLectureDto> lectureList;
 }

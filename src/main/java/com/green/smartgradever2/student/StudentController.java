@@ -169,4 +169,13 @@ public class StudentController {
         dto.setOpeningProcedures(openingProcedures);
         return SERVICE.studentHistoryRes(dto,page);
     }
+
+    @GetMapping("/grade-file")
+    public void studentGradePrint(@AuthenticationPrincipal MyUserDetails details){
+
+        SERVICE.studentGradePrint(details.getIuser());
+    }
+
+
+
 }

@@ -262,7 +262,9 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             dto.setGradeLimit(lectureApplyEntity.getGradeLimit());
             dto.setLectureMaxPeople(lectureApplyEntity.getLectureMaxPeople());
             dto.setCtnt(lectureApplyEntity.getCtnt());
-            dto.setBooUrl(lectureApplyEntity.getBookUrl());
+            dto.setTextBook(lectureApplyEntity.getTextbook());
+            dto.setBuildingName(lectureApplyEntity.getLectureRoomEntity().getBuildingName());
+            dto.setBookUrl(lectureApplyEntity.getBookUrl());
             seldto.add(dto);
         }
         long maxPage =LECTURE_APPLY_RPS.count();
