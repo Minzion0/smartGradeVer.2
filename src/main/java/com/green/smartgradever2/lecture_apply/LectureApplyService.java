@@ -1,6 +1,5 @@
 package com.green.smartgradever2.lecture_apply;
 
-import com.green.smartgradever2.admin.AdminQdsl;
 import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
 import com.green.smartgradever2.admin.lectureroom.AdminLectureRoomRepository;
 import com.green.smartgradever2.admin.professor.AdminProfessorRepository;
@@ -9,19 +8,13 @@ import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.model.*;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
-import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -225,7 +218,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
 
 
-    public LectureSelAllRes getList(Long iprofessor,Integer openingProceudres ) {
+    public LectureSelAllRes getList(Long iprofessor, Integer openingProceudres,String LectureName) {
         ProfessorEntity professor = professerRep.findById(iprofessor).orElse(null);
 
         if (professor == null) {
@@ -233,28 +226,37 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
         }
 
         List<LectureApplyEntity> lectureApplyEntityList = null;
-        if (openingProceudres != null) {
+        if (LectureName != null ) {
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndLectureNameEntityLectureName(professor, LectureName);
+        } else if (openingProceudres != null) {
             lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudres(professor, openingProceudres);
-        }else if (openingProceudres == null) {
+        } else if (openingProceudres == null) {
             lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntity(professor);
         }
+
+
+
+
+
 
         List<LectureApplySelDto> seldto = new ArrayList<>();
 
         for (LectureApplyEntity lectureApplyEntity : lectureApplyEntityList) {
             LectureApplySelDto dto = new LectureApplySelDto();
             dto.setIlecture(lectureApplyEntity.getIlecture());
-            dto.setOpeningProceudres(lectureApplyEntity.getOpeningProceudres());
+            dto.setOpeningProcedures(lectureApplyEntity.getOpeningProceudres());
             dto.setIlectureName(lectureApplyEntity.getLectureNameEntity().getIlectureName());
             dto.setLectureName(lectureApplyEntity.getLectureNameEntity().getLectureName());
             dto.setScore(lectureApplyEntity.getLectureNameEntity().getScore());
             dto.setIlectureRoom(lectureApplyEntity.getLectureRoomEntity().getIlectureRoom());
+            dto.setLectureRoomName(lectureApplyEntity.getLectureNameEntity().getLectureName());
+            dto.setDayWeek(lectureApplyEntity.getLectureScheduleEntity().getDayWeek());
             dto.setIsemester(lectureApplyEntity.getSemesterEntity().getIsemester());
             dto.setAttendance(lectureApplyEntity.getAttendance());
             dto.setMidtermExamination(lectureApplyEntity.getMidtermExamination());
             dto.setFinalExamination(lectureApplyEntity.getFinalExamination());
-            dto.setLectureStrTime(lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime());
-            dto.setLectureEndTime(lectureApplyEntity.getLectureScheduleEntity().getLectureEndTime());
+            dto.setLectureStrTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime()));
+            dto.setLectureEndTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureEndTime()));
             dto.setGradeLimit(lectureApplyEntity.getGradeLimit());
             dto.setLectureMaxPeople(lectureApplyEntity.getLectureMaxPeople());
             dto.setCtnt(lectureApplyEntity.getCtnt());

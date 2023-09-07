@@ -37,12 +37,16 @@ public class LectureApplyController {
 
     @GetMapping("/lecture/list")
     @Operation(summary = "신청중인 강의 리스트")
-    private ResponseEntity<LectureSelAllRes> getLecture(@AuthenticationPrincipal MyUserDetails details,@ParameterObject @RequestParam(required = false) Integer openingProceudres) {
+    private ResponseEntity<LectureSelAllRes> getLecture(@AuthenticationPrincipal MyUserDetails details
+            ,@ParameterObject @RequestParam(required = false) Integer openingProceudres
+    ,@ParameterObject @RequestParam(required = false) String LectureName) {
         if (openingProceudres != null && (openingProceudres < 0 || openingProceudres > 4)) {
             return ResponseEntity.badRequest().build(); // 잘못된 파라미터 값일 경우 400 Bad Request 반환
         }
 
-        LectureSelAllRes lectureSelAllRes = service.getList(details.getIuser(), openingProceudres);
+
+
+        LectureSelAllRes lectureSelAllRes = service.getList(details.getIuser(), openingProceudres,LectureName);
 
         return ResponseEntity.ok(lectureSelAllRes);
     }

@@ -18,5 +18,9 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
 //    List<LectureApplyEntity> findByStudentEntity(StudentEntity student);
   List<LectureApplyEntity> findAllByProfessorEntityAndSemesterEntity(ProfessorEntity professorEntity, SemesterEntity semesterEntity);
     List<LectureApplyEntity> findByProfessorEntityAndOpeningProceudres(ProfessorEntity professorEntity, int openingProceudres);
+    List<LectureApplyEntity> findByProfessorEntityAndLectureNameEntityLectureName(ProfessorEntity professorEntity, String lecturename);
+
+
+//    int countLectureStudentsByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);
 
 }

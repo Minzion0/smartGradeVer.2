@@ -6,15 +6,15 @@ import java.time.LocalTime;
 @Data
 public class LectureApplySelDto {
     private Long ilecture;
-    private int openingProceudres;
+    private int openingProcedures;
     private Long ilectureName;
     private String lectureName;
     private int score;
     private Long ilectureRoom;
     private String lectureRoomName;
     private Long isemester;
-    private LocalTime lectureStrTime;
-    private LocalTime lectureEndTime;
+    private String lectureStrTime;
+    private String lectureEndTime;
     private int attendance;
     private int midtermExamination;
     private int finalExamination;
