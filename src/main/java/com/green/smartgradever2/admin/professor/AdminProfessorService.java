@@ -311,14 +311,7 @@ public class AdminProfessorService {
             cellCellStyle.setBorderBottom(BorderStyle.THIN);
             cell5.setCellStyle(cellCellStyle);
 
-            if (i==0){
-                strIdx=row.getRowNum();
-                log.info("strIdx : {}",strIdx);
-            }
-            if (i==professorEntityList.size()-1){
-                endIdx=row.getLastCellNum();
-                log.info("endIdx : {}",endIdx);
-            }
+
             //학년 cell에 정렬 함수 설정
         }
         sheet1.setAutoFilter(new CellRangeAddress(0, rowCount-1, 0, headers1.length - 1));

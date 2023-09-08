@@ -110,6 +110,10 @@ public class AdminController {
         SERVICE.greenUniversityMember(request);
     }
 
-
+    @GetMapping("/test-file")
+    @Operation(summary = "대학 모든 구성원들 정보")
+    public void greenUniversityMemberTest(Long studentNum,HttpServletResponse request) throws IOException {
+        SERVICE.studentGradePrint(studentNum,request);
+    }
 
 }

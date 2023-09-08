@@ -55,7 +55,8 @@ public class AdminQdsl {
                         , apply.openingProceudres.as("procedures")
                         ,lectureSchedule.dayWeek
                         , apply.delYn
-                        , ExpressionUtils.as(jpaQueryFactory.select(lectureStudent.ilectureStudent.count()).from(lectureStudent).where(procedures(dto.getProcedures()),professorName(dto.getNm())),"currentPeople")))
+                        ,lectureStudent.count().as("currentPeople")))
+                //ExpressionUtils.as(jpaQueryFactory.select(lectureStudent.ilectureStudent.count()).from(lectureStudent).where(procedures(dto.getProcedures()),professorName(dto.getNm())),"currentPeople"))
                 .from(apply)
                 .join(apply.lectureRoomEntity)
                 .join(apply.professorEntity)

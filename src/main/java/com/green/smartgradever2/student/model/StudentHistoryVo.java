@@ -9,6 +9,7 @@ import java.time.LocalTime;
 @Builder
 public class StudentHistoryVo {
     private int year;
+    private int grade;
     private int semester;
     private String lectureName;
     private String professorName;
