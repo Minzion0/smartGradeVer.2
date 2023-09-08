@@ -174,63 +174,64 @@ public class GradeMngmnService {
     }
 
 
-    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {
-        int maxPage = MAPPER.countStudent();
-        PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
-        dto.setStaIdx(utils.getStaIdx());
-
-        List<GradeMngmnAvgVo> avg = MAPPER.GradeMngmnAvg(dto);
-        GradeMngmnStudentVo vo = MAPPER.selGradeMngmnStudent(dto);
-        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(dto);
-
-        int point;
-        double score;
-        String rate;
-        for (GradeMngmnVo a : voList) {
-            point = a.getTotalScore();
-            GradeUtils utils2 = new GradeUtils(point);
-            score = utils2.totalScore();
-            rate = utils2.totalRating(score);
-            a.setRating(rate);
-        }
-
-        return GradeMngmnFindRes.builder()
-                .voList(voList)
-                .student(vo)
-                .avgVo(avg)
-                .page(utils)
-                .build();
-    }
-
-//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto, Pageable pageable) {
-//        long maxPage = GM_REP.count();
-//        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {
+//        int maxPage = MAPPER.countStudent();
+//        PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
 //        dto.setStaIdx(utils.getStaIdx());
 //
-//
-//        List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto, pageable);
-//        GradeMngmnStudentVo studentVo = gradeMngmnQdsl.mngmnStudentVo(dto);
-//        List<GradeMngmnAvgVo> avg = gradeMngmnQdsl.avgVo(dto);
+//        List<GradeMngmnAvgVo> avg = MAPPER.GradeMngmnAvg(dto);
+//        GradeMngmnStudentVo vo = MAPPER.selGradeMngmnStudent(dto);
+//        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(dto);
 //
 //        int point;
 //        double score;
-//        String rating;
+//        String rate;
 //        for (GradeMngmnVo a : voList) {
 //            point = a.getTotalScore();
 //            GradeUtils utils2 = new GradeUtils(point);
 //            score = utils2.totalScore();
-//            rating = utils2.totalRating(score);
-//            a.setRating(rating);
+//            rate = utils2.totalRating(score);
+//            a.setRating(rate);
 //        }
 //
 //        return GradeMngmnFindRes.builder()
 //                .voList(voList)
-//                .student(studentVo)
+//                .student(vo)
 //                .avgVo(avg)
 //                .page(utils)
 //                .build();
-//
 //    }
+
+    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto, Pageable pageable) {
+        long maxPage = GM_REP.count();
+        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+        dto.setStaIdx(utils.getStaIdx());
+
+
+        List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto, pageable);
+        String rating;
+        int point;
+        double score;
+        for (GradeMngmnVo a : voList) {
+            point = a.getTotalScore();
+            GradeUtils utils2 = new GradeUtils(point);
+            score = utils2.totalScore();
+            rating = utils2.totalRating(score);
+            a.setRating(rating);
+        }
+        GradeMngmnStudentVo studentVo = gradeMngmnQdsl.mngmnStudentVo(dto);
+        List<GradeMngmnAvgVo> avg = gradeMngmnQdsl.avgVo(dto);
+
+
+
+        return GradeMngmnFindRes.builder()
+                .voList(voList)
+                .student(studentVo)
+                .avgVo(avg)
+                .page(utils)
+                .build();
+
+    }
 
 
 //    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
