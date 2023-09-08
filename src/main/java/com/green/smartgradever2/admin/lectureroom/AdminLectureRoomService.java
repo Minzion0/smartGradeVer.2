@@ -21,7 +21,11 @@ public class AdminLectureRoomService {
 
 
     /** 강의실 INSERT **/
-    public Long insLectureRoom(LectureRoomEntity entity) {
+    public Long insLectureRoom(AdminLectureRoomInsDto dto) {
+        LectureRoomEntity entity = new LectureRoomEntity();
+        entity.setLectureRoomName(dto.getLectureRoomName());
+        entity.setBuildingName(dto.getBuildingName());
+        entity.setMaxCapacity(dto.getMaxCapacity());
         LectureRoomEntity result = LECTURE_ROOM_REP.save(entity);
         if (result == null) {
             return 0L;

@@ -2,9 +2,12 @@ package com.green.smartgradever2.admin.grade_mngmn;
 
 import com.green.smartgradever2.admin.grade_mngmn.model.*;
 import com.green.smartgradever2.config.entity.*;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.util.StringUtils;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +46,9 @@ public class GradeMngmnQdsl {
     }
 
     public List<GradeMngmnVo> studentVo(GradeMngmnDto dto, Pageable pageable) {
-        JPQLQuery<GradeMngmnVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnVo.class, sssc.grade, sem.semester, ln.lectureName, pr.nm, ln.score, ls.totalScore))
+        JPQLQuery<GradeMngmnVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnVo.class, sssc.grade, sem.semester
+                        , ln.lectureName, pr.nm.as("professorName"), ln.score.as("lectureScore"), ls.totalScore,
+                        ExpressionUtils.as(Expressions.constant("rating"), "rating")))
                 .from(sssc)
                 .join(sssc.studentEntity, st)
                 .join(sssc.semesterEntity, sem)
@@ -65,9 +70,9 @@ public class GradeMngmnQdsl {
         QStudentSemesterScoreEntity sssc = QStudentSemesterScoreEntity.studentSemesterScoreEntity;
         QSemesterEntity sem = QSemesterEntity.semesterEntity;
 
-        JPQLQuery<GradeMngmnAvgVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnAvgVo.class, sssc.grade, sem.semester, sssc.avgScore, sssc.rating))
-                .from(sssc)
-                .join(sssc.studentEntity, st)
+        JPQLQuery<GradeMngmnAvgVo> query = jpaQueryFactory.selectDistinct(Projections.bean(GradeMngmnAvgVo.class, sssc.grade, sem.semester, sssc.avgScore, sssc.rating.as("avgRating")))
+                .from(st)
+                .join(st.ssscList, sssc)
                 .join(st.ls, ls)
                 .join(sssc.semesterEntity, sem)
                 .where(eqStudentNum(dto.getStudentNum()));
@@ -78,7 +83,7 @@ public class GradeMngmnQdsl {
     public GradeMngmnStudentVo mngmnStudentVo(GradeMngmnDto dto) {
         QStudentEntity st = QStudentEntity.studentEntity;
 
-        JPQLQuery<GradeMngmnStudentVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnStudentVo.class, st.studentNum, st.nm))
+        JPQLQuery<GradeMngmnStudentVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnStudentVo.class, st.studentNum, st.nm.as("name")))
                 .from(st)
                 .where(eqStudentNum(dto.getStudentNum()));
 

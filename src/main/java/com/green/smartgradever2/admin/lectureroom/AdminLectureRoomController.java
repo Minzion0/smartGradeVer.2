@@ -1,9 +1,6 @@
 package com.green.smartgradever2.admin.lectureroom;
 
-import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomDto;
-import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomFindRes;
-import com.green.smartgradever2.admin.lectureroom.model.AdminLectureRoomListVo;
-import com.green.smartgradever2.admin.lectureroom.model.LectureRoomVo;
+import com.green.smartgradever2.admin.lectureroom.model.*;
 import com.green.smartgradever2.config.entity.LectureRoomEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +24,8 @@ public class AdminLectureRoomController {
 
     @PostMapping("/admin/lectureroom")
     @Operation(summary = "강의실 추가")
-    public Long postLectureRoom(LectureRoomEntity entity) {
-        return SERVICE.insLectureRoom(entity);
+    public Long postLectureRoom(AdminLectureRoomInsDto dto) {
+        return SERVICE.insLectureRoom(dto);
     }
 
     @GetMapping("/admin/lectureroom")
