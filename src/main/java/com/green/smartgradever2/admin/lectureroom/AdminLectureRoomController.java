@@ -24,7 +24,7 @@ public class AdminLectureRoomController {
 
     @PostMapping("/admin/lectureroom")
     @Operation(summary = "강의실 추가")
-    public Long postLectureRoom(AdminLectureRoomInsDto dto) {
+    public Long postLectureRoom(@RequestBody AdminLectureRoomInsDto dto) {
         return SERVICE.insLectureRoom(dto);
     }
 

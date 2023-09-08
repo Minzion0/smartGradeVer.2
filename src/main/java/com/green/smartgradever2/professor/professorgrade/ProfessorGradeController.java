@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/professor/grade")
@@ -63,8 +61,8 @@ public class ProfessorGradeController {
             "totalScore : 총점수 <br>"+
             "grade : 알파벳등급 <br>"+
             "rating : 평점" )
-    public ProfessorGradeStudentDto getProfessorStudents(@AuthenticationPrincipal MyUserDetails details
-            ,@RequestParam(required = false) Long ilecture
+    public ProfessorGradeStudentRes getProfessorStudents(@AuthenticationPrincipal MyUserDetails details
+            , @RequestParam(required = false) Long ilecture
     , @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page) {
         return service.getProGraStu(details.getIuser(), ilecture ,page);
     }

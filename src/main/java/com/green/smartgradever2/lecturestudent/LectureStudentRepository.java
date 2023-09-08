@@ -26,6 +26,8 @@ public interface LectureStudentRepository extends JpaRepository<LectureStudentEn
     LectureStudentEntity findByLectureApplyEntityIlectureAndIlectureStudent(Long ilecture, Long ilectureStudent);
     Page<LectureStudentEntity> findByStudentEntity(StudentEntity entity, Pageable pageable);
 
+    List<LectureStudentEntity> findByStudentEntityStudentNum(Long studentNum);
+
 
 
 }

@@ -101,6 +101,6 @@ public class GradeMngmnQdsl {
         if (StringUtils.isNullOrEmpty(grade.toString())) {
             return null;
         }
-        return st.grade.eq(grade);
+        return sssc.grade.eq(grade);
     }
 }

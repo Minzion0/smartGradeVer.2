@@ -3,12 +3,16 @@ package com.green.smartgradever2.student;
 import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
+import com.green.smartgradever2.lecture_apply.model.LectureApplySelDto;
+import com.green.smartgradever2.lecture_apply.model.LectureSelAllRes;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
+import com.green.smartgradever2.professor.ProfessorRepository;
 import com.green.smartgradever2.student.model.*;
 import com.green.smartgradever2.utils.FileUtils;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
+import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -39,6 +45,9 @@ public class StudentService {
     private final LectureStudentRepository lectureStudentRep;
     private final LectureScheduleRepository lectureScheduleRep;
     private final PasswordEncoder PW_ENCODER;
+    private final ProfessorRepository professorRepository;
+    private final StudentQdsl qdsl;
+
 
 
 
@@ -296,12 +305,12 @@ public class StudentService {
 
 
                 GradeUtils gradeUtils = new GradeUtils();
-                String grade = gradeUtils.totalGradeFromScore(lectureGrade.getTotalScore());
-                vo.setGrade(grade); // 점수를 소수점 형태의 평점 문자열로 설정
+                String grade = gradeUtils.totalGradeFromScore1(lectureGrade.getTotalScore());
+                vo.setGrade(grade);
 
                 // 학점 계산 및 설정
                 double score = gradeUtils.totalScore();
-                String rating = gradeUtils.totalRating(score);
+                String rating = gradeUtils.totalGradeFromScore(lectureGrade.getTotalScore());
                 vo.setRating(rating);
 
                 studentSelVos.add(vo); // 각각의 강의별 성적 정보를 리스트에 추가
@@ -559,5 +568,70 @@ public class StudentService {
 //
 //    }
 
+//        public StudentListLectrueRes StudentLectureList(Long studentNum,Pageable pageable) {
+//            StudentEntity student = studentRep.findBystudentNum(studentNum);
+//
+//
+//
+//            List<StudentListLectureDto> seldto = new ArrayList<>();
+//
+//            List<LectureApplyEntity> studentLectureList = lectureApplyRep.
+//
+//            for (LectureApplyEntity lectureApplyEntity  : ) {
+//
+//                if (lectureApplyEntity .getOpeningProceudres() == 2) {
+//                StudentListLectureDto dto = new StudentListLectureDto();
+//
+//                dto.setIlecture(lectureApplyEntity.getIlecture());
+//                dto.setOpeningProcedures(lectureApplyEntity.getOpeningProceudres());
+//                dto.setIlectureName(lectureApplyEntity.getLectureNameEntity().getIlectureName());
+//                dto.setLectureName(lectureApplyEntity.getLectureNameEntity().getLectureName());
+//                dto.setScore(lectureApplyEntity.getLectureNameEntity().getScore());
+//                dto.setIlectureRoom(lectureApplyEntity.getLectureRoomEntity().getIlectureRoom());
+//                dto.setLectureRoomName(lectureApplyEntity.getLectureRoomEntity().getLectureRoomName());
+//                dto.setDayWeek(lectureApplyEntity.getLectureScheduleEntity().getDayWeek());
+//                dto.setIsemester(lectureApplyEntity.getSemesterEntity().getIsemester());
+//                dto.setAttendance(lectureApplyEntity.getAttendance());
+//                dto.setMidtermExamination(lectureApplyEntity.getMidtermExamination());
+//                dto.setFinalExamination(lectureApplyEntity.getFinalExamination());
+//                dto.setLectureStrTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime()));
+//                dto.setLectureEndTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureEndTime()));
+//                dto.setGradeLimit(lectureApplyEntity.getGradeLimit());
+//                dto.setLectureMaxPeople(lectureApplyEntity.getLectureMaxPeople());
+//                dto.setCtnt(lectureApplyEntity.getCtnt());
+//                dto.setTextBook(lectureApplyEntity.getTextbook());
+//                dto.setBuildingName(lectureApplyEntity.getLectureRoomEntity().getBuildingName());
+//                dto.setBookUrl(lectureApplyEntity.getBookUrl());
+//                seldto.add(dto);
+//            }
+//            }
+////        long maxPage =LECTURE_APPLY_RPS.count();
+////        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
+//            PagingUtils utils = new PagingUtils();
+//            utils.getMaxPage();
+//
+//
+//            return StudentListLectrueRes.builder()
+//                    .page(utils)
+//                    .lectureList(seldto)
+//                    .build();
+//        }
 
-}
+    public StudentListLectrueRes getAllProfessorsLecturesWithFilters(StudentListLectureDto dto ,Pageable pageable) {
+        StudentEntity entity =studentRep.findBystudentNum(dto.getStudentNum());
+
+
+
+        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable);
+
+        long maxpage = lectureApplyRep.count();
+        PagingUtils pagingUtils = new PagingUtils(dto.getPage(),(int)maxpage);
+
+
+        return StudentListLectrueRes.builder().lectureList(studentListLectureVos).page(pagingUtils).build();
+    }
+    }
+
+
+
+

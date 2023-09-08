@@ -3,7 +3,6 @@ package com.green.smartgradever2.professor.professorgrade;
 import com.green.smartgradever2.config.entity.LectureApplyEntity;
 import com.green.smartgradever2.config.entity.LectureStudentEntity;
 import com.green.smartgradever2.config.entity.ProfessorEntity;
-import com.green.smartgradever2.config.entity.SemesterEntity;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
@@ -97,7 +96,7 @@ public class ProfessorGradeSevice {
     }
 
     // 교수 학생 성적 리스트
-    public ProfessorGradeStudentDto getProGraStu(Long iprofessor, Long ilecture,Pageable page) {
+    public ProfessorGradeStudentRes getProGraStu(Long iprofessor, Long ilecture, Pageable page) {
 
         PagingUtils paging = new PagingUtils(page.getPageNumber(), page.getPageSize());
 
@@ -107,7 +106,7 @@ public class ProfessorGradeSevice {
         }
         ProfessorEntity professor = professorOptional.get();
 
-        List<ProStudentLectureDto> studentLectures = new ArrayList<>();
+        List<ProStudentLectureVo> studentLectures = new ArrayList<>();
 
         //List<LectureApplyEntity> professorLectures = lectureApplyRep.findAllByProfessorEntityIprofessor(iprofessor);
 
@@ -128,8 +127,8 @@ public class ProfessorGradeSevice {
             List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByLectureApplyEntity(lecture);
 
             for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
-                if (lectureStudentEntity.getFinishedYn() == 1) {
-                    ProStudentLectureDto studentLectureDto = new ProStudentLectureDto();
+
+                    ProStudentLectureVo studentLectureDto = new ProStudentLectureVo();
                     studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
                     studentLectureDto.setIlecture(lectureStudentEntity.getLectureApplyEntity().getIlecture());
                     studentLectureDto.setAttendance(lectureStudentEntity.getAttendance());
@@ -156,14 +155,14 @@ public class ProfessorGradeSevice {
 
                 }
             }
-        }
+
 
         double averageRating = ratings.isEmpty() ? 0.0 : ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
         String averageGrade = grades.isEmpty() ? "" : new GradeUtils().totalRating(averageRating);
 
         paging.makePage(page.getPageNumber(), professorLectures.size());
 
-        ProfessorGradeStudentDto professorGradeStudentDto = ProfessorGradeStudentDto.builder()
+        ProfessorGradeStudentRes professorGradeStudentDto = ProfessorGradeStudentRes.builder()
                 .iprofessor(iprofessor)
                 .page(paging)
                 .lectureList(studentLectures)
