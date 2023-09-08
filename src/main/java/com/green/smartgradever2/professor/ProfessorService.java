@@ -31,6 +31,7 @@ public class ProfessorService {
     private final LectureApplyRepository lectureApplyRepository;
     private final PasswordEncoder PW_ENCODER;
     private final LectureStudentRepository lectureStudentRep;
+    private final ProfessorQdsl professorQdsl;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -53,6 +54,13 @@ public class ProfessorService {
 
         dto.setSecretKey(professor.getSecretKey() == null ? "false" : "true");
 
+        SemesterEntity semester = professorQdsl.findSemester();
+
+        String deadline = semester.getLectureApplyDeadline().toString();
+
+
+
+
         List<LectureApplyEntity> lectureApplyEntityList = lectureApplyRepository.findByProfessorEntity(professor);
 
         List<ProfessorLectureVo> lectureList = lectureApplyEntityList.stream().filter(lecture -> lecture.getOpeningProceudres()==3).map(lecture -> ProfessorLectureVo.builder()
@@ -64,7 +72,7 @@ public class ProfessorService {
                 .lectureName(lecture.getLectureNameEntity().getLectureName()).build()).toList();
 
 
-        return ProfessorSelRes.builder().profile(dto).lectureList(lectureList).build();
+        return ProfessorSelRes.builder().profile(dto).lectureList(lectureList).deadline(deadline).build();
     }
 
     @Transactional

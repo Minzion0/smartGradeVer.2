@@ -10,4 +10,5 @@ import java.util.List;
 public class ProfessorSelRes {
    private ProfessorProfileDto profile;
    private List<ProfessorLectureVo> lectureList;
+   private String deadline;
 }

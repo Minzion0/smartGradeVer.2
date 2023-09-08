@@ -13,8 +13,5 @@ public class StudentHistoryVo {
     private String lectureName;
     private String professorName;
     private int score;
-    private LocalTime lectureStrTime;
-    private LocalTime lectureEndTime;
-    private int finishedYn;
-    private int dayWeek;
+
 }

@@ -48,7 +48,7 @@ public class GradeMngmnController {
         dto.setGrade(grade);
         dto.setSize(pageable.getPageSize());
         dto.setPage(pageable.getPageNumber());
-        return SERVICE.selGradeMngmn(dto);
+        return SERVICE.selGradeMngmn(dto, pageable);
     }
 
     @GetMapping("/{studentNum}")
