@@ -1,6 +1,7 @@
 package com.green.smartgradever2.lecture_apply;
 
 import com.green.smartgradever2.config.entity.*;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +23,12 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
     List<LectureApplyEntity> findByProfessorEntityAndOpeningProceudres(ProfessorEntity professorEntity, int openingProceudres, Pageable pageable);
     List<LectureApplyEntity> findByProfessorEntityAndLectureNameEntityLectureName(ProfessorEntity professorEntity, String lecturename, Pageable pageable);
 
+    @Query("SELECT lec FROM LectureApplyEntity lec " +
+            "WHERE lec.openingProceudres = 2 " +
+            "AND lec.gradeLimit <= :grade")
+    Page<LectureApplyEntity> getAllProfessorsLecturesWithFilters(@Param("grade") Optional<Integer> grade, Pageable pageable);
+
+//    List<LectureApplyEntity> findByProfessorEntity(Long studentNum);
 }
 
 //    int countLectureStudentsByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);

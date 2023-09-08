@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "lecture_apply")
@@ -88,4 +89,8 @@ public class LectureApplyEntity extends BaseEntity{
     @OneToOne(mappedBy ="lectureApplyEntity" )
     @ToString.Exclude
     private LectureScheduleEntity lectureScheduleEntity;
+
+    @OneToMany(mappedBy = "lectureApplyEntity")
+    @ToString.Exclude
+    private List<LectureStudentEntity> lectureStudentEntity;
 }

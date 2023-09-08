@@ -1,5 +1,6 @@
 package com.green.smartgradever2.student;
 
+import com.green.smartgradever2.config.entity.LectureApplyEntity;
 import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
 import com.green.smartgradever2.student.model.*;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -128,7 +130,7 @@ public class StudentController {
         return SERVICE.getStudentInfo(details.getIuser());
     }
 
-    @PutMapping("/chang-password")
+    @PutMapping("/change-password")
     @Operation(summary = "비밀번호 변경",
             description = "studentPassword : 바꿀 비밀번호 <br>" + "currentStudentPassword : 현재 비밀번호")
     public ResponseEntity<?> updPassword(@AuthenticationPrincipal MyUserDetails details,
@@ -177,5 +179,16 @@ public class StudentController {
     }
 
 
+    @GetMapping("/lecturelist")
+    public StudentListLectrueRes getAllProfessorsLecturesWithFilters(
+            @AuthenticationPrincipal MyUserDetails details,
+            @ParameterObject @PageableDefault(sort="gradeLimit", direction = Sort.Direction.DESC, size=10 )
+            Pageable pageable
+    ) {
+        StudentListLectureDto dto = new StudentListLectureDto();
+        dto.setStudentNum(details.getIuser());
+        dto.setOpeningProcedures(2);
+        return SERVICE.getAllProfessorsLecturesWithFilters(dto, pageable);
+    }
 
 }

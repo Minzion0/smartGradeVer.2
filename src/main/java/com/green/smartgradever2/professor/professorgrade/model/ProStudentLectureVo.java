@@ -2,11 +2,8 @@ package com.green.smartgradever2.professor.professorgrade.model;
 
 import lombok.Data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 @Data
-public class ProStudentLectureDto {
+public class ProStudentLectureVo {
     private Long ilectureStudent;
     private Long ilecture;
     private Long sudentNum;
@@ -16,7 +13,7 @@ public class ProStudentLectureDto {
     private int midtermExamination;
     private int finalExamination;
     private int dayWeek;
-       private int totalScore;
+    private int totalScore;
     private String grade;
     private double rating;
 }
