@@ -25,17 +25,11 @@ public class AdminStudentController {
 
     private final AdminStudentService SERVICE;
 
-    @PostMapping("/students")
-    @Operation(summary = "학생등록")
-    public ResponseEntity<?> studentEnrollment(@RequestBody AdminInsStudentParam param) throws Exception{
-        AdminInsStudentVo vo = SERVICE.insStudent(param);
 
-        return ResponseEntity.ok().body(vo);
-    }
-    @PostMapping("/students/test")
+    @PostMapping("/students")
     @Operation(summary = "학생 다중 등록")
     public ResponseEntity<?> studentEnrollmentTest(@RequestBody List<AdminInsStudentParam> param) throws Exception{
-        List<AdminInsStudentVo> vo = SERVICE.insStudentTest(param);
+        List<AdminInsStudentVo> vo = SERVICE.insStudent(param);
 
         return ResponseEntity.ok().body(vo);
     }

@@ -267,8 +267,11 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             dto.setBookUrl(lectureApplyEntity.getBookUrl());
             seldto.add(dto);
         }
-        long maxPage =LECTURE_APPLY_RPS.count();
-        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
+//        long maxPage =LECTURE_APPLY_RPS.count();
+//        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
+        PagingUtils utils = new PagingUtils();
+        utils.getMaxPage();
+
 
         return LectureSelAllRes.builder()
                 .page(utils)

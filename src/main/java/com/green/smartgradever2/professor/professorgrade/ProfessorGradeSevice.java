@@ -9,6 +9,7 @@ import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
 import com.green.smartgradever2.professor.professorgrade.model.*;
 import com.green.smartgradever2.utils.GradeUtils;
+import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +99,7 @@ public class ProfessorGradeSevice {
     // 교수 학생 성적 리스트
     public ProfessorGradeStudentDto getProGraStu(Long iprofessor, Long ilecture,Pageable page) {
 
+        PagingUtils paging = new PagingUtils(page.getPageNumber(), page.getPageSize());
 
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {
@@ -150,6 +152,8 @@ public class ProfessorGradeSevice {
 
                     ratings.add(rating);
                     grades.add(grade);
+
+
                 }
             }
         }
@@ -157,24 +161,24 @@ public class ProfessorGradeSevice {
         double averageRating = ratings.isEmpty() ? 0.0 : ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
         String averageGrade = grades.isEmpty() ? "" : new GradeUtils().totalRating(averageRating);
 
-        ProfessorGradeStudentDto professorGradeStudentDto = new ProfessorGradeStudentDto();
-        professorGradeStudentDto.setIprofessor(iprofessor);
-        professorGradeStudentDto.setLectureList(studentLectures);
+        paging.makePage(page.getPageNumber(), professorLectures.size());
 
-
-//        double averageRating = ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-//        String averageGrade = new GradeUtils().totalRating(averageRating);
-//
-//        ProfessorGradeStudentDto professorGradeStudentDto = new ProfessorGradeStudentDto();
-//        professorGradeStudentDto.setIprofessor(iprofessor);
-//        professorGradeStudentDto.setLectureList(studentLectures);
+        ProfessorGradeStudentDto professorGradeStudentDto = ProfessorGradeStudentDto.builder()
+                .iprofessor(iprofessor)
+                .page(paging)
+                .lectureList(studentLectures)
+                .build();
 
 
         return professorGradeStudentDto;
     }
 
 
-    public List<ProfessorStudentLectureDto> getProList(Long iprofessor, Long ilecture, Pageable page) {
+    public ProfessorStuLectureRes getProList(Long iprofessor, Long ilecture, Pageable page) {
+
+        PagingUtils paging = new PagingUtils(page.getPageNumber(), page.getPageSize());
+
+
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {
             throw new EntityNotFoundException("교수를 찾을 수 없습니다: " + iprofessor);
@@ -227,8 +231,15 @@ public class ProfessorGradeSevice {
                 }
             }
         }
+        paging.makePage(page.getPageNumber(), professorLectures.size());
 
-        return studentLectures;
+        ProfessorStuLectureRes professorStuLectureRes = ProfessorStuLectureRes.builder()
+                .iprofessor(iprofessor)
+                .page(paging)
+                .lectureList(studentLectures)
+                .build();
+
+        return professorStuLectureRes;
 
     }
 

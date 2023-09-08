@@ -16,7 +16,7 @@ public class ProStudentLectureDto {
     private int midtermExamination;
     private int finalExamination;
     private int dayWeek;
-    private int totalScore;
+       private int totalScore;
     private String grade;
     private double rating;
 }

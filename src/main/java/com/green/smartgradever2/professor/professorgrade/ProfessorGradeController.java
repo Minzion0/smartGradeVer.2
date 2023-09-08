@@ -85,7 +85,7 @@ public class ProfessorGradeController {
             "totalScore : 총점수 <br>"+
             "grade : 알파벳등급 <br>"+
             "rating : 평점"  )
-    public List<ProfessorStudentLectureDto> getProStuList(@AuthenticationPrincipal MyUserDetails details,
+    public ProfessorStuLectureRes getProStuList(@AuthenticationPrincipal MyUserDetails details,
                                                           @RequestParam(required = false) Long ilecture,
                                                           @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page) {
 

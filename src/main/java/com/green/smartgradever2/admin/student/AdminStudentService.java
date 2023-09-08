@@ -45,65 +45,10 @@ public class AdminStudentService {
     private final AdminStudentMapper MAPPER;
 
 
-    @Transactional
-    public AdminInsStudentVo insStudent(AdminInsStudentParam param) {
 
-        Optional<MajorEntity> major = MAJOR_RPS.findById(param.getImajor());
-
-        LocalDate now = LocalDate.now();
-        LocalDate setYear = LocalDate.of(now.getYear(), 1, 1);
-        LocalDateTime startOfDay = setYear.atStartOfDay();
-        LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
-        String year = setYear.toString().substring(2, 4);
-
-        List<StudentEntity> majorCount = RPS.findAllByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
-
-
-
-        String num = String.format("%s%02d%04d", year, major.get().getImajor(), majorCount.size() + 1);
-
-
-        Long studentNum = Long.parseLong(num);
-
-
-        String password = param.getBirthdate().toString().replaceAll("-", "");
-        String encode = PW_ENCODER.encode(password);
-
-        StudentEntity entity = new StudentEntity();
-        entity.setStudentNum(studentNum);
-        entity.setStudentPassword(encode);
-        entity.setNm(param.getNm());
-        entity.setGender(param.getGender());
-        entity.setMajorEntity(major.get());
-        entity.setBirthdate(param.getBirthdate());
-        entity.setPhone(param.getPhone());
-
-
-        RPS.saveAndFlush(entity);
-
-        EM.clear();
-
-        StudentEntity student = RPS.findById(entity.getStudentNum()).get();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime createdAt = student.getCreatedAt();
-        String format = createdAt.format(formatter);
-
-        return AdminInsStudentVo.builder().studentNum(student.getStudentNum())
-                                            .nm(student.getNm())
-                                            .grade(student.getGrade())
-                                            .birthdate(student.getBirthdate())
-                                            .delYn(student.getDelYn())
-                                            .finishedYn(student.getFinishedYn())
-                                            .phone(student.getPhone())
-                                            .gender(student.getGender())
-                                            .imajor(student.getMajorEntity().getImajor())
-                                            .createdAt(student.getCreatedAt().format(formatter))
-                                            .build();
-
-    }
 
     @Transactional
-    public List<AdminInsStudentVo> insStudentTest(List<AdminInsStudentParam> params) throws Exception {
+    public List<AdminInsStudentVo> insStudent(List<AdminInsStudentParam> params) throws Exception {
        List<StudentEntity> list= new ArrayList<>();
         StudentEntity studentEntitys= null;
         for (AdminInsStudentParam param : params) {
@@ -292,14 +237,7 @@ public class AdminStudentService {
     }
 
 
-    private static int getValue(List<ProfessorEntity> professorEntityList, int i) {
-        int year = LocalDate.now().getYear() - professorEntityList.get(i).getCreatedAt().getYear();
 
-        if (year==0){
-            return 1;
-        }
-        return year;
-    }
 
 
     /**매년 말에 학생 진급 **/
