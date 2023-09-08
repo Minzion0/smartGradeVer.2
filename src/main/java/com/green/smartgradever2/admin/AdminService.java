@@ -540,7 +540,7 @@ public class AdminService {
         }
         Row nameRow = sheet.createRow(0);
 
-        String[] nameHeaders = {"학번  ","이름  "};
+        String[] nameHeaders = {"학번","이름","학과"};
         for (int i = 0; i < nameHeaders.length; i++) {
             Cell cell = nameRow.createCell(i+2);
             cell.setCellValue(nameHeaders[i]);
@@ -582,13 +582,14 @@ public class AdminService {
         Cell numRowCell = nameSheetRow.createCell(2);
         numRowCell.setCellStyle(cellCellStyle);
         numRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getStudentNum());
+
         Cell nameRowCell = nameSheetRow.createCell(3);
         nameRowCell.setCellStyle(cellCellStyle);
         nameRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getNm());
 
-
-
-
+        Cell majorRowCell = nameSheetRow.createCell(4);
+        majorRowCell.setCellStyle(cellCellStyle);
+        majorRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getMajorEntity().getMajorName());
 
 
         int strIdx=0;
