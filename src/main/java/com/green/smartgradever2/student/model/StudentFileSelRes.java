@@ -10,4 +10,5 @@ import java.util.List;
 public class StudentFileSelRes {
     private StudentProfileVo profile;
     private List<StudentProfileLectureVo> lectureList;
+    private String deadline;
 }

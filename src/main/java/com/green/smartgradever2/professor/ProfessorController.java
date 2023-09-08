@@ -117,5 +117,11 @@ public class ProfessorController {
 
         return ResponseEntity.ok(studentsWithObjectionAndScores);
     }
+    @GetMapping("/schedule")
+    @Operation(summary = "교수 본인 시간표")
+    public List<ProfessorScheduleRes> professorScheduleList(@AuthenticationPrincipal MyUserDetails details){
+        List<ProfessorScheduleRes> professorScheduleRes = SERVICE.professorScheduleList(details.getIuser());
+        return professorScheduleRes;
+    }
 
 }

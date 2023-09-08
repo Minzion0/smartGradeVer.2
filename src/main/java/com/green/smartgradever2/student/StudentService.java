@@ -14,6 +14,7 @@ import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -49,13 +49,11 @@ public class StudentService {
     private final StudentQdsl qdsl;
 
 
-
-
     @Value("${file.dir}")
     private String fileDir;
 
     @Transactional
-    public StudentUpRes upStudent(MultipartFile pic, StudentParam param,Long StudentNum) {
+    public StudentUpRes upStudent(MultipartFile pic, StudentParam param, Long StudentNum) {
         StudentEntity student = studentRep.findBystudentNum(StudentNum);
 
         if (student == null) {
@@ -139,8 +137,7 @@ public class StudentService {
     }
 
 
-
-        //수강신청
+    //수강신청
     public StudentRegisterRes registerLectureForStudent(Long ilecture, Long studentNum) {
         StudentRegisterRes response = new StudentRegisterRes();
         StudentEntity student = studentRep.findBystudentNum(studentNum);
@@ -177,8 +174,6 @@ public class StudentService {
         lectureStudentRep.save(lectureStudent);
 
 
-
-
         //수강 신청한 강의 시작시간 ,종료시간 , 시작요일
         LectureScheduleEntity lectureSchedule = lectureScheduleRep.findByIlecture(ilecture);
         if (lectureSchedule != null) {
@@ -186,8 +181,6 @@ public class StudentService {
             response.setLectureStrTime(lectureSchedule.getLectureStrTime());
             response.setLectureEndTime(lectureSchedule.getLectureEndTime());
         }
-
-
 
 
         response.setSuccess(true);
@@ -234,7 +227,7 @@ public class StudentService {
         profile.setSecretKey(student.getSecretKey() == null ? "false" : "true");
 
         List<LectureStudentEntity> lectureApplyEntityList = lectureStudentRep.findByStudentEntity(student);
-        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().filter(lecture ->lecture.getFinishedYn() ==0 ).map(lecture -> {
+        List<StudentProfileLectureVo> lectureList = lectureApplyEntityList.stream().filter(lecture -> lecture.getFinishedYn() == 0).map(lecture -> {
             LectureApplyEntity lectureApplyEntity = lecture.getLectureApplyEntity();
             LectureScheduleEntity lectureScheduleEntity = lectureApplyEntity.getLectureScheduleEntity();
 
@@ -262,9 +255,14 @@ public class StudentService {
         // 총 학점을 프로필에 설정
         profile.setScore(totalScore);
 
+        LocalDate lectureApplyDeadline = lectureApplyEntityList.get(0).getLectureApplyEntity().getSemesterEntity().getLectureApplyDeadline();
+
+        LocalDate localDate = lectureApplyDeadline.plusWeeks(1);
+
 
         StudentFileSelRes result = StudentFileSelRes.builder()
                 .profile(profile)
+                .deadline(localDate.toString())
                 .lectureList(lectureList)
                 .build();
 
@@ -280,9 +278,9 @@ public class StudentService {
         List<StudentSelVo> studentSelVos = new ArrayList<>(); // 각 강의별 성적 정보를 담을 리스트
 
         for (LectureStudentEntity lectureGrade : lectureGrades) {
-                StudentSelVo vo = new StudentSelVo();
+            StudentSelVo vo = new StudentSelVo();
 
-                // 강의별 성적 정보를 각각의 필드에 설정
+            // 강의별 성적 정보를 각각의 필드에 설정
             vo.setStudentNum(studentEntity.getStudentNum());
             vo.setIlectureStudent(lectureGrade.getIlectureStudent());
             vo.setIlecture(lectureGrade.getLectureApplyEntity().getIlecture());
@@ -304,17 +302,17 @@ public class StudentService {
             vo.setTotalScore(lectureGrade.getTotalScore());
 
 
-                GradeUtils gradeUtils = new GradeUtils();
-                String grade = gradeUtils.totalGradeFromScore1(lectureGrade.getTotalScore());
-                vo.setGrade(grade);
+            GradeUtils gradeUtils = new GradeUtils();
+            String grade = gradeUtils.totalGradeFromScore1(lectureGrade.getTotalScore());
+            vo.setGrade(grade);
 
-                // 학점 계산 및 설정
-                double score = gradeUtils.totalScore();
-                String rating = gradeUtils.totalGradeFromScore(lectureGrade.getTotalScore());
-                vo.setRating(rating);
+            // 학점 계산 및 설정
+            double score = gradeUtils.totalScore();
+            String rating = gradeUtils.totalGradeFromScore(lectureGrade.getTotalScore());
+            vo.setRating(rating);
 
-                studentSelVos.add(vo); // 각각의 강의별 성적 정보를 리스트에 추가
-            }
+            studentSelVos.add(vo); // 각각의 강의별 성적 정보를 리스트에 추가
+        }
 
         return studentSelVos;  // 강의별 성적 정보 리스트 반환
     }
@@ -354,8 +352,10 @@ public class StudentService {
         return totalCredit;
     }
 
-    /** 학생 비밀번호 변경 (로그인 완료 시 가능) **/
-    public String updPassword(StudentPasswordParam param, StudentUpdPasswordDto dto) throws Exception{
+    /**
+     * 학생 비밀번호 변경 (로그인 완료 시 가능)
+     **/
+    public String updPassword(StudentPasswordParam param, StudentUpdPasswordDto dto) throws Exception {
         StudentEntity entity = studentRep.findById(dto.getIstudent()).get();
 
         if (!PW_ENCODER.matches(param.getCurrentPassword(), entity.getStudentPassword())) {
@@ -368,7 +368,7 @@ public class StudentService {
         return "비밀번호 변경이 완료되었습니다.";
     }
 
-    public void updateObjection(Long studentNum, Long ilectureStudent, StudentObjectionDto objectionDto)  {
+    public void updateObjection(Long studentNum, Long ilectureStudent, StudentObjectionDto objectionDto) {
         LectureStudentEntity lectureStudentEntity = lectureStudentRep.findByStudentEntityStudentNumAndIlectureStudent(studentNum, ilectureStudent);
         if (lectureStudentEntity != null) {
 
@@ -392,9 +392,6 @@ public class StudentService {
         }
 
 
-
-
-
 //        if (lectureStudentEntity != null) {
 //            lectureStudentEntity.setObjection(objectionDto.getObjection());
 //            lectureStudentRep.save(lectureStudentEntity);
@@ -407,7 +404,7 @@ public class StudentService {
 //        }
     }
 
-    public StudentHistoryRes studentHistoryRes(StudentHistoryOpenDto dto,Pageable pageable) {
+    public StudentHistoryRes studentHistoryRes(StudentHistoryOpenDto dto, Pageable pageable) {
         StudentEntity entity = studentRep.findById(dto.getStudentNum()).get();
         Page<LectureStudentEntity> studentpage = lectureStudentRep.findByStudentEntity(entity, pageable);
 
@@ -425,212 +422,195 @@ public class StudentService {
             return studentHistoryDto;
         }).toList();
         long maxpage = studentRep.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxpage, 10);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, 10);
 
         return StudentHistoryRes.builder().page(utils).lectureList(studentList).build();
     }
 
-    public void studentGradePrint(Long studentNum){
+    public StudentListLectrueRes getAllProfessorsLecturesWithFilters(StudentListLectureDto dto, Pageable pageable) {
+        StudentEntity entity = studentRep.findBystudentNum(dto.getStudentNum());
+
+
+        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable);
+
+        long maxpage = lectureApplyRep.count();
+        PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);
+
+
+        return StudentListLectrueRes.builder().lectureList(studentListLectureVos).page(pagingUtils).build();
+    }
+
+
+
+
+
+
+
+    //학생 성적 출력
+    public void studentGradePrint(Long studentNum, HttpServletResponse response) throws IOException {
         StudentEntity studentEntity = new StudentEntity();
         studentEntity.setStudentNum(studentNum);
         List<LectureStudentEntity> studentEntities = lectureStudentRep.findByStudentEntity(studentEntity);
 
         List<StudentHistoryVo> list = studentEntities.stream().map(student -> StudentHistoryVo.builder()
                 .year(student.getLectureApplyEntity().getSemesterEntity().getYear())
+                .grade(student.getStudentEntity().getGrade())
                 .semester(student.getLectureApplyEntity().getSemesterEntity().getSemester())
                 .lectureName(student.getLectureApplyEntity().getLectureNameEntity().getLectureName())
                 .professorName(student.getLectureApplyEntity().getProfessorEntity().getNm())
-                .score(student.getLectureApplyEntity().getLectureNameEntity().getScore())
+                .score(student.getTotalScore())
                 .build()).toList();
 
         Workbook workbook = new XSSFWorkbook();
 
 
-            // 시트 생성
-            String format = String.format("%s 학생의 성적",studentEntities.get(0).getStudentEntity().getNm() );
-            Sheet sheet = workbook.createSheet(format);
-
-            Row headerRow = sheet.createRow(0);
-
-            // 제목 행 스타일 설정
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            headerFont.setFontHeightInPoints((short) 12);
-            headerCellStyle.setFont(headerFont);
-            headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
-            headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-            headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            headerCellStyle.setBorderBottom(BorderStyle.THIN);
-            headerCellStyle.setBorderTop(BorderStyle.THIN);
-            headerCellStyle.setBorderLeft(BorderStyle.THIN);
-            headerCellStyle.setBorderRight(BorderStyle.THIN);
-
-            //시트 컬럼 여유공간 설정
-            for (int i = 0; i < sheet.getLastRowNum(); i++) {
-                sheet.autoSizeColumn(i);
-                sheet.setColumnWidth(i, (sheet.getColumnWidth(i))+512);
-            }
-
-            // 제목 행 생성
-            String[] headers = { "학기", "강의명", "교수명", "강의 시작시간", "강의 종료시간","요일" };
-
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-                cell.setCellStyle(headerCellStyle);
-            }
-
-            // 데이터 행 생성 및 셀 스타일 설정
-            CellStyle cellCellStyle = workbook.createCellStyle();
-            Font cellFont = workbook.createFont();
-
-            cellFont.setFontName("맑은 고딕");
-            cellFont.setBold(false);
-            cellFont.setFontHeight((short) 250);
-            cellFont.setFontHeightInPoints((short) 14);
-            cellCellStyle.setAlignment(HorizontalAlignment.CENTER);
-            cellCellStyle.setFont(cellFont);
-            cellCellStyle.setBorderTop(BorderStyle.THIN);
-            cellCellStyle.setBorderLeft(BorderStyle.THIN);
-
-            CellStyle numericCellStyle = workbook.createCellStyle();
-            CreationHelper createHelper = workbook.getCreationHelper();
-            numericCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0")); // 숫자 형식 지정
-            int rowCount = 1; // 첫 번째 행은 제목 행이므로 1부터 시작
+        // 시트 생성
+        String format = String.format("%s 학생의 성적",studentEntities.get(0).getStudentEntity().getNm() );
+        Sheet sheet = workbook.createSheet(format);
 
 
 
 
 
+        Row headerRow = sheet.createRow(3);
+
+        // 제목 행 스타일 설정
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerCellStyle.setFont(headerFont);
+        headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerCellStyle.setBorderBottom(BorderStyle.THIN);
+        headerCellStyle.setBorderTop(BorderStyle.THIN);
+        headerCellStyle.setBorderLeft(BorderStyle.THIN);
+        headerCellStyle.setBorderRight(BorderStyle.THIN);
+
+        //시트 컬럼 여유공간 설정
+        for (int i = 0; i < sheet.getLastRowNum(); i++) {
+            sheet.autoSizeColumn(i);
+            sheet.setColumnWidth(i, (sheet.getColumnWidth(i))*2);
+        }
+        Row nameRow = sheet.createRow(0);
+
+        String[] nameHeaders = {"학번","이름","학과"};
+        for (int i = 0; i < nameHeaders.length; i++) {
+            Cell cell = nameRow.createCell(i+2);
+            cell.setCellValue(nameHeaders[i]);
+            cell.setCellStyle(headerCellStyle);
+
+        }
+
+
+        // 제목 행 생성
+        String[] headers = { "  학년     ","학기     ", "강의명    ", "교수명    ", "점수    ", "평점     ","평점     " };
+
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        // 데이터 행 생성 및 셀 스타일 설정
+        CellStyle cellCellStyle = workbook.createCellStyle();
+        Font cellFont = workbook.createFont();
+
+        cellFont.setFontName("맑은 고딕");
+        cellFont.setBold(false);
+        cellFont.setFontHeight((short) 250);
+        cellFont.setFontHeightInPoints((short) 14);
+        cellCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellCellStyle.setFont(cellFont);
+        cellCellStyle.setBorderTop(BorderStyle.THIN);
+        cellCellStyle.setBorderLeft(BorderStyle.THIN);
+        cellCellStyle.setBorderRight(BorderStyle.THIN);
+
+        CellStyle numericCellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        numericCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0")); // 숫자 형식 지정
+        int rowCount = 4; // 첫 번째 행은 제목 행이므로 1부터 시작
+
+
+        Row nameSheetRow = sheet.createRow(1);
+        Cell numRowCell = nameSheetRow.createCell(2);
+        numRowCell.setCellStyle(cellCellStyle);
+        numRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getStudentNum());
+
+        Cell nameRowCell = nameSheetRow.createCell(3);
+        nameRowCell.setCellStyle(cellCellStyle);
+        nameRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getNm());
+
+        Cell majorRowCell = nameSheetRow.createCell(4);
+        majorRowCell.setCellStyle(cellCellStyle);
+        majorRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getMajorEntity().getMajorName());
 
 
         int strIdx=0;
         int endIdx=0;
         //todo 내일 완성하기
-//        for (int i = 0; i < list.size(); i++) {
-//            Row row = sheet.createRow(rowCount++);
-//            Cell cell1 = row.createCell(0);
-//            cell1.setCellValue(list.get(i).getSemester());
-//            cell1.setCellStyle(cellCellStyle);
-//
-//            Cell cell2 = row.createCell(1);
-//            cell2.setCellValue(list.get(i).getLectureName());
-//            cell2.setCellStyle(cellCellStyle);
-//
-//            Cell cell3 = row.createCell(2);
-//            cell3.setCellValue(list.get(i).getProfessorName());
-//            cell3.setCellStyle(cellCellStyle);
-//
-//            Cell cell4 = row.createCell(3);
-//            cell4.setCellValue(list.get(i).get);
-//            cell4.setCellStyle(numericCellStyle);
-//            cell4.setCellStyle(cellCellStyle);
-//
-//            Cell cell5 = row.createCell(4);
-//            cell5.setCellValue(list.get(i).getMajorEntity().getMajorName());
-//            cellCellStyle.setBorderBottom(BorderStyle.THIN);
-//            cell5.setCellStyle(cellCellStyle);
-//
-//            if (i==0){
-//                strIdx=row.getRowNum();
-//                log.info("strIdx : {}",strIdx);
-//            }
-//            if (i==studentEntities.size()-1){
-//                endIdx=row.getLastCellNum();
-//                log.info("endIdx : {}",endIdx);
-//            }
-//            //학년 cell에 정렬 함수 설정
-//        }
-//        sheet.setAutoFilter(new CellRangeAddress(0, rowCount-1, 0, headers.length - 1));
-//        //   sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), rowCount - 1, 4, 4));
-//
-//
-//        // 열 너비 자동 조정
-//        for (int i = 0; i < headers.length; i++) {
-//            sheet.autoSizeColumn(i);
+        for (int i = 0; i < list.size(); i++) {
+            GradeUtils gradeUtils = new GradeUtils(list.get(i).getScore());
+
+
+            Row row = sheet.createRow(rowCount++);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(list.get(i).getGrade());
+            cell.setCellStyle(cellCellStyle);
+
+            Cell cell1 = row.createCell(1);
+            cell1.setCellValue(list.get(i).getSemester());
+            cell1.setCellStyle(cellCellStyle);
+
+            Cell cell2 = row.createCell(2);
+            cell2.setCellValue(list.get(i).getLectureName());
+            cell2.setCellStyle(cellCellStyle);
+
+            Cell cell3 = row.createCell(3);
+            cell3.setCellValue(list.get(i).getProfessorName());
+            cell3.setCellStyle(cellCellStyle);
+
+            Cell cell4 = row.createCell(4);
+            cell4.setCellValue(list.get(i).getScore());
+            cell4.setCellStyle(numericCellStyle);
+            cell4.setCellStyle(cellCellStyle);
+
+
+            Cell cell5 = row.createCell(5);
+            cell5.setCellValue(gradeUtils.totalScore());
+            cell5.setCellStyle(cellCellStyle);
+
+            Cell cell6 = row.createCell(6);
+            cell6.setCellValue(gradeUtils.totalRating(gradeUtils.totalScore()));
+            cellCellStyle.setBorderBottom(BorderStyle.THIN);
+            cell6.setCellStyle(cellCellStyle);
+            //학년 cell에 정렬 함수 설정
+        }
+        sheet.setAutoFilter(new CellRangeAddress(3, rowCount-1, 0, headers.length - 1));
+        //   sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), rowCount - 1, 4, 4));
+
+
+        // 열 너비 자동 조정
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
         }
 
 
+        String formatted = String.format("GreenUniversity_%s.xlsx", studentNum);
+        //String fileName = "GreenUniversityProfessorList.xlsx"; // 원하는 파일 이름을 지정합니다.
+        String formats = String.format("attachment;filename=%s_%s",LocalDate.now().toString(), formatted);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", formats);
 
 
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
 
-
-
-
-
-
-
-
-//
-//
-//
-//    }
-
-//        public StudentListLectrueRes StudentLectureList(Long studentNum,Pageable pageable) {
-//            StudentEntity student = studentRep.findBystudentNum(studentNum);
-//
-//
-//
-//            List<StudentListLectureDto> seldto = new ArrayList<>();
-//
-//            List<LectureApplyEntity> studentLectureList = lectureApplyRep.
-//
-//            for (LectureApplyEntity lectureApplyEntity  : ) {
-//
-//                if (lectureApplyEntity .getOpeningProceudres() == 2) {
-//                StudentListLectureDto dto = new StudentListLectureDto();
-//
-//                dto.setIlecture(lectureApplyEntity.getIlecture());
-//                dto.setOpeningProcedures(lectureApplyEntity.getOpeningProceudres());
-//                dto.setIlectureName(lectureApplyEntity.getLectureNameEntity().getIlectureName());
-//                dto.setLectureName(lectureApplyEntity.getLectureNameEntity().getLectureName());
-//                dto.setScore(lectureApplyEntity.getLectureNameEntity().getScore());
-//                dto.setIlectureRoom(lectureApplyEntity.getLectureRoomEntity().getIlectureRoom());
-//                dto.setLectureRoomName(lectureApplyEntity.getLectureRoomEntity().getLectureRoomName());
-//                dto.setDayWeek(lectureApplyEntity.getLectureScheduleEntity().getDayWeek());
-//                dto.setIsemester(lectureApplyEntity.getSemesterEntity().getIsemester());
-//                dto.setAttendance(lectureApplyEntity.getAttendance());
-//                dto.setMidtermExamination(lectureApplyEntity.getMidtermExamination());
-//                dto.setFinalExamination(lectureApplyEntity.getFinalExamination());
-//                dto.setLectureStrTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureStrTime()));
-//                dto.setLectureEndTime(String.valueOf(lectureApplyEntity.getLectureScheduleEntity().getLectureEndTime()));
-//                dto.setGradeLimit(lectureApplyEntity.getGradeLimit());
-//                dto.setLectureMaxPeople(lectureApplyEntity.getLectureMaxPeople());
-//                dto.setCtnt(lectureApplyEntity.getCtnt());
-//                dto.setTextBook(lectureApplyEntity.getTextbook());
-//                dto.setBuildingName(lectureApplyEntity.getLectureRoomEntity().getBuildingName());
-//                dto.setBookUrl(lectureApplyEntity.getBookUrl());
-//                seldto.add(dto);
-//            }
-//            }
-////        long maxPage =LECTURE_APPLY_RPS.count();
-////        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
-//            PagingUtils utils = new PagingUtils();
-//            utils.getMaxPage();
-//
-//
-//            return StudentListLectrueRes.builder()
-//                    .page(utils)
-//                    .lectureList(seldto)
-//                    .build();
-//        }
-
-    public StudentListLectrueRes getAllProfessorsLecturesWithFilters(StudentListLectureDto dto ,Pageable pageable) {
-        StudentEntity entity =studentRep.findBystudentNum(dto.getStudentNum());
-
-
-
-        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable);
-
-        long maxpage = lectureApplyRep.count();
-        PagingUtils pagingUtils = new PagingUtils(dto.getPage(),(int)maxpage);
-
-
-        return StudentListLectrueRes.builder().lectureList(studentListLectureVos).page(pagingUtils).build();
     }
-    }
+
+}
 
 
 

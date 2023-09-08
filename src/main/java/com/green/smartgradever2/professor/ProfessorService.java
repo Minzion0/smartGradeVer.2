@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -244,7 +245,20 @@ public class ProfessorService {
         return professorStudentDataList;
     }
 
+    public List<ProfessorScheduleRes> professorScheduleList(Long iprofessor){
 
+        List<ProfessorScheduleVo> professorScheduleVos = professorQdsl.professorScheduleList(iprofessor);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+       return professorScheduleVos.stream().map(list-> ProfessorScheduleRes.builder()
+                .dayWeek(list.getDayWeek())
+                .startTime(list.getStartTime().format(formatter))
+                .endTime(list.getEndTime().format(formatter))
+                .lectureName(list.getLectureName())
+                .build()).toList();
+
+
+
+    }
 
 
 
