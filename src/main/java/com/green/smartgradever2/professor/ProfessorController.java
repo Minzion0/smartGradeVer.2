@@ -86,7 +86,7 @@ public class ProfessorController {
         return SERVICE.selProfessorLecture(dto,page);
     }
 
-    @PutMapping("/chang-password")
+    @PutMapping("/change-password")
     @Operation(summary = "비밀번호 변경",
             description = "currentProfessorPassword : 현재 비밀번호 <br>" + "professorPassword : 바꿀 비밀번호")
     public ResponseEntity<?> updPassword(@AuthenticationPrincipal MyUserDetails details,

@@ -117,7 +117,7 @@ public class SignController {
         return result ?  ResponseEntity.ok().body(result) : ResponseEntity.status(405).body(result);
     }
 
-    @PutMapping("/chang-password")
+    @PutMapping("/change-password")
     @Operation(summary = "비밀번호 변경")
     public String updPasswordNew(@RequestBody SignSelPasswordTrueDto dto) {
         return SERVICE.updPasswordNew(dto);
