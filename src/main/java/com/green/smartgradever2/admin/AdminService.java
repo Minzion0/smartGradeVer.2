@@ -480,6 +480,7 @@ public class AdminService {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
     private static int getValue(List<ProfessorEntity> professorEntityList, int i) {
         int year = LocalDate.now().getYear() - professorEntityList.get(i).getCreatedAt().getYear();
 
@@ -488,6 +489,5 @@ public class AdminService {
         }
         return year;
     }
-
 
 }

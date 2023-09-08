@@ -3,6 +3,7 @@ package com.green.smartgradever2.admin.professor;
 import com.green.smartgradever2.admin.professor.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -12,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -58,6 +60,12 @@ public class AdminProfessorController {
         AdminProfessorInsVo vo = SERVICE.patchProfessor(iprofessor, param);
 
        return ResponseEntity.ok().body(vo);
+    }
+
+    @GetMapping("/professor-file")
+    @Operation(summary = "대학 교수 구성원들 정보")
+    public void greenUniversityMember(HttpServletResponse request) throws IOException {
+        SERVICE.professorListFile(request);
     }
 
 }

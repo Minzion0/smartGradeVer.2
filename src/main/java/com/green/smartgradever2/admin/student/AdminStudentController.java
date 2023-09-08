@@ -66,4 +66,10 @@ public class AdminStudentController {
     }
 
 
+    @GetMapping("/student-file")
+    @Operation(summary = "대학 학생 구성원들 정보")
+    public void greenUniversityMember(HttpServletResponse request) throws IOException {
+        SERVICE.studentListFile(request);
+    }
+
 }

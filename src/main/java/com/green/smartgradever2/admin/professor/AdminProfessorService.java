@@ -4,19 +4,25 @@ import com.green.smartgradever2.admin.professor.model.*;
 import com.green.smartgradever2.config.entity.LectureApplyEntity;
 import com.green.smartgradever2.config.entity.MajorEntity;
 import com.green.smartgradever2.config.entity.ProfessorEntity;
+import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.config.exception.AdminException;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.utils.CheckUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -204,5 +210,142 @@ public class AdminProfessorService {
 
     }
 
+    public void professorListFile(HttpServletResponse response) throws IOException {
 
+
+// 엑셀 워크북 생성
+        Workbook workbook = new XSSFWorkbook();
+
+        // 시트 생성
+
+
+        // 제목 행 생성
+
+
+        // 제목 행 스타일 설정
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerCellStyle.setFont(headerFont);
+        headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerCellStyle.setBorderBottom(BorderStyle.THIN);
+        headerCellStyle.setBorderTop(BorderStyle.THIN);
+        headerCellStyle.setBorderLeft(BorderStyle.THIN);
+        headerCellStyle.setBorderRight(BorderStyle.THIN);
+
+
+        // 데이터 행 생성 및 셀 스타일 설정
+        CellStyle cellCellStyle = workbook.createCellStyle();
+        Font cellFont = workbook.createFont();
+
+        cellFont.setFontName("맑은 고딕");
+        cellFont.setBold(false);
+        cellFont.setFontHeight((short) 250);
+        cellFont.setFontHeightInPoints((short) 14);
+        cellCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellCellStyle.setFont(cellFont);
+        cellCellStyle.setBorderTop(BorderStyle.THIN);
+        cellCellStyle.setBorderLeft(BorderStyle.THIN);
+        cellCellStyle.setBorderRight(BorderStyle.THIN);
+
+
+
+        CellStyle numericCellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        numericCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0")); // 숫자 형식 지정
+        int rowCount = 1; // 첫 번째 행은 제목 행이므로 1부터 시작
+
+
+
+        int strIdx=0;
+        int endIdx=0;
+
+        // 시트 생성
+        Sheet sheet1 = workbook.createSheet("교수 리스트");
+        for (int i = 0; i < sheet1.getLastRowNum(); i++) {
+            sheet1.autoSizeColumn(i);
+            sheet1.setColumnWidth(i, (sheet1.getColumnWidth(i))+512);
+        }
+
+        // 제목 행 생성
+        Row headerRow1 = sheet1.createRow(0);
+
+        // 제목 행 스타일 설정
+
+        String[] headers1 = { "교수번호", "이름", "  근속년수  ", "성별", "학과" };
+
+        for (int i = 0; i < headers1.length; i++) {
+            Cell cell = headerRow1.createCell(i);
+            cell.setCellValue(headers1[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+
+        List<ProfessorEntity> professorEntityList = RPS.findAll();
+
+        rowCount = 1;
+        for (int i = 0; i < professorEntityList.size(); i++) {
+            Row row = sheet1.createRow(rowCount++);
+            Cell cell1 = row.createCell(0);
+            cell1.setCellValue(professorEntityList.get(i).getIprofessor());
+            cell1.setCellStyle(cellCellStyle);
+
+            Cell cell2 = row.createCell(1);
+            cell2.setCellValue(professorEntityList.get(i).getNm());
+            cell2.setCellStyle(cellCellStyle);
+
+            Cell cell3 = row.createCell(2);
+            cell3.setCellValue(getValue(professorEntityList, i));
+            cell3.setCellStyle(cellCellStyle);
+
+            Cell cell4 = row.createCell(3);
+            cell4.setCellValue(professorEntityList.get(i).getGender().toString());
+            cell4.setCellStyle(numericCellStyle);
+            cell4.setCellStyle(cellCellStyle);
+
+            Cell cell5 = row.createCell(4);
+            cell5.setCellValue(professorEntityList.get(i).getMajorEntity().getMajorName());
+            cellCellStyle.setBorderBottom(BorderStyle.THIN);
+            cell5.setCellStyle(cellCellStyle);
+
+            if (i==0){
+                strIdx=row.getRowNum();
+                log.info("strIdx : {}",strIdx);
+            }
+            if (i==professorEntityList.size()-1){
+                endIdx=row.getLastCellNum();
+                log.info("endIdx : {}",endIdx);
+            }
+            //학년 cell에 정렬 함수 설정
+        }
+        sheet1.setAutoFilter(new CellRangeAddress(0, rowCount-1, 0, headers1.length - 1));
+
+
+
+        // 열 너비 자동 조정
+        for (int i = 0; i < headers1.length; i++) {
+            sheet1.autoSizeColumn(i);
+        }
+
+        String fileName = "GreenUniversityProfessorList.xlsx"; // 원하는 파일 이름을 지정합니다.
+        String format = String.format("attachment;filename=%s_%s",LocalDate.now().toString(), fileName);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", format);
+
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
+    private static int getValue(List<ProfessorEntity> professorEntityList, int i) {
+        int year = LocalDate.now().getYear() - professorEntityList.get(i).getCreatedAt().getYear();
+
+        if (year==0){
+            return 1;
+        }
+        return year;
+    }
 }
