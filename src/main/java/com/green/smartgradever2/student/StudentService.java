@@ -459,15 +459,14 @@ public class StudentService {
                 .score(student.getTotalScore())
                 .build()).toList();
 
+
+        //파일 생성
         Workbook workbook = new XSSFWorkbook();
 
 
         // 시트 생성
         String format = String.format("%s 학생의 성적",studentEntities.get(0).getStudentEntity().getNm() );
         Sheet sheet = workbook.createSheet(format);
-
-
-
 
 
         Row headerRow = sheet.createRow(3);
@@ -545,9 +544,8 @@ public class StudentService {
         majorRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getMajorEntity().getMajorName());
 
 
-        int strIdx=0;
-        int endIdx=0;
-        //todo 내일 완성하기
+
+
         for (int i = 0; i < list.size(); i++) {
             GradeUtils gradeUtils = new GradeUtils(list.get(i).getScore());
 
@@ -596,7 +594,6 @@ public class StudentService {
 
 
         String formatted = String.format("GreenUniversity_%s.xlsx", studentNum);
-        //String fileName = "GreenUniversityProfessorList.xlsx"; // 원하는 파일 이름을 지정합니다.
         String formats = String.format("attachment;filename=%s_%s",LocalDate.now().toString(), formatted);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", formats);
