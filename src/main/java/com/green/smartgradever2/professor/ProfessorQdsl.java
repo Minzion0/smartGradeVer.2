@@ -49,7 +49,9 @@ public class ProfessorQdsl {
                         lectureApply.lectureScheduleEntity.dayWeek
                         , lectureApply.lectureScheduleEntity.lectureStrTime.as("startTime")
                         , lectureApply.lectureScheduleEntity.lectureEndTime.as("endTime")
-                ,lectureApply.lectureNameEntity.lectureName.as("lectureName")))
+                ,lectureApply.lectureNameEntity.lectureName.as("lectureName")
+                ,lectureApply.lectureRoomEntity.lectureRoomName
+                ,lectureApply.lectureRoomEntity.buildingName))
                 .from(lectureApply)
                 .join(lectureApply.lectureScheduleEntity)
                 .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester())))

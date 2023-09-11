@@ -12,4 +12,5 @@ public class ProfessorScheduleRes {
     private String   endTime;
     private int dayWeek;
     private String lectureName;
+    private String lectureRoomName;
 }
