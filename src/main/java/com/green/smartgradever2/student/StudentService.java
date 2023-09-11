@@ -431,7 +431,7 @@ public class StudentService {
         StudentEntity entity = studentRep.findBystudentNum(dto.getStudentNum());
 
 
-        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable);
+        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
 
         long maxpage = lectureApplyRep.count();
         PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);
@@ -439,10 +439,6 @@ public class StudentService {
 
         return StudentListLectrueRes.builder().lectureList(studentListLectureVos).page(pagingUtils).build();
     }
-
-
-
-
 
 
 
