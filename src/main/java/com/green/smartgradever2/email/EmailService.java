@@ -5,6 +5,7 @@ import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.email.model.CheckEmailDto;
 import com.green.smartgradever2.email.model.EmailDto;
 import com.green.smartgradever2.email.model.EmailVo;
+import com.green.smartgradever2.email.model.emailSuccessCheckDto;
 import com.green.smartgradever2.professor.ProfessorRepository;
 import com.green.smartgradever2.settings.security.config.security.JwtTokenProvider;
 import com.green.smartgradever2.student.StudentRepository;
@@ -243,6 +244,19 @@ public class EmailService {
         return "확인이 완료되었습니다. 전 페이지에서 이어서 작성해주시면 됩니다.";
     }
 
-
+    public boolean emailSuccessCheck(emailSuccessCheckDto dto) {
+        if (dto.getRole().equals("ROLE_STUDENT")){
+            StudentEntity entity = STUDENT_REP.findById(dto.getIuser()).get();
+            if (!entity.getEmail().equals("true")) {
+                return false;
+            }
+        } else if (dto.getRole().equals("ROLE_PROFESSOR")) {
+            ProfessorEntity entity = PROFESSOR_REP.findById(dto.getIuser()).get();
+            if (!entity.getEmail().equals("true")){
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

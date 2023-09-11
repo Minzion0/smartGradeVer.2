@@ -77,4 +77,10 @@ public class EmailController {
         return SERVICE.checkApi(userId, role);
 
     }
+
+    @GetMapping("/email-success")
+    @Operation(summary = "이메일 인증 완료 됐는지 최종 확인 Api")
+    public boolean emailSuccessCheck(emailSuccessCheckDto dto) {
+        return SERVICE.emailSuccessCheck(dto);
+    }
 }
