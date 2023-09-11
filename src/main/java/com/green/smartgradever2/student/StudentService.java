@@ -434,7 +434,7 @@ public class StudentService {
 
         List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(),
                 entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
-
+        log.info("ss : {}",studentListLectureVos);
         long maxpage = lectureApplyRep.count();
         PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);
 
