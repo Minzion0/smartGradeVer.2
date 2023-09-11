@@ -132,10 +132,17 @@ public class AdminQdsl {
                 .from(lectureStudent)
                 .join(lectureStudent.lectureApplyEntity)
                 .join(lectureStudent.lectureApplyEntity.lectureScheduleEntity)
-                .where(lectureStudent.studentEntity.studentNum.eq(studentNum).and(lectureStudent.lectureApplyEntity.semesterEntity.isemester.eq(1L))).fetch();
+                .where(lectureStudent.studentEntity.studentNum.eq(studentNum).and(lectureStudent.lectureApplyEntity.semesterEntity.isemester.eq(latestSemester())))
+                .orderBy(lectureSchedule.dayWeek.asc(),lectureSchedule.lectureStrTime.asc()).fetch();
 
         return fetch;
     }
 
+    private Long latestSemester(){
+        Long latestSemester = jpaQueryFactory.select(semester.isemester.max())
+                .from(semester)
+                .fetchFirst();
+        return latestSemester;
+    }
 
 }
