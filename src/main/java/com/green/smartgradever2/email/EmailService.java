@@ -168,7 +168,7 @@ public class EmailService {
             PROFESSOR_REP.save(professor);
             apiAddress = "?iuser=" + professor.getIprofessor() + "&role=" + professor.getRole() + "&uuid=" + professor.getEmail();
         }
-        String address = "http://localhost:8080/api/send-email/check-button" + apiAddress;
+        String address = "http://192.168.0.144:5002/api/send-email/check-button" + apiAddress;
 
         StringBuffer msg = new StringBuffer();
         msg.append("<html>");

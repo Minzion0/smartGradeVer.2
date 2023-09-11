@@ -64,7 +64,6 @@ public class EmailController {
 
        Long iuser = Long.valueOf(request.getParameter("iuser"));
        String role = request.getParameter("role");
-       String uuid = request.getParameter("uuid");
 
         return SERVICE.checkApi(iuser, role);
     }
