@@ -8,4 +8,5 @@ public class StudentListLectureDto {
     private int gradeLimit;
     private int page;
     private Long studentNum;
+    private String lectureName;
 }

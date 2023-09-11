@@ -80,6 +80,8 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+
+
     @GetMapping("/detail")
     @Operation(summary = "학생 프로필 디테일",description =  "studentNum : 학번<br>"+
             "majorName : 전공<br>"+
@@ -175,16 +177,17 @@ public class StudentController {
     }
 
 
-
     @GetMapping("/lecturelist")
+    @Operation(summary = "학생 수강신청 조회")
     public StudentListLectrueRes getAllProfessorsLecturesWithFilters(
             @AuthenticationPrincipal MyUserDetails details,
-            @ParameterObject @PageableDefault(sort="gradeLimit", direction = Sort.Direction.DESC, size=10 )
-            Pageable pageable
+            @ParameterObject @PageableDefault(sort = "gradeLimit", direction = Sort.Direction.DESC, size = 10) Pageable pageable,
+            @RequestParam(required = false) String lectureName
     ) {
         StudentListLectureDto dto = new StudentListLectureDto();
         dto.setStudentNum(details.getIuser());
         dto.setOpeningProcedures(2);
+        dto.setLectureName(lectureName);
         return SERVICE.getAllProfessorsLecturesWithFilters(dto, pageable);
     }
 
