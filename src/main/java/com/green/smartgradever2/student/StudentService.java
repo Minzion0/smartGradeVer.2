@@ -183,7 +183,6 @@ public class StudentService {
             response.setLectureEndTime(lectureSchedule.getLectureEndTime());
         }
 
-
         response.setSuccess(true);
         response.setMessage("수강 신청 성공.");
         response.setLectureName(lectureApply.getLectureNameEntity().getLectureName()); // 강의 이름 설정
@@ -433,7 +432,8 @@ public class StudentService {
         StudentEntity entity = studentRep.findBystudentNum(dto.getStudentNum());
 
 
-        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
+        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(),
+                entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
 
         long maxpage = lectureApplyRep.count();
         PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);

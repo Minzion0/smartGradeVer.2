@@ -101,27 +101,43 @@ public class ProfessorController {
 
 
 
-    @GetMapping("/objection")
-    @Operation(summary = "학생 이의신청 리스트",description = "ilecture : 강의 PK<br>"+"objection : 이의신청 1 <br>"+
-            "grade : 알파벳 등급 <br>"+
-            "totalScore : 총점<br>"+
-            "studentNum : 학번<br>"+
-            "studentName : 학생이름")
-    public ResponseEntity<List<ProfessorStudentData>> getStudentsWithObjectionAndScores(
-            @RequestParam Long ilecture,
-            @RequestParam int objection,
-            @AuthenticationPrincipal MyUserDetails details) {
-        Long professorId = details.getIuser();
-
-        List<ProfessorStudentData> studentsWithObjectionAndScores = SERVICE.getStudentsWithObjectionAndScores(ilecture, objection,professorId);
-
-        return ResponseEntity.ok(studentsWithObjectionAndScores);
-    }
+//    @GetMapping("/sssss")
+//    @Operation(summary = "학생 이의신청 리스트",description = "ilecture : 강의 PK<br>"+"objection : 이의신청 1 <br>"+
+//            "grade : 알파벳 등급 <br>"+
+//            "totalScore : 총점<br>"+
+//            "studentNum : 학번<br>"+
+//            "studentName : 학생이름")
+//    public ResponseEntity<List<ProfessorStudentData>> getStudentsWithObjectionAndScores(
+//            @RequestParam Long ilecture,
+//            @RequestParam int objection,
+//            @AuthenticationPrincipal MyUserDetails details) {
+//        Long professorId = details.getIuser();
+//
+//        List<ProfessorStudentData> studentsWithObjectionAndScores = SERVICE.getStudentsWithObjectionAndScores(ilecture, objection,professorId);
+//
+//        return ResponseEntity.ok(studentsWithObjectionAndScores);
+//    }
     @GetMapping("/schedule")
     @Operation(summary = "교수 본인 시간표")
     public List<ProfessorScheduleRes> professorScheduleList(@AuthenticationPrincipal MyUserDetails details){
         List<ProfessorScheduleRes> professorScheduleRes = SERVICE.professorScheduleList(details.getIuser());
         return professorScheduleRes;
+    }
+
+
+    @GetMapping("/objection")
+    @Operation(summary = "학생 이의신청 리스트", description = "ilecture: 강의 PK<br>"
+            + "grade: 알파벳 등급 <br>" + "totalScore: 총점<br>" + "studentNum: 학번<br>"
+            + "studentName: 학생이름")
+    public ResponseEntity<List<ProfessorStudentData>> getStudentsWithObjectionAndScores(
+            @RequestParam(required = false) Long ilecture,
+            @AuthenticationPrincipal MyUserDetails details
+      ,@ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page) {
+
+
+        List<ProfessorStudentData> studentsWithObjectionAndScores = SERVICE.getStudentObjection(ilecture, details.getIuser(),page);
+
+        return ResponseEntity.ok(studentsWithObjectionAndScores);
     }
 
 }
