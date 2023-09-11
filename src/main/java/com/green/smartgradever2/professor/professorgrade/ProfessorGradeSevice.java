@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -301,7 +298,7 @@ public class ProfessorGradeSevice {
                 studentLectures.add(studentLectureDto);
             }
         }
-
+        Collections.sort(studentLectures, Comparator.comparing(ProStudentListVo::getIlectureStudent).reversed());
         // 페이징 처리
         PagingUtils paging = new PagingUtils(pageable.getPageNumber() , pageable.getPageSize()+1);
         paging.makePage(studentLectures.size(), pageable.getPageNumber()+1 );
