@@ -38,13 +38,15 @@ public class ProfessorQdsl {
 
 
     public List<ProfessorScheduleVo> professorScheduleList(Long iprofessor){
-        List<ProfessorScheduleVo> list = factory.select(Projections.bean(ProfessorScheduleVo.class, lectureApply.lectureScheduleEntity.dayWeek
+        List<ProfessorScheduleVo> list = factory.select(Projections.bean(ProfessorScheduleVo.class,
+                        lectureApply.lectureScheduleEntity.dayWeek
                         , lectureApply.lectureScheduleEntity.lectureStrTime.as("startTime")
                         , lectureApply.lectureScheduleEntity.lectureEndTime.as("endTime")
                 ,lectureApply.lectureNameEntity.lectureName.as("lectureName")))
                 .from(lectureApply)
                 .join(lectureApply.lectureScheduleEntity)
-                .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester()))).fetch();
+                .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester())))
+                .orderBy(lectureApply.lectureScheduleEntity.dayWeek.asc()).fetch();
 
         return list;
 
