@@ -8,11 +8,14 @@ import com.green.smartgradever2.admin.professor.AdminProfessorRepository;
 import com.green.smartgradever2.admin.semester.SemesterRepository;
 import com.green.smartgradever2.admin.student.AdminStudentRepository;
 import com.green.smartgradever2.config.entity.*;
+import com.green.smartgradever2.config.entity.model.GenderEnum;
 import com.green.smartgradever2.config.exception.AdminException;
 
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.student.model.StudentHistoryVo;
+import com.green.smartgradever2.student.model.StudentScheduleRes;
+import com.green.smartgradever2.student.model.StudentScheduleVo;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
@@ -490,6 +493,15 @@ public class AdminService {
             return 1;
         }
         return year;
+    }
+
+
+
+    public AdminStudentYearGenderRes findStudentYearGender(){
+        List<AdminStudentYearGenderCountVo> female = MAPPER.genderCount(GenderEnum.F.toString());
+        List<AdminStudentYearGenderCountVo> man = MAPPER.genderCount(GenderEnum.M.toString());
+
+        return AdminStudentYearGenderRes.builder().man(man).female(female).build();
     }
 
 

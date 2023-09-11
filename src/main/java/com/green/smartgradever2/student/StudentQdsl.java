@@ -79,4 +79,26 @@ public class StudentQdsl {
 
 
     }
+
+    public List<StudentScheduleVo> findStudentSchedule(Long studentNum){
+        List<StudentScheduleVo> fetch = jpaQueryFactory.select(Projections.bean(StudentScheduleVo.class,
+                        sd.lectureStrTime.as("startTime")
+                        , sd.lectureEndTime.as("endTime")
+                        , sd.dayWeek
+                        , sd.lectureApplyEntity.lectureNameEntity.lectureName))
+                .from(ls)
+                .join(ls.lectureApplyEntity)
+                .join(ls.lectureApplyEntity.lectureScheduleEntity)
+                .where(ls.studentEntity.studentNum.eq(studentNum).and(ls.lectureApplyEntity.semesterEntity.isemester.eq(latestSemester())))
+                .orderBy(sd.dayWeek.asc(),sd.lectureStrTime.asc()).fetch();
+
+        return fetch;
+    }
+
+    private Long latestSemester(){
+        Long latestSemester = jpaQueryFactory.select(se.isemester.max())
+                .from(se)
+                .fetchFirst();
+        return latestSemester;
+    }
 }

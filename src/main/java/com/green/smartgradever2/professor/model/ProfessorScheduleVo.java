@@ -1,6 +1,5 @@
 package com.green.smartgradever2.professor.model;
 
-import com.green.smartgradever2.student.model.StudentScheduleVo;
 import lombok.Data;
 
 import java.time.LocalTime;

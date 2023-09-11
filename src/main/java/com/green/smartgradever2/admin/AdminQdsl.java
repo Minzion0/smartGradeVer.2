@@ -3,6 +3,7 @@ package com.green.smartgradever2.admin;
 import com.green.smartgradever2.admin.model.AdminSelLectureDto;
 import com.green.smartgradever2.admin.model.AdminSelLectureVo;
 import com.green.smartgradever2.config.entity.*;
+import com.green.smartgradever2.student.model.StudentScheduleVo;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -119,4 +120,9 @@ public class AdminQdsl {
         }
         return lectureName.ilectureName.eq(ilectureName);
     }
+
+
+
+
+
 }

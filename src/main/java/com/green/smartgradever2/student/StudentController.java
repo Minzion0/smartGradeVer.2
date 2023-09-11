@@ -197,5 +197,11 @@ public class StudentController {
         SERVICE.studentGradePrint(details.getIuser(),request);
     }
 
+    @GetMapping("/schedule")
+    @Operation(summary = "학생 시간표")
+    public List<StudentScheduleRes>studentSchedule(@AuthenticationPrincipal MyUserDetails details){
+        return SERVICE.studentSchedule(details.getIuser());
+    }
+
 
 }
