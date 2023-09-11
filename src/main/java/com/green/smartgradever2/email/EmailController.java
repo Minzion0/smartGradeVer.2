@@ -1,24 +1,18 @@
 package com.green.smartgradever2.email;
 
-import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.email.model.*;
 import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
-import com.green.smartgradever2.student.StudentRepository;
 import io.jsonwebtoken.Jwts;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @RestController
@@ -66,15 +60,21 @@ public class EmailController {
 
     @GetMapping("/check-button")
     @Operation(summary = "이메일 인증 확인 버튼 api 백엔드 내부 사용용")
-    public String checkApi(HttpServletRequest request) throws Exception{
+    public String checkApi(HttpServletRequest request) {
 
-        String token = request.getHeader("Authorization");
-        token = URLDecoder.decode(token, "UTF-8");
+       Long iuser = Long.valueOf(request.getParameter("iuser"));
+       String role = request.getParameter("role");
+       String uuid = request.getParameter("uuid");
 
-        Long userId = Long.valueOf(Jwts.parser().setSigningKey("secret").parseClaimsJws(token).getBody().getSubject());
-        String role = Jwts.parser().setSigningKey("secret").parseClaimsJws(token).getBody().get("role").toString();
+        return SERVICE.checkApi(iuser, role);
+    }
 
-        return SERVICE.checkApi(userId, role);
-
+    @GetMapping("/email-success")
+    @Operation(summary = "이메일 인증 완료 됐는지 최종 확인 Api")
+    public boolean emailSuccessCheck(@AuthenticationPrincipal MyUserDetails details) throws Exception {
+        EmailSuccessCheckDto dto = new EmailSuccessCheckDto();
+        dto.setIuser(details.getIuser());
+        dto.setRole(details.getRoles().get(0));
+        return SERVICE.emailSuccessCheck(dto);
     }
 }

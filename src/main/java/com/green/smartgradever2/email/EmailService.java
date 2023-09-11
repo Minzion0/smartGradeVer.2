@@ -5,24 +5,18 @@ import com.green.smartgradever2.config.entity.StudentEntity;
 import com.green.smartgradever2.email.model.CheckEmailDto;
 import com.green.smartgradever2.email.model.EmailDto;
 import com.green.smartgradever2.email.model.EmailVo;
+import com.green.smartgradever2.email.model.EmailSuccessCheckDto;
 import com.green.smartgradever2.professor.ProfessorRepository;
-import com.green.smartgradever2.settings.security.config.security.JwtTokenProvider;
 import com.green.smartgradever2.student.StudentRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,17 +185,12 @@ public class EmailService {
         msg.append("<p>본인이 아니시라면 메일 삭제를 해주시면 됩니다.</p>");
         msg.append("<p style='margin: 0px 0 40px;'>이메일 인증을 원하신다면 <b>하단의 확인버튼</b>을 누르시면 됩니다.</p>");
         // todo 여기 다시
-//        msg.append("<a href='" + address + "' style = 'font-size: 16px;\n" +
-//                "    text-decoration: none;\n" +
-//                "    color: #fff;\n" +
-//                "    background: #7aa5f1;\n" +
-//                "    padding: 10px;\n" +
-//                "    border-radius: 5px;' target= '_self' data-headers='" + token + "'>확인하기</a> </div>");
-
-        Map<String, String> encodedToken = new HashMap<>();
-        encodedToken.put("Authorization", "Bearer " + token);
-
-        msg.append("<a href ='" + address + "' data-headers='" + encodedToken + "'> 확인하기 </a>");
+        msg.append("<a href='" + address + "' style = 'font-size: 16px;\n" +
+                "    text-decoration: none;\n" +
+                "    color: #fff;\n" +
+                "    background: #7aa5f1;\n" +
+                "    padding: 10px;\n" +
+                "    border-radius: 5px;'>확인하기</a></div>");
         msg.append("<p></p>");
         msg.append("</body>");
         msg.append("</html>");
@@ -221,28 +210,44 @@ public class EmailService {
 
     /** 이메일 인증 확인 - api **/
     public String checkApi(Long iuser, String role){
-        String uuid = null;
+
+        String uuid = UUID.randomUUID().toString();
+
         if (role.equals("ROLE_STUDENT")){
             StudentEntity student = STUDENT_REP.findById(iuser).get();
-            uuid = student.getEmail();
-            student.setEmail("true");
+            String emailRom = uuid + "true";
+            student.setEmail(emailRom);
             STUDENT_REP.save(student);
-            if (!uuid.equals(student.getEmail())) {
-                throw new RuntimeException("확인이 완료되지 않습니다. 관리자에게 연락바랍니다.");
-            }
-            return "확인이 완료되었습니다. 전 페이지에서 이어서 작성해주시면 됩니다.";
         } else {
             ProfessorEntity professor = PROFESSOR_REP.findById(iuser).get();
-            uuid = professor.getEmail();
-            professor.setEmail("true");
+            String emailRom = uuid + "true";
+            professor.setEmail(emailRom);
             PROFESSOR_REP.save(professor);
-            if (!uuid.equals(professor.getEmail())) {
-                throw new RuntimeException("확인이 완료되지 않습니다. 관리자에게 연락바랍니다.");
-            }
         }
         return "확인이 완료되었습니다. 전 페이지에서 이어서 작성해주시면 됩니다.";
     }
 
+    public boolean emailSuccessCheck(EmailSuccessCheckDto dto) throws Exception{
 
+        if (dto.getRole().equals("ROLE_STUDENT")){
+            StudentEntity entity = STUDENT_REP.findById(dto.getIuser()).get();
+            String email = entity.getEmail();
+            String emailSubStr = email.substring(email.length()-4, email.length());
+
+            log.info("emailSubStr : {}", emailSubStr);
+            if (!emailSubStr.equals("true")) {
+                throw new Exception();
+            }
+        } else if (dto.getRole().equals("ROLE_PROFESSOR")) {
+            ProfessorEntity entity = PROFESSOR_REP.findById(dto.getIuser()).get();
+            String email = entity.getEmail();
+            String emailSubStr = email.substring(email.length()-4, email.length());
+
+            if (!emailSubStr.equals("true")){
+                throw new Exception();
+            }
+        }
+        return true;
+    }
 
 }
