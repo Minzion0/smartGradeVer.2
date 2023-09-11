@@ -648,11 +648,14 @@ public class StudentService {
     public List<StudentScheduleRes>studentSchedule(Long studentNum){
         List<StudentScheduleVo> studentSchedule = qdsl.findStudentSchedule(studentNum);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+
         return    studentSchedule.stream().map(vo-> StudentScheduleRes.builder()
                 .startTime(vo.getStartTime().format(formatter))
                 .endTime(vo.getEndTime().format(formatter))
                 .dayWeek(vo.getDayWeek())
                 .lectureName(vo.getLectureName())
+                .lectureRoomName(vo.getBuildingName()+" "+vo.getLectureRoomName())
                 .build()).toList();
 
     }
