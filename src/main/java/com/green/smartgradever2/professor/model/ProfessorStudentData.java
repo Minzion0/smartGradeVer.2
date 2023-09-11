@@ -2,6 +2,8 @@ package com.green.smartgradever2.professor.model;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class ProfessorStudentData {
     private Long StudentNum;
@@ -10,4 +12,5 @@ public class ProfessorStudentData {
     private int totalScore;
     private String majorName;
     private Long ilectureStudent;
+    private LocalDate correctionAt;
 }

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/student")
@@ -194,6 +196,7 @@ public class StudentController {
     @GetMapping("/grade-file")
     @Operation(summary = "학생 성적 출력")
     public void greenUniversityStudentFile(@AuthenticationPrincipal MyUserDetails details, HttpServletResponse request) throws IOException {
+        log.info(details.getUid());
         SERVICE.studentGradePrint(details.getIuser(),request);
     }
 

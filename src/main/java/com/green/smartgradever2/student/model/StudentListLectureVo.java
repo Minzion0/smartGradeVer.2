@@ -20,12 +20,12 @@ public class StudentListLectureVo {
     private int attendance;
     private int midtermExamination;
     private int finalExamination;
-    private int lectureMaxPeople;
+    private Integer lectureMaxPeople;
     private int gradeLimit;
     private int dayWeek;
     private String ctnt;
     private String bookUrl;
-    private String textBook;
+    private String textbook;
     private int delYn;
     private String professorName;
     private boolean applyYn;

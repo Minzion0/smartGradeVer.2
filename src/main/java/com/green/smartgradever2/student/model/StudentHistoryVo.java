@@ -2,6 +2,7 @@ package com.green.smartgradever2.student.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.apache.poi.openxml4j.opc.PackageRelationship;
 
 import java.time.LocalTime;
 
@@ -14,5 +15,6 @@ public class StudentHistoryVo {
     private String lectureName;
     private String professorName;
     private int score;
+    private int lectureScore;
 
 }

@@ -496,7 +496,7 @@ public class AdminService {
     }
 
 
-
+    /**최근 4년간 입학생 성비**/
     public AdminStudentYearGenderRes findStudentYearGender(){
         List<AdminStudentYearGenderCountVo> female = MAPPER.genderCount(GenderEnum.F.toString());
         List<AdminStudentYearGenderCountVo> man = MAPPER.genderCount(GenderEnum.M.toString());

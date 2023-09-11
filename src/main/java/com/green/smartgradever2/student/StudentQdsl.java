@@ -36,7 +36,7 @@ public class StudentQdsl {
                 .where(ls.studentEntity.studentNum.eq(studentNum))
                 .fetch();
 
-        // 모든 강의를 가져오고, 학생이 수강하지 않은 강의만 필터링합니다.
+        // 모든 강의를 가져온다
         JPQLQuery<StudentListLectureVo> query = jpaQueryFactory
 
                 .selectDistinct(Projections.bean(StudentListLectureVo.class, la.ilecture, la.openingProceudres.as("openingProcedures"), ne.lectureName
@@ -65,18 +65,17 @@ public class StudentQdsl {
 
         query = query.offset(pageable.getOffset()).limit(pageable.getPageSize());
 
-
-        // 학생이 각 강의에 등록한 여부에 따라 "registered" 필드 설정
+        // 학생이 각 강의에 등록한 여부에 따라 "boolean"설정
         List<StudentListLectureVo> lectureList = query.fetch();
         for (StudentListLectureVo lecture : lectureList) {
-            lecture.setApplyYn(true); // 기본적으로 true로 설정
+            lecture.setApplyYn(true); // 등록이 가능한 강의인 true로 설정
             if (enrolledLectures.contains(lecture.getIlecture())) {
                 lecture.setApplyYn(false); // 학생이 등록한 강의인 경우 false로 설정
+            } else if (lecture.getLectureMaxPeople() != null && lecture.getLectureMaxPeople() <= enrolledLectures.size()) {
+                lecture.setApplyYn(false); // 강의가 가득 찬 경우 false로 설정
             }
         }
-
         return lectureList;
-
 
     }
 
