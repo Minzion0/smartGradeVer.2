@@ -117,7 +117,7 @@ public class ProfessorService {
                     picFile.delete();
                 }
             }
-            throw new RuntimeException("스티커 사진 불가");
+            throw new RuntimeException("사진 불가");
         }
         return new ProfessorUpRes(professor);
     }
@@ -137,7 +137,7 @@ public class ProfessorService {
             try {
                 professorRepository.save(professor);
             } catch (Exception e) {
-                throw new RuntimeException("스티커 사진 삭제 실패");
+                throw new RuntimeException("사진 삭제 실패");
             }
         }
     }
