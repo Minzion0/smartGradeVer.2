@@ -58,8 +58,8 @@ public class AdminStudentService {
             LocalDate setYear = LocalDate.of(now.getYear(), 1, 1);
             LocalDateTime startOfDay = setYear.atStartOfDay();
             LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
-            String year = setYear.toString().substring(2, 4);
-            //String year = "2022";
+            //String year = setYear.toString().substring(2, 4);
+            String year = "2022";
 
             CheckUtils utils = CheckUtils.builder().nm(param.getNm()).phoneNum(param.getPhone()).build();
             String msg = utils.getMsg();
