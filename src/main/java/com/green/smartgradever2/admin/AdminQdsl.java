@@ -123,26 +123,6 @@ public class AdminQdsl {
 
 
 
-    public List<StudentScheduleVo> findStudentSchedule(Long studentNum){
-        List<StudentScheduleVo> fetch = jpaQueryFactory.select(Projections.bean(StudentScheduleVo.class,
-                        lectureSchedule.lectureStrTime.as("startTime")
-                        , lectureSchedule.lectureEndTime.as("endTime")
-                        , lectureSchedule.dayWeek
-                        , lectureSchedule.lectureApplyEntity.lectureNameEntity.lectureName))
-                .from(lectureStudent)
-                .join(lectureStudent.lectureApplyEntity)
-                .join(lectureStudent.lectureApplyEntity.lectureScheduleEntity)
-                .where(lectureStudent.studentEntity.studentNum.eq(studentNum).and(lectureStudent.lectureApplyEntity.semesterEntity.isemester.eq(latestSemester())))
-                .orderBy(lectureSchedule.dayWeek.asc(),lectureSchedule.lectureStrTime.asc()).fetch();
 
-        return fetch;
-    }
-
-    private Long latestSemester(){
-        Long latestSemester = jpaQueryFactory.select(semester.isemester.max())
-                .from(semester)
-                .fetchFirst();
-        return latestSemester;
-    }
 
 }

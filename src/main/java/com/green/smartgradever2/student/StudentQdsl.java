@@ -2,6 +2,7 @@ package com.green.smartgradever2.student;
 
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.student.model.StudentListLectureVo;
+import com.green.smartgradever2.student.model.StudentScheduleVo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -77,5 +78,27 @@ public class StudentQdsl {
         return lectureList;
 
 
+    }
+
+    public List<StudentScheduleVo> findStudentSchedule(Long studentNum){
+        List<StudentScheduleVo> fetch = jpaQueryFactory.select(Projections.bean(StudentScheduleVo.class,
+                        sd.lectureStrTime.as("startTime")
+                        , sd.lectureEndTime.as("endTime")
+                        , sd.dayWeek
+                        , sd.lectureApplyEntity.lectureNameEntity.lectureName))
+                .from(ls)
+                .join(ls.lectureApplyEntity)
+                .join(ls.lectureApplyEntity.lectureScheduleEntity)
+                .where(ls.studentEntity.studentNum.eq(studentNum).and(ls.lectureApplyEntity.semesterEntity.isemester.eq(latestSemester())))
+                .orderBy(sd.dayWeek.asc(),sd.lectureStrTime.asc()).fetch();
+
+        return fetch;
+    }
+
+    private Long latestSemester(){
+        Long latestSemester = jpaQueryFactory.select(se.isemester.max())
+                .from(se)
+                .fetchFirst();
+        return latestSemester;
     }
 }

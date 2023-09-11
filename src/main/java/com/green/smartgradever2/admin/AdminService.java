@@ -506,17 +506,5 @@ public class AdminService {
 
 
 
-    public List<StudentScheduleRes>studentSchedule(Long studentNum){
-        List<StudentScheduleVo> studentSchedule = adminQdsl.findStudentSchedule(studentNum);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-     return    studentSchedule.stream().map(vo-> StudentScheduleRes.builder()
-                .startTime(vo.getStartTime().format(formatter))
-                .endTime(vo.getEndTime().format(formatter))
-                .dayWeek(vo.getDayWeek())
-                .lectureName(vo.getLectureName())
-                .build()).toList();
-
-    }
-
 
 }

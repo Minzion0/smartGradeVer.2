@@ -121,10 +121,7 @@ public class AdminController {
         return ResponseEntity.ok().body(studentYearGender);
     }
 
-    @GetMapping("/student/schedule")
-    public List<StudentScheduleRes>studentSchedule(@AuthenticationPrincipal MyUserDetails details,Long istudnet){
-        return SERVICE.studentSchedule(istudnet);
-    }
+
 
 
 
