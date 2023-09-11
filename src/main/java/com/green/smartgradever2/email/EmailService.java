@@ -60,7 +60,7 @@ public class EmailService {
         StringBuffer msg = new StringBuffer();
         msg.append("<html>");
         msg.append("<body>");
-        msg.append("<a href=''><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
+        msg.append("<a href='/'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
         msg.append("<hr>");
         msg.append("<h3>OTP 등록을 위한 메일입니다.</h3>");
         msg.append("<p>모든 등록절차는 구글 otp 검색 후 -> " + "<b>" + "Google Authenicator 어플" + "</b>" + "을 다운받으셔야 합니다.</p>");
@@ -179,12 +179,11 @@ public class EmailService {
                 "    border-radius: 20px;\n" +
                 "    text-align: center;\n" +
                 "    margin: 50px auto;\n'>" +
-                "<a href='http://192.168.0.144:5002/'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
+                "<a href='/'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
         msg.append("<hr>");
         msg.append("<h1>이메일 인증을 위한 메일입니다.</h1>");
         msg.append("<p>본인이 아니시라면 메일 삭제를 해주시면 됩니다.</p>");
         msg.append("<p style='margin: 0px 0 40px;'>이메일 인증을 원하신다면 <b>하단의 확인버튼</b>을 누르시면 됩니다.</p>");
-        // todo 여기 다시
         msg.append("<a href='" + address + "' style = 'font-size: 16px;\n" +
                 "    text-decoration: none;\n" +
                 "    color: #fff;\n" +
