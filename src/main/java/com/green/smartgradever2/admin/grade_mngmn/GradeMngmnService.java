@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,12 +152,14 @@ public class GradeMngmnService {
                 log.info("avg : {}", avg);
                 entity = StudentSemesterScoreEntity.builder()
                         .grade(studentEntities.get(i).getGrade()) // 학년
-                        .rating(Math.round (avg / index * 10) / 10.0) // 평점
+                        .rating(utils.setDouRating(avg,index)) // 평점
                         .score(score) // 학점
                         .avgScore(temp / index) // 평균 총점
                         .semesterEntity(semesterEntity) // semester pk
                         .studentEntity(studentEntities.get(i)) // studentEntities pk
                         .build();
+                long stop1 = System.currentTimeMillis();
+                log.info("stop1 : {}", stop1);
                 try {
                     GM_REP.save(entity);
                 } catch (Exception e) {
@@ -211,7 +212,7 @@ public class GradeMngmnService {
             point = a.getTotalScore();
             GradeUtils utils2 = new GradeUtils(point);
             score = utils2.totalScore();
-            rating = utils2.totalRating(score);
+            rating = utils2.totalStrRating(score);
             a.setRating(rating);
         }
         GradeMngmnStudentVo studentVo = gradeMngmnQdsl.mngmnStudentVo(dto);

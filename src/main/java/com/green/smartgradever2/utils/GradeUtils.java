@@ -16,7 +16,7 @@ public class GradeUtils {
 
     public String totalGradeFromScore1(int score) {
         double rating = totalScore2(score);
-        return totalRating(rating);
+        return totalStrRating(rating);
     }
 
     public String totalGradeFromScore(int score) {
@@ -24,7 +24,11 @@ public class GradeUtils {
         return String.format("%.1f", rating);
     }
 
-    public String totalRating(double rating) {
+    public double setDouRating(double avg, int index) {
+        return Math.round(avg / index * 10) / 10.0;
+    }
+
+    public String totalStrRating(double rating) {
         if (rating == 4.5) {
             this.result = "A+";
         } else if (rating == 4.0) {

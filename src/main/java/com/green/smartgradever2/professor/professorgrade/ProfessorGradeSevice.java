@@ -74,7 +74,7 @@ public class ProfessorGradeSevice {
             // 등급 계산
             GradeUtils gradeUtils = new GradeUtils(totalScore);
             double rating = gradeUtils.totalScore();
-            String grade = gradeUtils.totalRating(rating);
+            String grade = gradeUtils.totalStrRating(rating);
 
             String ratingString = gradeUtils.totalGradeFromScore(totalScore);
 
@@ -143,7 +143,7 @@ public class ProfessorGradeSevice {
                     int totalScore = lectureStudentEntity.getAttendance() + lectureStudentEntity.getMidtermExamination() + lectureStudentEntity.getFinalExamination();
                     GradeUtils gradeUtils = new GradeUtils(totalScore);
                     double rating = gradeUtils.totalScore();
-                    String grade = gradeUtils.totalRating(rating);
+                    String grade = gradeUtils.totalStrRating(rating);
 
                     studentLectureDto.setTotalScore(totalScore);
                     studentLectureDto.setGrade(grade);
@@ -160,7 +160,7 @@ public class ProfessorGradeSevice {
 
 
         double averageRating = ratings.isEmpty() ? 0.0 : ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-        String averageGrade = grades.isEmpty() ? "" : new GradeUtils().totalRating(averageRating);
+        String averageGrade = grades.isEmpty() ? "" : new GradeUtils().totalStrRating(averageRating);
 
         paging.makePage(page.getPageNumber(), professorLectures.size());
 
