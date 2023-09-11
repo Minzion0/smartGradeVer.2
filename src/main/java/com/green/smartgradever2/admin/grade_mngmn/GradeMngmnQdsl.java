@@ -49,12 +49,12 @@ public class GradeMngmnQdsl {
         JPQLQuery<GradeMngmnVo> query = jpaQueryFactory.select(Projections.bean(GradeMngmnVo.class, sssc.grade, sem.semester
                         , ln.lectureName, pr.nm.as("professorName"), ln.score.as("lectureScore"), ls.totalScore,
                         ExpressionUtils.as(Expressions.constant("rating"), "rating")))
-                .from(sssc)
-                .join(sssc.studentEntity, st)
-                .join(sssc.semesterEntity, sem)
-                .join(st.ls, ls)
+                .from(ls)
+                .join(ls.studentEntity, st)
                 .join(ls.lectureApplyEntity, la)
-                .join(la.lectureNameEntity, ln)
+                .join(la.lectureNameEntity , ln)
+                .join(st.ssscList, sssc)
+                .join(sssc.semesterEntity, sem)
                 .join(la.professorEntity, pr)
                 .where(eqStudentNum(dto.getStudentNum()),eqGrade(dto.getGrade()))
                 .offset(pageable.getOffset())

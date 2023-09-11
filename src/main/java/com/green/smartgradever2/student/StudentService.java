@@ -420,6 +420,7 @@ public class StudentService {
             studentHistoryDto.setLectureStrTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureStrTime());
             studentHistoryDto.setLectureEndTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
             studentHistoryDto.setFinishedYn(student.getFinishedYn());
+            studentHistoryDto.setGrade(student.getStudentEntity().getGrade());
             return studentHistoryDto;
         }).toList();
         long maxpage = studentRep.count();

@@ -115,33 +115,32 @@ public class GradeUtils {
 //        return grade;
 //    }
 //
-//
-//    public void getGread(int totalScore){
+//    public void getGrade(int totalScore){
 //        int temp= totalScore/10;
 //        int temp2=totalScore%10;
 //        double result=0;
-//        String gread="F";
+//        String grade="F";
 //        if (temp>=9){
 //            result=4.0;
-//            gread="A";
+//            grade="A";
 //        }else if (temp>=8){
 //            result= 3.0;
-//            gread="B";
+//            grade="B";
 //        }else if (temp>=7){
 //            result=2.0;
-//            gread="C";
+//            grade="C";
 //        } else if (temp >= 6) {
 //            result=1.0;
-//            gread="D";
+//            grade="D";
 //
 //        }
 //
 //        if (temp2>4 || totalScore== 100){
 //            result+=0.5;
-//            gread+="+";
+//            grade+="+";
 //        }
 //        this.pp=result;
-//        this.grade=gread;
+//        this.grade=grade;
 //    }
 //
 //
