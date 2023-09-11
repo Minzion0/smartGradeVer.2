@@ -13,6 +13,7 @@ public class StudentHistoryDto {
     private int score;
     private LocalTime lectureStrTime;
     private LocalTime lectureEndTime;
+    private int     grade;
     private int finishedYn;
     private int dayWeek;
 }
