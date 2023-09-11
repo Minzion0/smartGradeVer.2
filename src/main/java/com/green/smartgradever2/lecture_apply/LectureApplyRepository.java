@@ -29,6 +29,8 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
     Page<LectureApplyEntity> getAllProfessorsLecturesWithFilters(@Param("grade") Optional<Integer> grade, Pageable pageable);
 
 //    List<LectureApplyEntity> findByProfessorEntity(Long studentNum);
+
+    List<LectureApplyEntity> findAllByProfessorEntityAndSemesterEntity(ProfessorEntity professorEntity, SemesterEntity semesterEntity);
 }
 
 //    int countLectureStudentsByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);

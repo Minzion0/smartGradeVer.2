@@ -117,7 +117,8 @@ public class BoardService {
                list = BOARD_REP.findByImportanceAndDelYn( 0,0,page);
            }
         } else {
-            page = PageRequest.ofSize(pageSize - 3);
+            pageSize = 7;
+            page = PageRequest.of(page.getPageNumber(), pageSize, Sort.by(Sort.Direction.DESC,"iboard"));
             list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, 0,0, page);
         }
 
