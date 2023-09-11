@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -431,7 +432,7 @@ public class StudentService {
         StudentEntity entity = studentRep.findBystudentNum(dto.getStudentNum());
 
 
-        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable);
+        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
 
         long maxpage = lectureApplyRep.count();
         PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);
@@ -439,10 +440,6 @@ public class StudentService {
 
         return StudentListLectrueRes.builder().lectureList(studentListLectureVos).page(pagingUtils).build();
     }
-
-
-
-
 
 
 
@@ -609,6 +606,24 @@ public class StudentService {
 
 
     }
+
+    public List<StudentScheduleRes>studentSchedule(Long studentNum){
+        List<StudentScheduleVo> studentSchedule = qdsl.findStudentSchedule(studentNum);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return    studentSchedule.stream().map(vo-> StudentScheduleRes.builder()
+                .startTime(vo.getStartTime().format(formatter))
+                .endTime(vo.getEndTime().format(formatter))
+                .dayWeek(vo.getDayWeek())
+                .lectureName(vo.getLectureName())
+                .build()).toList();
+
+    }
+
+
+
+
+
+
 
 }
 

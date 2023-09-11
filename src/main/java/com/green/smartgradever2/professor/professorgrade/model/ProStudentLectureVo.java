@@ -6,7 +6,7 @@ import lombok.Data;
 public class ProStudentLectureVo {
     private Long ilectureStudent;
     private Long ilecture;
-    private Long sudentNum;
+    private Long studentNum;
     private String majorName;
     private String StudentName;
     private int attendance;
@@ -15,5 +15,6 @@ public class ProStudentLectureVo {
     private int dayWeek;
     private int totalScore;
     private String grade;
-    private double rating;
+    private String rating;
+    private int finishedYn;
 }

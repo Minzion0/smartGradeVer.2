@@ -28,4 +28,5 @@ public class StudentListLectureVo {
     private String textBook;
     private int delYn;
     private String professorName;
+    private boolean applyYn;
 }

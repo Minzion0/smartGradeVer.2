@@ -66,4 +66,14 @@
         </where>
     </select>
 
+
+    <select id="genderCount">
+        SELECT A.year,A.count
+        FROM (SELECT COUNT(gender)count,gender,YEAR(created_at) year
+        FROM student
+        GROUP BY YEAR(created_at),gender
+        HAVING gender = #{gender}) A
+        WHERE  A.year >= year(NOW())-4
+    </select>
+
 </mapper>

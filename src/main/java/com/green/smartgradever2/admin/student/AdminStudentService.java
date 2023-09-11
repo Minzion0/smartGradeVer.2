@@ -181,10 +181,10 @@ public class AdminStudentService {
 
 
         int page = MAPPER.countStudents(dto);
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(),page);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(),page,pageable.getPageSize());
 
         dto.setStaIdx(utils.getStaIdx());
-        dto.setRow(utils.getROW());
+        dto.setRow(pageable.getPageSize());
 
         List<AdminStudentFindVo> students = MAPPER.findStudents(dto);
 
