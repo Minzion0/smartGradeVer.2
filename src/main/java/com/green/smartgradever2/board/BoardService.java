@@ -209,6 +209,11 @@ public class BoardService {
                     picList.add(picEntity);
                     BOARD_PIC_REP.save(picEntity);
                 }
+            } else if (pics == null) {
+                for (Long picPk : ipic) {
+                    BoardPicEntity pic = BOARD_PIC_REP.findById(picPk).get();
+                    BOARD_PIC_REP.delete(pic);
+                }
             }
         }
         return BoardInsVo.builder()
