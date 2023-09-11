@@ -2,7 +2,6 @@ package com.green.smartgradever2.student;
 
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.student.model.StudentListLectureVo;
-import com.green.smartgradever2.student.model.StudentScheduleVo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

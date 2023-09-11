@@ -3,6 +3,7 @@ package com.green.smartgradever2.admin;
 import com.green.smartgradever2.admin.model.AdminSelLectureDto;
 import com.green.smartgradever2.admin.model.AdminSelLectureVo;
 import com.green.smartgradever2.config.entity.*;
+import com.green.smartgradever2.student.model.StudentScheduleVo;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -119,4 +120,22 @@ public class AdminQdsl {
         }
         return lectureName.ilectureName.eq(ilectureName);
     }
+
+
+
+    public List<StudentScheduleVo> findStudentSchedule(Long studentNum){
+        List<StudentScheduleVo> fetch = jpaQueryFactory.select(Projections.bean(StudentScheduleVo.class,
+                        lectureSchedule.lectureStrTime.as("startTime")
+                        , lectureSchedule.lectureEndTime.as("endTime")
+                        , lectureSchedule.dayWeek
+                        , lectureSchedule.lectureApplyEntity.lectureNameEntity.lectureName))
+                .from(lectureStudent)
+                .join(lectureStudent.lectureApplyEntity)
+                .join(lectureStudent.lectureApplyEntity.lectureScheduleEntity)
+                .where(lectureStudent.studentEntity.studentNum.eq(studentNum).and(lectureStudent.lectureApplyEntity.semesterEntity.isemester.eq(1L))).fetch();
+
+        return fetch;
+    }
+
+
 }

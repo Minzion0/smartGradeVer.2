@@ -1,6 +1,8 @@
 package com.green.smartgradever2.admin;
 
 import com.green.smartgradever2.admin.model.*;
+import com.green.smartgradever2.settings.security.config.security.model.MyUserDetails;
+import com.green.smartgradever2.student.model.StudentScheduleRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -108,6 +111,19 @@ public class AdminController {
     @Operation(summary = "대학 모든 구성원들 정보")
     public void greenUniversityMember(HttpServletResponse request) throws IOException {
         SERVICE.greenUniversityMember(request);
+    }
+
+
+    @GetMapping("/student/ratio")
+    @Operation(summary = "각년도별 입학생 성비")
+    public ResponseEntity<AdminStudentYearGenderRes> studentYearGender(){
+        AdminStudentYearGenderRes studentYearGender = SERVICE.findStudentYearGender();
+        return ResponseEntity.ok().body(studentYearGender);
+    }
+
+    @GetMapping("/student/schedule")
+    public List<StudentScheduleRes>studentSchedule(@AuthenticationPrincipal MyUserDetails details,Long istudnet){
+        return SERVICE.studentSchedule(istudnet);
     }
 
 
