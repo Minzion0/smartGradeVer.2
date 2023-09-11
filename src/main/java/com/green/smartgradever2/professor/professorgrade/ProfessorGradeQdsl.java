@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.querydsl.core.types.ExpressionUtils.orderBy;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Component
 @RequiredArgsConstructor
@@ -58,11 +59,17 @@ public class ProfessorGradeQdsl {
                 .leftJoin(ls.lectureApplyEntity, la)
                 .leftJoin(ls.lectureApplyEntity.lectureRoomEntity,re)
                 .leftJoin(ls.lectureApplyEntity.lectureScheduleEntity, sd)
+
                 .orderBy(ls.ilectureStudent.desc())
 
 
                 .offset(page.getOffset())
                 .limit(page.getPageSize());
+
+        if (ilecture != null) {
+            query = query.where(la.ilecture.eq(ilecture));
+        }
+
 
         List<ProStudentLectureVo> studentLectureVos = query.fetch();
 
