@@ -65,7 +65,6 @@ public class StudentQdsl {
 
         query = query.offset(pageable.getOffset()).limit(pageable.getPageSize());
 
-
         // 학생이 각 강의에 등록한 여부에 따라 "boolean"설정
         List<StudentListLectureVo> lectureList = query.fetch();
         for (StudentListLectureVo lecture : lectureList) {
@@ -76,9 +75,7 @@ public class StudentQdsl {
                 lecture.setApplyYn(false); // 강의가 가득 찬 경우 false로 설정
             }
         }
-
         return lectureList;
-
 
     }
 

@@ -25,7 +25,7 @@ public class StudentListLectureVo {
     private int dayWeek;
     private String ctnt;
     private String bookUrl;
-    private String textBook;
+    private String textbook;
     private int delYn;
     private String professorName;
     private boolean applyYn;

@@ -434,7 +434,7 @@ public class StudentService {
 
         List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(),
                 entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
-
+        log.info("ss : {}",studentListLectureVos);
         long maxpage = lectureApplyRep.count();
         PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);
 
@@ -579,7 +579,7 @@ public class StudentService {
             cell5.setCellStyle(cellCellStyle);
 
             Cell cell6 = row.createCell(6);
-            cell6.setCellValue(gradeUtils.totalRating(gradeUtils.totalScore()));
+            cell6.setCellValue(gradeUtils.totalStrRating(gradeUtils.totalScore()));
             cell6.setCellStyle(cellCellStyle);
 
 
