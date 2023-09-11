@@ -117,6 +117,7 @@ public class BoardService {
                list = BOARD_REP.findByImportanceAndDelYn( 0,0,page);
            }
         } else {
+            page = PageRequest.ofSize(pageSize - 3);
             list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, 0,0, page);
         }
 

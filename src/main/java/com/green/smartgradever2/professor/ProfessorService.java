@@ -220,31 +220,31 @@ public class ProfessorService {
     }
 
 
-    public List<ProfessorStudentData> getStudentsWithObjectionAndScores(Long ilecture, int objection,Long professorId) {
-        List<LectureStudentEntity> studentsData = lectureStudentRep.findByLectureApplyEntityIlectureAndObjection(ilecture, objection);
-
-        List<ProfessorStudentData> professorStudentDataList = new ArrayList<>();
-
-        for (LectureStudentEntity entity : studentsData) {
-            GradeUtils gradeUtils = new GradeUtils();
-            ProfessorStudentData professorStudentData = new ProfessorStudentData();
-            professorStudentData.setStudentNum(entity.getStudentEntity().getStudentNum());
-            professorStudentData.setStudentName(entity.getStudentEntity().getNm());
-            professorStudentData.setTotalScore(entity.getTotalScore());
-            professorStudentData.setIlectureStudent(entity.getIlectureStudent());
-            professorStudentData.setMajorName(entity.getStudentEntity().getMajorEntity().getMajorName());
-
-            String grade = gradeUtils.totalGradeFromScore1(professorStudentData.getTotalScore());
-            professorStudentData.setGrade(grade);
-
-            if (objection == 1) {
-                professorStudentDataList.add(professorStudentData);
-            }
-        }
-
-        return professorStudentDataList;
-    }
-
+//    public List<ProfessorStudentData> getStudentsWithObjectionAndScores(Long ilecture, int objection,Long professorId) {
+//        List<LectureStudentEntity> studentsData = lectureStudentRep.findByLectureApplyEntityIlectureAndObjection(ilecture, objection);
+//
+//        List<ProfessorStudentData> professorStudentDataList = new ArrayList<>();
+//
+//        for (LectureStudentEntity entity : studentsData) {
+//            GradeUtils gradeUtils = new GradeUtils();
+//            ProfessorStudentData professorStudentData = new ProfessorStudentData();
+//            professorStudentData.setStudentNum(entity.getStudentEntity().getStudentNum());
+//            professorStudentData.setStudentName(entity.getStudentEntity().getNm());
+//            professorStudentData.setTotalScore(entity.getTotalScore());
+//            professorStudentData.setIlectureStudent(entity.getIlectureStudent());
+//            professorStudentData.setMajorName(entity.getStudentEntity().getMajorEntity().getMajorName());
+//
+//            String grade = gradeUtils.totalGradeFromScore1(professorStudentData.getTotalScore());
+//            professorStudentData.setGrade(grade);
+//
+//            if (objection == 1) {
+//                professorStudentDataList.add(professorStudentData);
+//            }
+//        }
+//
+//        return professorStudentDataList;
+//    }
+//
     public List<ProfessorScheduleRes> professorScheduleList(Long iprofessor){
 
         List<ProfessorScheduleVo> professorScheduleVos = professorQdsl.professorScheduleList(iprofessor);
@@ -261,7 +261,11 @@ public class ProfessorService {
     }
 
 
+    public List<ProfessorStudentData> getStudentObjection(Long ilecture,Long ifrofessor , Pageable pageable) {
+        List<ProfessorStudentData> studentLectureVos = professorQdsl.getStudentObjection(ilecture, ifrofessor, pageable);
 
-
-
+        return studentLectureVos;
+    }
 }
+
+
