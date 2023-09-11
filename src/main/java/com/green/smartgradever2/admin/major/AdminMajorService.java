@@ -25,9 +25,7 @@ public class AdminMajorService {
     private final AdminMajorMapper MAPPER;
     private final AdminMajorQdsl adminMajorQdsl;
 
-    /**
-     * 전공 INSERT
-     **/
+    /** 전공 INSERT **/
     public Long insMajor(MajorEntity entity) {
         MajorEntity result = MAJOR_REP.save(entity);
         if (result == null) {
@@ -36,6 +34,7 @@ public class AdminMajorService {
         return result.getImajor();
     }
 
+    /** 전공 DELETE **/
     public AdminMajorVo delMajor(MajorEntity entity) {
         Optional<MajorEntity> byId = MAJOR_REP.findById(entity.getImajor());
 
@@ -64,6 +63,7 @@ public class AdminMajorService {
 //        return ResponseEntity.ok(build);
 //    }
 
+    /** 전공 SELECT **/
     public ResponseEntity<AdminMajorFindRes> selMajor(AdminMajorDto dto, Pageable pageable) {
         long maxPage = MAJOR_REP.count();
         PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);

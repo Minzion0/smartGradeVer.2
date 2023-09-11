@@ -156,7 +156,7 @@ public class GradeMngmnService {
                 log.info("avg : {}", avg);
                 entity = StudentSemesterScoreEntity.builder()
                         .grade(studentEntities.get(i).getGrade()) // 학년
-                        .rating(Math.round(avg/index*10)/10.0) // 평점
+                        .rating(Math.round (avg / index * 10) / 10.0) // 평점
                         .score(score) // 학점
                         .avgScore(temp / index) // 평균 총점
                         .semesterEntity(semesterEntity) // semester pk
