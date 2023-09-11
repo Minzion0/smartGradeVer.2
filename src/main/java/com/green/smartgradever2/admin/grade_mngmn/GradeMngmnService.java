@@ -121,8 +121,6 @@ public class GradeMngmnService {
 //                .avgScore(entity.getAvgScore())
 //                .avgRating(entity.getRating())
 //                .build();
-        SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
-        log.info("semesterEntity.getIlectureStudent() : {}", semesterEntity.getIsemester());
 
 //        LectureApplyEntity applyEntity = APPLY_REP.findById(semesterEntity.getIsemester()).get();
 //        log.info("applyEntity.get().getIlecture() : {}", applyEntity.getIlecture());
@@ -131,11 +129,10 @@ public class GradeMngmnService {
 //        List<LectureStudentEntity> list = LS_REP.findAllByLectureApplyEntity(applyEntity);
 //        log.info("list.size() : {}", list.size());
 
-        int total;
-
+        SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
+        log.info("semesterEntity.getIlectureStudent() : {}", semesterEntity.getIsemester());
 
         List<StudentEntity> studentEntities = ST_REP.findAll();
-//        List<LectureNameEntity> nameEntities = NAME_REP.findByLectureName(applyEntity.getLectureNameEntity().getLectureName());
         GradeUtils utils = new GradeUtils();
 
         for (int i = 0; i < studentEntities.size(); i++) {
@@ -205,7 +202,6 @@ public class GradeMngmnService {
         long maxPage = GM_REP.count();
         PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
         dto.setStaIdx(utils.getStaIdx());
-
 
         List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto, pageable);
         String rating;
