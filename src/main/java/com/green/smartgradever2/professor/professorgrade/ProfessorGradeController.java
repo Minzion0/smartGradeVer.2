@@ -111,7 +111,8 @@ public class ProfessorGradeController {
     public ResponseEntity<String> updateObjection(
             @RequestParam Long ilecture,
             @RequestParam Long ilectureStudent,
-            @RequestParam int newObjection,@AuthenticationPrincipal MyUserDetails details) {
+            @RequestParam int newObjection
+            ,@AuthenticationPrincipal MyUserDetails details) {
         try {
             service.updateObjection(ilecture, ilectureStudent, newObjection,details.getIuser());
             return ResponseEntity.status(HttpStatus.OK).body("강의 학생의 이의제기가 업데이트되었습니다.");
@@ -119,5 +120,8 @@ public class ProfessorGradeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
         }
     }
+
+
+
 
 }

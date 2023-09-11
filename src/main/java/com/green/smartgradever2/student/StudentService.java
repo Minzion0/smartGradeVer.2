@@ -1,7 +1,10 @@
 package com.green.smartgradever2.student;
 
+import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
+import com.green.smartgradever2.lecture_apply.model.LectureApplySelDto;
+import com.green.smartgradever2.lecture_apply.model.LectureSelAllRes;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
@@ -9,6 +12,7 @@ import com.green.smartgradever2.student.model.*;
 import com.green.smartgradever2.utils.FileUtils;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
+import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -178,7 +182,6 @@ public class StudentService {
             response.setLectureStrTime(lectureSchedule.getLectureStrTime());
             response.setLectureEndTime(lectureSchedule.getLectureEndTime());
         }
-
 
         response.setSuccess(true);
         response.setMessage("수강 신청 성공.");
@@ -429,7 +432,8 @@ public class StudentService {
         StudentEntity entity = studentRep.findBystudentNum(dto.getStudentNum());
 
 
-        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(), entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
+        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(),
+                entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
 
         long maxpage = lectureApplyRep.count();
         PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);
@@ -453,17 +457,17 @@ public class StudentService {
                 .lectureName(student.getLectureApplyEntity().getLectureNameEntity().getLectureName())
                 .professorName(student.getLectureApplyEntity().getProfessorEntity().getNm())
                 .score(student.getTotalScore())
+                .lectureScore(student.getLectureApplyEntity().getLectureNameEntity().getScore())
                 .build()).toList();
 
+
+        //파일 생성
         Workbook workbook = new XSSFWorkbook();
 
 
         // 시트 생성
         String format = String.format("%s 학생의 성적",studentEntities.get(0).getStudentEntity().getNm() );
         Sheet sheet = workbook.createSheet(format);
-
-
-
 
 
         Row headerRow = sheet.createRow(3);
@@ -499,7 +503,7 @@ public class StudentService {
 
 
         // 제목 행 생성
-        String[] headers = { "  학년     ","학기     ", "강의명    ", "교수명    ", "점수    ", "평점     ","평점     " };
+        String[] headers = { "  학년     ","학기     ", "강의명    ", "교수명    ", "점수    ", "평점     ","평점     ","학점    " };
 
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);
@@ -541,9 +545,8 @@ public class StudentService {
         majorRowCell.setCellValue(studentEntities.get(0).getStudentEntity().getMajorEntity().getMajorName());
 
 
-        int strIdx=0;
-        int endIdx=0;
-        //todo 내일 완성하기
+
+
         for (int i = 0; i < list.size(); i++) {
             GradeUtils gradeUtils = new GradeUtils(list.get(i).getScore());
 
@@ -576,11 +579,50 @@ public class StudentService {
             cell5.setCellStyle(cellCellStyle);
 
             Cell cell6 = row.createCell(6);
-            cell6.setCellValue(gradeUtils.totalStrRating(gradeUtils.totalScore()));
-            cellCellStyle.setBorderBottom(BorderStyle.THIN);
+            cell6.setCellValue(gradeUtils.totalRating(gradeUtils.totalScore()));
             cell6.setCellStyle(cellCellStyle);
+
+
+            Cell cell7 = row.createCell(7);
+            cell7.setCellValue(list.get(i).getLectureScore());
+            cellCellStyle.setBorderBottom(BorderStyle.THIN);
+            cell7.setCellStyle(cellCellStyle);
+
+
+
             //학년 cell에 정렬 함수 설정
         }
+        CellRangeAddress region = new CellRangeAddress(rowCount, rowCount, 0, 6);
+        int i1 = sheet.addMergedRegion(region);
+
+        for (int row = region.getFirstRow(); row <= region.getLastRow(); row++) {
+            Row r = sheet.getRow(row);
+            if (r == null) {
+                r = sheet.createRow(row);
+            }
+
+            for (int col = region.getFirstColumn(); col <= region.getLastColumn(); col++) {
+                Cell cell = r.getCell(col);
+                if (cell == null) {
+                    cell = r.createCell(col);
+                }
+                cell.setCellStyle(headerCellStyle);
+            }
+
+            Cell cell = r.createCell(i1);
+            cell.setCellValue("총 학점"); // 병합된 셀에 "총 학점" 값을 입력
+            cell.setCellStyle(headerCellStyle);
+
+            Cell sumFormulaCell = r.createCell(7); // 총 학점 값의 열에 SUM 함수 결과 입력
+            sumFormulaCell.setCellFormula("SUM(H5:H" + rowCount + ")"); // A부터 G 열까지의 값의 SUM 함수 입력
+            sumFormulaCell.setCellStyle(numericCellStyle);
+            sumFormulaCell.setCellStyle(cellCellStyle);
+        }
+
+
+       //  // H열의 5행부터 현재 행까지의 수직 총합 계산
+
+
         sheet.setAutoFilter(new CellRangeAddress(3, rowCount-1, 0, headers.length - 1));
         //   sheet.setAutoFilter(new CellRangeAddress(headerRow.getRowNum(), rowCount - 1, 4, 4));
 
@@ -592,7 +634,6 @@ public class StudentService {
 
 
         String formatted = String.format("GreenUniversity_%s.xlsx", studentNum);
-        //String fileName = "GreenUniversityProfessorList.xlsx"; // 원하는 파일 이름을 지정합니다.
         String formats = String.format("attachment;filename=%s_%s",LocalDate.now().toString(), formatted);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", formats);
