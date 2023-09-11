@@ -1,10 +1,7 @@
 package com.green.smartgradever2.student;
 
-import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
-import com.green.smartgradever2.lecture_apply.model.LectureApplySelDto;
-import com.green.smartgradever2.lecture_apply.model.LectureSelAllRes;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
@@ -12,7 +9,6 @@ import com.green.smartgradever2.student.model.*;
 import com.green.smartgradever2.utils.FileUtils;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
-import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -580,7 +576,7 @@ public class StudentService {
             cell5.setCellStyle(cellCellStyle);
 
             Cell cell6 = row.createCell(6);
-            cell6.setCellValue(gradeUtils.totalRating(gradeUtils.totalScore()));
+            cell6.setCellValue(gradeUtils.totalStrRating(gradeUtils.totalScore()));
             cellCellStyle.setBorderBottom(BorderStyle.THIN);
             cell6.setCellStyle(cellCellStyle);
             //학년 cell에 정렬 함수 설정
