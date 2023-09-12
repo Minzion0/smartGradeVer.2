@@ -440,8 +440,10 @@ public class StudentService {
             studentHistoryDto.setBookUrl(student.getLectureApplyEntity().getBookUrl());
             return studentHistoryDto;
         }).toList();
-        long maxpage = studentRep.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, 10);
+//        long maxpage = studentRep.count();
+//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, 10);
+        PagingUtils utils = new PagingUtils();
+        utils.getMaxPage();
 
         return StudentHistoryRes.builder().page(utils).lectureList(studentList).build();
     }
