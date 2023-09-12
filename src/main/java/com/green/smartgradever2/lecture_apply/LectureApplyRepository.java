@@ -31,6 +31,13 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
 //    List<LectureApplyEntity> findByProfessorEntity(Long studentNum);
 
     List<LectureApplyEntity> findAllByProfessorEntityAndSemesterEntity(ProfessorEntity professorEntity, SemesterEntity semesterEntity);
+
+    @Query("SELECT COUNT(DISTINCT ls.studentEntity.studentNum) FROM LectureStudentEntity ls " +
+            "WHERE ls.lectureApplyEntity.ilecture = :lectureId")
+    long countStudentsByIlecture(@Param("lectureId") Long lectureId);
+
+
+
 }
 
 //    int countLectureStudentsByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);

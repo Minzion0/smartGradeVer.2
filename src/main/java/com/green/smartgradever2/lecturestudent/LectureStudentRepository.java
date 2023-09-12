@@ -21,6 +21,9 @@ public interface LectureStudentRepository extends JpaRepository<LectureStudentEn
     boolean existsByStudentEntityAndLectureApplyEntity(StudentEntity student, LectureApplyEntity lectureApply);
     LectureStudentEntity findByStudentEntityStudentNumAndIlectureStudent(Long studentNum, Long ilectureStudent);
 
+    LectureStudentEntity findByLectureApplyEntityAndStudentEntity(LectureApplyEntity applyEntity,StudentEntity studentEntity);
+
+
     List<LectureStudentEntity> findByLectureApplyEntityIlectureAndObjection(Long ilecture, int objection);
 
     LectureStudentEntity findByLectureApplyEntityIlectureAndIlectureStudent(Long ilecture, Long ilectureStudent);

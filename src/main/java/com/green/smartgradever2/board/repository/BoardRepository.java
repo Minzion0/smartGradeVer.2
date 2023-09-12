@@ -21,5 +21,12 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
             " where p.iboard = :iboard")
     int updateView(Long iboard);
 
+//    @Query(" SELECT COUNT(*) " +
+//            "FROM BoardEntity p " +
+//            "WHERE p.title LIKE :keyword " +
+//            "and p.importance = 0 " +
+//            "and p.delYn = 0")
+    long countByTitleAndImportanceAndDelYn(String keyword, int importance, int delYn);
 
+    long countByImportanceAndDelYn(int importance, int delYn );
 }

@@ -434,6 +434,9 @@ public class StudentService {
             studentHistoryDto.setLectureEndTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
             studentHistoryDto.setFinishedYn(student.getFinishedYn());
             studentHistoryDto.setGrade(student.getStudentEntity().getGrade());
+            studentHistoryDto.setTextbook(student.getLectureApplyEntity().getTextbook());
+            studentHistoryDto.setCtnt(student.getLectureApplyEntity().getCtnt());
+            studentHistoryDto.setBookUrl(student.getLectureApplyEntity().getBookUrl());
             return studentHistoryDto;
         }).toList();
         long maxpage = studentRep.count();
@@ -673,12 +676,28 @@ public class StudentService {
                 .build()).toList();
 
     }
+    /**수강신청 철회**/
+    public int lectureStudentDel(Long studentNum,Long ilecture){
 
 
 
+        LectureApplyEntity lectureApplyEntity = new LectureApplyEntity();
+        lectureApplyEntity.setIlecture(ilecture);
 
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setStudentNum(studentNum);
 
+        LectureStudentEntity entity = lectureStudentRep.findByLectureApplyEntityAndStudentEntity(lectureApplyEntity, studentEntity);
 
+        try {
+            lectureStudentRep.delete(entity);
+
+        }catch (Exception e){
+            return 0;//철회 실패
+        }
+        return  1;//철회 성공
+
+    }
 
 }
 
