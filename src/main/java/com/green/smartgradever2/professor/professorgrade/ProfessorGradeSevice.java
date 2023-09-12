@@ -259,7 +259,7 @@ public class ProfessorGradeSevice {
 
 
 
-    public ProfessorListStudentRes getProList(Long iprofessor, Long ilecture, Pageable pageable) {
+    public ProfessorListStudentRes getProList(Long iprofessor, Long ilecture, int year, Pageable pageable) {
 
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {
