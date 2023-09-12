@@ -59,7 +59,6 @@ public class AdminStudentService {
             LocalDateTime startOfDay = setYear.atStartOfDay();
             LocalDateTime endOfDay = setYear.plusYears(1).atStartOfDay().minusNanos(1);
             String year = setYear.toString().substring(2, 4);
-            //String year = "2022";
 
             CheckUtils utils = CheckUtils.builder().nm(param.getNm()).phoneNum(param.getPhone()).build();
             String msg = utils.getMsg();
@@ -67,7 +66,6 @@ public class AdminStudentService {
                 String msgs = String.format("%s 오류가 있습니다", msg);
 
                 throw new AdminException(msgs);
-
             }
 
             List<StudentEntity> majorCount = RPS.findAllByMajorEntityAndCreatedAtBetween(major.get(), startOfDay, endOfDay);
