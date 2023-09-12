@@ -99,11 +99,11 @@ public class BoardService {
 
         page = PageRequest.of(page.getPageNumber(), page.getPageSize(),Sort.by(Sort.Direction.DESC, "iboard"));
 
-        long totalPage = BOARD_REP.count();
+        int pageSize = page.getPageSize();
+        long totalPage = BOARD_REP.countByImportanceAndDelYn(0, 0);
 
         int row = 10;
         int importanceRow = 3;
-        int pageSize = page.getPageSize();
 
         Page<BoardEntity> list;
 
@@ -117,8 +117,10 @@ public class BoardService {
                list = BOARD_REP.findByImportanceAndDelYn( 0,0,page);
            }
         } else {
-            pageSize = 7;
+            pageSize = row - selImportanceBoard().size();
             page = PageRequest.of(page.getPageNumber(), pageSize, Sort.by(Sort.Direction.DESC,"iboard"));
+            totalPage = BOARD_REP.countByTitleAndImportanceAndDelYn(title, 0, 0);
+            log.info("totalPage : {}", totalPage);
             list = BOARD_REP.findByTitleContainingAndImportanceAndDelYn(title, 0,0, page);
         }
 
@@ -132,7 +134,7 @@ public class BoardService {
                 .build()
         ).toList();
 
-        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)totalPage, page.getPageSize());
+        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)totalPage, pageSize);
 
         return BoardRes.builder()
                 .page(utils)

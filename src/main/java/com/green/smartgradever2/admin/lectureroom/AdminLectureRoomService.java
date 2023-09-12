@@ -6,6 +6,7 @@ import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class AdminLectureRoomService {
 
     private final AdminLectureRoomRepository LECTURE_ROOM_REP;
     private final AdminLectureRoomMapper MAPPER;
+    private final AdminLectureRoomQdsl adminLectureRoomQdsl;
 
 
     /** 강의실 INSERT **/
@@ -34,13 +36,13 @@ public class AdminLectureRoomService {
     }
 
     /** 강의실 리스트 SELECT **/
-    public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto) {
+    public AdminLectureRoomFindRes selLectureRoom(AdminLectureRoomDto dto, Pageable pageable) {
         long maxPage = LECTURE_ROOM_REP.count();
         PagingUtils utils = new PagingUtils(dto.getPage(),(int)maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
-        List<AdminLectureRoomListVo> voList = MAPPER.selLectureRoom(dto);
-        List<AdminLectureRoomVo> vo = MAPPER.selBuildingName(dto);
+        List<AdminLectureRoomListVo> voList = adminLectureRoomQdsl.voList(dto, pageable);
+        List<AdminLectureRoomVo> vo = adminLectureRoomQdsl.vo();
 
         return AdminLectureRoomFindRes.builder()
                 .lectureRoomList(voList)
