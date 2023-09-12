@@ -58,7 +58,7 @@ public class StudentController {
 
     }
 
-    @PostMapping
+    @PostMapping("/lecture")
     @Operation(summary = "학생 수강 신청",description = "ilecture : 강의 PK<br>"+"studentNum : 학번<br>"
     +"success : 신청성공하면 true<br>"+
             "message : 수강신청완료메세지 <br> "+
