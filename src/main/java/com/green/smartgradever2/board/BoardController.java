@@ -44,7 +44,7 @@ public class BoardController {
     /** select **/
     @GetMapping("/keyword")
     @Operation(summary = "전체게시판 리스트 출력 & 제목검색")
-    public BoardRes selBoard(@ParameterObject @PageableDefault(sort = "iboard", direction = Sort.Direction.DESC, size = 10) Pageable page,
+    public BoardRes selBoard(@ParameterObject @PageableDefault(sort = "iboard", direction = Sort.Direction.DESC, size = 7) Pageable page,
              @RequestParam(required = false) String keyword) {
         return SERVICE.selBoard(page, keyword);
     }
