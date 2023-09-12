@@ -174,6 +174,9 @@ public class SignService {
         String barcodeUrl = totp.getGoogleAuthenticatorBarcode(secretKey, account, issuer);
         OtpRes res = OtpRes.builder().barcodeUrl(barcodeUrl).secretKey(secretKey).build();
 
+        log.info("barcodeUrl.substring(22) : {}", barcodeUrl.substring(22));
+        String newOptUrl = "https://chart.googleapis.com" + barcodeUrl.substring(22);
+        log.info("newOptUrl : {}", newOptUrl);
         try {
             updSecretKey(uid, role, secretKey);
         }catch (Exception e){
@@ -182,11 +185,11 @@ public class SignService {
         /** otp 큐얄 저장 **/
         if (role.equals("ROLE_STUDENT")){
             student = STUDENT_REP.findById(iuser).get();
-            student.setOtpUrl(barcodeUrl);
+            student.setOtpUrl(newOptUrl);
             STUDENT_REP.save(student);
         } else if (role.equals("ROLE_PROFESSOR")) {
             professor = PROFESSOR_REP.findById(iuser).get();
-            professor.setOtpUrl(barcodeUrl);
+            professor.setOtpUrl(newOptUrl);
             PROFESSOR_REP.save(professor);
         }
         return res;
