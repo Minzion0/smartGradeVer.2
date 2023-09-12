@@ -19,4 +19,7 @@ public class ProfessorSelAllDto {
     private int delYn;
     private int dayWeek;
     private int studentCount;
+    private String bookUrl;
+    private String ctnt;
+    private String textbook;
 }

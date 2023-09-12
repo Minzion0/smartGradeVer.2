@@ -183,7 +183,9 @@ public class ProfessorService {
                     lectureDto.setDelYn(lectureEntity.getDelYn());
                     lectureDto.setDayWeek(lectureEntity.getLectureScheduleEntity().getDayWeek());
                     lectureDto.setYear(lectureEntity.getSemesterEntity().getYear());
-
+                    lectureDto.setCtnt(lectureEntity.getCtnt());
+                    lectureDto.setTextbook(lectureEntity.getTextbook());
+                    lectureDto.setBookUrl(lectureEntity.getBookUrl());
                     int studentCount = lectureStudentRep.countByLectureApplyEntity(lectureEntity);
                     lectureDto.setStudentCount(studentCount);
 

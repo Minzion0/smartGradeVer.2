@@ -245,6 +245,7 @@ public class StudentService {
                     .lectureStrDate(lectureApplyEntity.getSemesterEntity().getSemesterStrDate())
                     .lectureEndDate(lectureApplyEntity.getSemesterEntity().getSemesterEndDate())
                     .lectureName(lectureNameEntity.getLectureName())
+                    .dayWeek(lectureScheduleEntity.getDayWeek())
                     .score(lectureScore) // 강의 학점 설정
                     .build();
 
@@ -449,14 +450,17 @@ public class StudentService {
         StudentEntity entity = studentRep.findBystudentNum(dto.getStudentNum());
 
 
-        List<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(),
+        Page<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(),
                 entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());
         log.info("ss : {}",studentListLectureVos);
-        long maxpage = lectureApplyRep.count();
-        PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int) maxpage);
 
 
-        return StudentListLectrueRes.builder().lectureList(studentListLectureVos).page(pagingUtils).build();
+
+//        long maxpage = lectureApplyRep.count();
+        PagingUtils pagingUtils = new PagingUtils(dto.getPage(), (int)studentListLectureVos.getTotalElements());
+
+
+        return StudentListLectrueRes.builder().lectureList(studentListLectureVos.stream().toList()).page(pagingUtils).build();
     }
 
 

@@ -9,4 +9,5 @@ public class StudentListLectureDto {
     private int page;
     private Long studentNum;
     private String lectureName;
+    private Long ilecture;
 }
