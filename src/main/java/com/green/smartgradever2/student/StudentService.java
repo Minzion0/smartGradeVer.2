@@ -676,8 +676,10 @@ public class StudentService {
                 .build()).toList();
 
     }
+    /**수강신청 철회**/
+    public int lectureStudentDel(Long studentNum,Long ilecture){
 
-    public String lectureStudentDel(Long studentNum,Long ilecture){
+
 
         LectureApplyEntity lectureApplyEntity = new LectureApplyEntity();
         lectureApplyEntity.setIlecture(ilecture);
@@ -691,9 +693,9 @@ public class StudentService {
             lectureStudentRep.delete(entity);
 
         }catch (Exception e){
-            return "수강 철회 할수 없습니다";
+            return 0;//철회 실패
         }
-        return  "수강 철회 접수 완료";
+        return  1;//철회 성공
 
     }
 
