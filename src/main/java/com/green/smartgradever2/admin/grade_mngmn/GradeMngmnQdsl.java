@@ -65,11 +65,6 @@ public class GradeMngmnQdsl {
     }
 
     public List<GradeMngmnAvgVo> avgVo(GradeMngmnDto dto) {
-        QStudentEntity st = QStudentEntity.studentEntity;
-        QLectureStudentEntity ls = QLectureStudentEntity.lectureStudentEntity;
-        QStudentSemesterScoreEntity sssc = QStudentSemesterScoreEntity.studentSemesterScoreEntity;
-        QSemesterEntity sem = QSemesterEntity.semesterEntity;
-
         JPQLQuery<GradeMngmnAvgVo> query = jpaQueryFactory.selectDistinct(Projections.bean(GradeMngmnAvgVo.class, sssc.grade, sem.semester, sssc.avgScore, sssc.rating.as("avgRating")))
                 .from(st)
                 .join(st.ssscList, sssc)

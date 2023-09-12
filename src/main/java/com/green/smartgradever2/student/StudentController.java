@@ -58,7 +58,7 @@ public class StudentController {
 
     }
 
-    @PostMapping
+    @PostMapping("/lecture")
     @Operation(summary = "학생 수강 신청",description = "ilecture : 강의 PK<br>"+"studentNum : 학번<br>"
     +"success : 신청성공하면 true<br>"+
             "message : 수강신청완료메세지 <br> "+
@@ -210,11 +210,11 @@ public class StudentController {
 
 
     @DeleteMapping("/lecture")
-    @Operation(summary = "강의 취소")
-    public String  studentDeleteLecture(@AuthenticationPrincipal MyUserDetails details,@RequestParam Long ilecture){
-        String msg = SERVICE.lectureStudentDel(details.getIuser(), ilecture);
+    @Operation(summary = "강의 수강 신청 철회")
+    public int  studentDeleteLecture(@AuthenticationPrincipal MyUserDetails details,@RequestParam Long ilecture){
+        int result = SERVICE.lectureStudentDel(details.getIuser(), ilecture);
 
-        return msg;
+        return result;
     }
 
 }
