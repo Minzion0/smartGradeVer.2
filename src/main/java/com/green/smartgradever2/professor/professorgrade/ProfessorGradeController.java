@@ -137,9 +137,10 @@ public class ProfessorGradeController {
             "rating : 평점"  )
     public ProfessorListStudentRes getProStuList(@AuthenticationPrincipal MyUserDetails details,
                                                 @RequestParam(required = false) Long ilecture,
-                                                @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page) {
+                                                @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page,
+                                                @RequestParam(required = false,defaultValue = "0") int year) {
 
-        return service.getProList(details.getIuser(),ilecture ,page);
+        return service.getProList(details.getIuser(),ilecture,year ,page);
     }
 
 

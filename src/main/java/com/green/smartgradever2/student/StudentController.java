@@ -171,10 +171,12 @@ public class StudentController {
     "finishedYn : 0수강중 1 수료<br>"+"openingProcedures : 강의 절차 1~4<br>")
     public StudentHistoryRes getStudentHistory(@AuthenticationPrincipal MyUserDetails details
     ,@ParameterObject @PageableDefault(sort="finishedYn", direction = Sort.Direction.DESC, size=10 ) Pageable page
-            ,@RequestParam(required = false ) String openingProcedures) {
+            ,@RequestParam(required = false ) String openingProcedures
+    , @RequestParam(required = false,defaultValue = "0") int year) {
         StudentHistoryOpenDto dto =new StudentHistoryOpenDto();
         dto.setStudentNum(details.getIuser());
         dto.setOpeningProcedures(openingProcedures);
+        dto.setYear(year);
         return SERVICE.studentHistoryRes(dto,page);
     }
 
