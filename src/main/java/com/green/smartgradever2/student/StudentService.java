@@ -1,6 +1,8 @@
 package com.green.smartgradever2.student;
 
 import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
+import com.green.smartgradever2.admin.semester.SemesterQdsl;
+import com.green.smartgradever2.admin.semester.SemesterRepository;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecture_apply.model.LectureApplySelDto;
@@ -48,6 +50,8 @@ public class StudentService {
     private final PasswordEncoder PW_ENCODER;
     private final ProfessorRepository professorRepository;
     private final StudentQdsl qdsl;
+    private final SemesterRepository semesterRepository;
+    private final SemesterQdsl semesterQdsl;
 
 
     @Value("${file.dir}")
@@ -255,9 +259,19 @@ public class StudentService {
         // 총 학점을 프로필에 설정
         profile.setScore(totalScore);
 
-        LocalDate lectureApplyDeadline = lectureApplyEntityList.get(0).getLectureApplyEntity().getSemesterEntity().getLectureApplyDeadline();
+        LocalDate localDate= null;
+        if (!lectureApplyEntityList.isEmpty()){
+            LocalDate lectureApplyDeadline = lectureApplyEntityList.get(0).getLectureApplyEntity().getSemesterEntity().getLectureApplyDeadline();
 
-        LocalDate localDate = lectureApplyDeadline.plusWeeks(1);
+            localDate = lectureApplyDeadline.plusWeeks(1);
+        }
+
+        if (lectureApplyEntityList.isEmpty()){
+            SemesterEntity semester = semesterQdsl.findSemester();
+
+            localDate= semester.getLectureApplyDeadline().plusWeeks(1);
+        }
+
 
 
         StudentFileSelRes result = StudentFileSelRes.builder()
