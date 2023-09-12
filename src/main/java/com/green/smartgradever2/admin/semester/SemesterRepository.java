@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SemesterRepository extends JpaRepository<SemesterEntity,Long> {
     List<SemesterEntity>findByYear(int year);
+
 }
