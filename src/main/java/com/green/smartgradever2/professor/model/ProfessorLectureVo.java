@@ -15,4 +15,5 @@ public class ProfessorLectureVo {
     private LocalTime lectureStrTime;
     private LocalTime  lectureEndTime;
     private String lectureName;
+    private int dayWeek;
 }

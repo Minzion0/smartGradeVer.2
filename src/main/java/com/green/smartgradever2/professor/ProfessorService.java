@@ -70,6 +70,7 @@ public class ProfessorService {
                 .lectureEndTime(lecture.getLectureScheduleEntity().getLectureEndTime())
                 .lectureStrDate(lecture.getSemesterEntity().getSemesterStrDate())
                 .lectureEndDate(lecture.getSemesterEntity().getSemesterEndDate())
+                .dayWeek(lecture.getLectureScheduleEntity().getDayWeek())
                 .lectureName(lecture.getLectureNameEntity().getLectureName()).build()).toList();
 
 
@@ -193,8 +194,10 @@ public class ProfessorService {
                 })
                 .toList();
 
-        long maxPage =lectureApplyRepository.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage,10);
+//        long maxPage =lectureApplyRepository.count();
+//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage,10);
+        PagingUtils utils = new PagingUtils();
+        utils.getMaxPage();
 
         return ProfessorSelLectureRes.builder()
                 .page(utils)

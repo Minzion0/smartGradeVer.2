@@ -21,4 +21,5 @@ public class ProfessorProfileDto {
     private int delYn;
     private String secretKey;
 
+
 }
