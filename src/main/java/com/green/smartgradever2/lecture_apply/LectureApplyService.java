@@ -229,7 +229,6 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             return null;
         }
 
-
         List<LectureApplyEntity> lectureApplyEntityList = null;
         if (LectureName != null ) {
             lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndLectureNameEntityLectureName(professor, LectureName,page);
@@ -239,7 +238,6 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntity(professor, page).stream().toList();
 
         }
-
 
         List<LectureApplySelDto> seldto = new ArrayList<>();
 
@@ -262,9 +260,13 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
             dto.setGradeLimit(lectureApplyEntity.getGradeLimit());
             dto.setLectureMaxPeople(lectureApplyEntity.getLectureMaxPeople());
             dto.setCtnt(lectureApplyEntity.getCtnt());
-            dto.setTextBook(lectureApplyEntity.getTextbook());
+            dto.setTextbook(lectureApplyEntity.getTextbook());
             dto.setBuildingName(lectureApplyEntity.getLectureRoomEntity().getBuildingName());
             dto.setBookUrl(lectureApplyEntity.getBookUrl());
+
+            long studentCount = LECTURE_APPLY_RPS.countStudentsByIlecture(lectureApplyEntity.getIlecture());
+            dto.setStudentCount(studentCount);
+
             seldto.add(dto);
         }
 //        long maxPage =LECTURE_APPLY_RPS.count();

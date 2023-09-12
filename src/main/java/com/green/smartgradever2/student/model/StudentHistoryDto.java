@@ -16,4 +16,7 @@ public class StudentHistoryDto {
     private int     grade;
     private int finishedYn;
     private int dayWeek;
+    private String textbook;
+    private String bookUrl;
+    private String ctnt;
 }

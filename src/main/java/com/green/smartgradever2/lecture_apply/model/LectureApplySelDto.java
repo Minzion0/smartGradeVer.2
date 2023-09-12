@@ -24,6 +24,7 @@ public class LectureApplySelDto {
     private int dayWeek;
     private String ctnt;
     private String bookUrl;
-    private String textBook;
+    private String textbook;
     private int delYn;
+    private Long studentCount;
 }
