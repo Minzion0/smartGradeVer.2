@@ -674,7 +674,25 @@ public class StudentService {
 
     }
 
+    public String lectureStudentDel(Long studentNum,Long ilecture){
 
+        LectureApplyEntity lectureApplyEntity = new LectureApplyEntity();
+        lectureApplyEntity.setIlecture(ilecture);
+
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setStudentNum(studentNum);
+
+        LectureStudentEntity entity = lectureStudentRep.findByLectureApplyEntityAndStudentEntity(lectureApplyEntity, studentEntity);
+
+        try {
+            lectureStudentRep.delete(entity);
+
+        }catch (Exception e){
+            return "수강 철회 할수 없습니다";
+        }
+        return  "수강 철회 접수 완료";
+
+    }
 
 
 

@@ -207,4 +207,12 @@ public class StudentController {
     }
 
 
+    @DeleteMapping("/lecture")
+    @Operation(summary = "강의 취소")
+    public String  studentDeleteLecture(@AuthenticationPrincipal MyUserDetails details,@RequestParam Long ilecture){
+        String msg = SERVICE.lectureStudentDel(details.getIuser(), ilecture);
+
+        return msg;
+    }
+
 }
