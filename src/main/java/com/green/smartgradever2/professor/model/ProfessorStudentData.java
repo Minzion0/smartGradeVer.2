@@ -13,4 +13,5 @@ public class ProfessorStudentData {
     private String majorName;
     private Long ilectureStudent;
     private LocalDate correctionAt;
+    private String lectureName;
 }
