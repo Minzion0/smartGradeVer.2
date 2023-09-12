@@ -1,6 +1,8 @@
 package com.green.smartgradever2.student;
 
 import com.green.smartgradever2.admin.professor.model.AdminProfessorLectureVo;
+import com.green.smartgradever2.admin.semester.SemesterQdsl;
+import com.green.smartgradever2.admin.semester.SemesterRepository;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecture_apply.model.LectureApplySelDto;
@@ -48,6 +50,8 @@ public class StudentService {
     private final PasswordEncoder PW_ENCODER;
     private final ProfessorRepository professorRepository;
     private final StudentQdsl qdsl;
+    private final SemesterRepository semesterRepository;
+    private final SemesterQdsl semesterQdsl;
 
 
     @Value("${file.dir}")
@@ -255,9 +259,19 @@ public class StudentService {
         // 총 학점을 프로필에 설정
         profile.setScore(totalScore);
 
-        LocalDate lectureApplyDeadline = lectureApplyEntityList.get(0).getLectureApplyEntity().getSemesterEntity().getLectureApplyDeadline();
+        LocalDate localDate= null;
+        if (!lectureApplyEntityList.isEmpty()){
+            LocalDate lectureApplyDeadline = lectureApplyEntityList.get(0).getLectureApplyEntity().getSemesterEntity().getLectureApplyDeadline();
 
-        LocalDate localDate = lectureApplyDeadline.plusWeeks(1);
+            localDate = lectureApplyDeadline.plusWeeks(1);
+        }
+
+        if (lectureApplyEntityList.isEmpty()){
+            SemesterEntity semester = semesterQdsl.findSemester();
+
+            localDate= semester.getLectureApplyDeadline().plusWeeks(1);
+        }
+
 
 
         StudentFileSelRes result = StudentFileSelRes.builder()
@@ -420,6 +434,9 @@ public class StudentService {
             studentHistoryDto.setLectureEndTime(student.getLectureApplyEntity().getLectureScheduleEntity().getLectureEndTime());
             studentHistoryDto.setFinishedYn(student.getFinishedYn());
             studentHistoryDto.setGrade(student.getStudentEntity().getGrade());
+            studentHistoryDto.setTextbook(student.getLectureApplyEntity().getTextbook());
+            studentHistoryDto.setCtnt(student.getLectureApplyEntity().getCtnt());
+            studentHistoryDto.setBookUrl(student.getLectureApplyEntity().getBookUrl());
             return studentHistoryDto;
         }).toList();
         long maxpage = studentRep.count();
@@ -648,20 +665,37 @@ public class StudentService {
     public List<StudentScheduleRes>studentSchedule(Long studentNum){
         List<StudentScheduleVo> studentSchedule = qdsl.findStudentSchedule(studentNum);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+
         return    studentSchedule.stream().map(vo-> StudentScheduleRes.builder()
                 .startTime(vo.getStartTime().format(formatter))
                 .endTime(vo.getEndTime().format(formatter))
                 .dayWeek(vo.getDayWeek())
                 .lectureName(vo.getLectureName())
+                .lectureRoomName(vo.getBuildingName()+" "+vo.getLectureRoomName())
                 .build()).toList();
 
     }
 
+    public String lectureStudentDel(Long studentNum,Long ilecture){
 
+        LectureApplyEntity lectureApplyEntity = new LectureApplyEntity();
+        lectureApplyEntity.setIlecture(ilecture);
 
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setStudentNum(studentNum);
 
+        LectureStudentEntity entity = lectureStudentRep.findByLectureApplyEntityAndStudentEntity(lectureApplyEntity, studentEntity);
 
+        try {
+            lectureStudentRep.delete(entity);
 
+        }catch (Exception e){
+            return "수강 철회 할수 없습니다";
+        }
+        return  "수강 철회 접수 완료";
+
+    }
 
 }
 

@@ -84,7 +84,9 @@ public class StudentQdsl {
                         sd.lectureStrTime.as("startTime")
                         , sd.lectureEndTime.as("endTime")
                         , sd.dayWeek
-                        , sd.lectureApplyEntity.lectureNameEntity.lectureName))
+                        , sd.lectureApplyEntity.lectureNameEntity.lectureName
+                        ,ls.lectureApplyEntity.lectureRoomEntity.lectureRoomName
+                ,ls.lectureApplyEntity.lectureRoomEntity.buildingName))
                 .from(ls)
                 .join(ls.lectureApplyEntity)
                 .join(ls.lectureApplyEntity.lectureScheduleEntity)

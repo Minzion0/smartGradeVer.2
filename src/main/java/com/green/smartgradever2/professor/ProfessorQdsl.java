@@ -27,6 +27,7 @@ public class ProfessorQdsl {
     QLectureApplyEntity lectureApply = QLectureApplyEntity.lectureApplyEntity;
     QLectureStudentEntity ls = QLectureStudentEntity.lectureStudentEntity;
     QMajorEntity mj = QMajorEntity.majorEntity;
+    QLectureNameEntity ne = QLectureNameEntity.lectureNameEntity;
 
     public SemesterEntity findSemester(){
         SemesterEntity semesterEntity = factory.selectFrom(semester)
@@ -49,7 +50,9 @@ public class ProfessorQdsl {
                         lectureApply.lectureScheduleEntity.dayWeek
                         , lectureApply.lectureScheduleEntity.lectureStrTime.as("startTime")
                         , lectureApply.lectureScheduleEntity.lectureEndTime.as("endTime")
-                ,lectureApply.lectureNameEntity.lectureName.as("lectureName")))
+                ,lectureApply.lectureNameEntity.lectureName.as("lectureName")
+                ,lectureApply.lectureRoomEntity.lectureRoomName
+                ,lectureApply.lectureRoomEntity.buildingName))
                 .from(lectureApply)
                 .join(lectureApply.lectureScheduleEntity)
                 .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester())))
@@ -66,11 +69,12 @@ public class ProfessorQdsl {
                         sd.nm.as("studentName"),
                         ls.totalScore,
                         mj.majorName,
-                        ls.ilectureStudent,ls.correctionAt,
+                        ls.ilectureStudent,ls.correctionAt,ne.lectureName,
                         ExpressionUtils.as(Expressions.constant("grade"), "grade")))
                 .from(ls)
                 .leftJoin(ls.studentEntity, sd)
                 .leftJoin(ls.studentEntity.majorEntity, mj)
+                .leftJoin(ls.lectureApplyEntity.lectureNameEntity, ne)
                 .where(ls.objection.eq(1));
 
         if (ilecture != null) {

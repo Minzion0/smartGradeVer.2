@@ -10,4 +10,6 @@ public class ProfessorScheduleVo  {
     private LocalTime  endTime;
     private int dayWeek;
     private String lectureName;
+    private String lectureRoomName;
+    private String buildingName;
 }

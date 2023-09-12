@@ -6,4 +6,5 @@ import lombok.Data;
 public class StudentHistoryOpenDto {
     private Long studentNum;
     private String openingProcedures;
+    private int year;
 }

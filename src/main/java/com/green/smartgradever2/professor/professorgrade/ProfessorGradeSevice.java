@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -260,4 +257,55 @@ public class ProfessorGradeSevice {
         return result;
     }
 
+
+
+    public ProfessorListStudentRes getProList(Long iprofessor, Long ilecture, int year, Pageable pageable) {
+
+        Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
+        if (!professorOptional.isPresent()) {
+            throw new EntityNotFoundException("교수를 찾을 수 없습니다: " + iprofessor);
+        }
+        ProfessorEntity professor = professorOptional.get();
+
+        // 해당 교수의 강의 목록 가져오기
+//        List<LectureApplyEntity> professorLectures = lectureApplyRep.findAllByProfessorEntity(professor,pageable);
+        ProfessorEntity professorEntity = new ProfessorEntity();
+        professorEntity.setIprofessor(iprofessor);
+
+        List<LectureApplyEntity> professorLectures = null;
+        if (ilecture == null) {
+            professorLectures=  lectureApplyRep.findAllByProfessorEntity(professorEntity, pageable);
+
+        } else {
+            professorLectures = lectureApplyRep.findAllByProfessorEntityAndIlecture(professorEntity, ilecture, pageable);
+        }
+        List<ProStudentListVo> studentLectures = new ArrayList<>();
+
+        // 각 강의에 대한 학생 정보 추출
+        for (LectureApplyEntity lecture : professorLectures) {
+            List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findAllByLectureApplyEntity(lecture);
+
+            for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
+                ProStudentListVo studentLectureDto = new ProStudentListVo();
+                studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
+                studentLectureDto.setIlecture(lecture.getIlecture());
+                studentLectureDto.setStudentNum(lectureStudentEntity.getStudentEntity().getStudentNum());
+                studentLectureDto.setPhone(lectureStudentEntity.getStudentEntity().getPhone());
+                studentLectureDto.setGender(lectureStudentEntity.getStudentEntity().getGender());
+                studentLectureDto.setStudentName(lectureStudentEntity.getStudentEntity().getNm());
+                studentLectureDto.setMajorName(lectureStudentEntity.getStudentEntity().getMajorEntity().getMajorName());
+                studentLectureDto.setGrade(lectureStudentEntity.getStudentEntity().getGrade());
+                studentLectures.add(studentLectureDto);
+            }
+        }
+        Collections.sort(studentLectures, Comparator.comparing(ProStudentListVo::getIlectureStudent).reversed());
+        // 페이징 처리
+        PagingUtils paging = new PagingUtils(pageable.getPageNumber() , pageable.getPageSize()+1);
+        paging.makePage(studentLectures.size(), pageable.getPageNumber()+1 );
+
+        return ProfessorListStudentRes.builder()
+                .page(paging)
+                .lecturelist(studentLectures)
+                .build();
+    }
 }

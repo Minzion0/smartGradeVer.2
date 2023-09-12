@@ -6,4 +6,6 @@ import lombok.Data;
 public class ProfessorSelLectureDto {
     private Long iprofessor;
     private String openingProcedures;
+    private String lectureName;
+    private int year;
 }

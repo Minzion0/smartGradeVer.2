@@ -254,6 +254,7 @@ public class ProfessorService {
                 .startTime(list.getStartTime().format(formatter))
                 .endTime(list.getEndTime().format(formatter))
                 .lectureName(list.getLectureName())
+               .lectureRoomName(list.getBuildingName()+" "+list.getLectureRoomName())
                 .build()).toList();
 
 

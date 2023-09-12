@@ -121,7 +121,27 @@ public class ProfessorGradeController {
         }
     }
 
+    @GetMapping("/list")
+    @Operation(summary = "교수 강의를 듣는 학생 리스트",description ="ilectureStudent : 수강pk<br>"+
+            "ilecture : 강의PK<br>"+
+            "sudentNum : 학생학번<br>"+
+            "lectureEndDate : 강의 종료 일자<br>"+
+            "attendance : 출석점수<br>"+
+            "midtermExamination : 중간고사 점수 <br>"+
+            "finalExamination : 기말고사 점수 <br>"+
+            "dayWeek : 요일<br>"+
+            "lectureStrTime : 강의시작시간<br>"+
+            "lectureEndTime : 강의종료시간<br>"+
+            "totalScore : 총점수 <br>"+
+            "grade : 알파벳등급 <br>"+
+            "rating : 평점"  )
+    public ProfessorListStudentRes getProStuList(@AuthenticationPrincipal MyUserDetails details,
+                                                @RequestParam(required = false) Long ilecture,
+                                                @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page,
+                                                @RequestParam(required = false,defaultValue = "0") int year) {
 
+        return service.getProList(details.getIuser(),ilecture,year ,page);
+    }
 
 
 }
