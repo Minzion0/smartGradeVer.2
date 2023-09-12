@@ -43,7 +43,7 @@ public class AdminMajorQdsl {
                 ,eqDelYn(dto.getDelYn()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(m.imajor.asc());
+                .orderBy(m.imajor.desc());
         return query.fetch();
     }
 
