@@ -37,20 +37,15 @@ public class StudentQdsl {
 
     public Page<StudentListLectureVo> selStudentLectureList(int openingProceudres,
                                                             int grade, Pageable pageable, long studentNum, String lectureName) {
-
-
         Map<Long, Long> enrolledStudentsMap = jpaQueryFactory
                 .select(la.ilecture, ls.studentEntity.count())
                 .from(la)
                 .leftJoin(ls).on(la.ilecture.eq(ls.lectureApplyEntity.ilecture))
-                .where(ls.studentEntity.studentNum.eq(studentNum))
                 .groupBy(la.ilecture)
                 .fetch()
                 .stream()
                 .collect(Collectors.toMap(
-                        // 튜플의 첫 번째 요소를 키로 사용합니다 (강의 식별자).
                         tuple -> tuple.get(la.ilecture),
-                        // 튜플의 두 번째 요소를 값으로 사용합니다 (수강생 수).
                         tuple -> tuple.get(ls.studentEntity.count())
                 ));
 
