@@ -162,7 +162,7 @@ public class ProfessorService {
         if (lectureName != null && !lectureName.isEmpty()) {
             // 'lectureName'이 제공된 경우, 해당 값으로 필터링합니다.
             LectureNameEntity lectureNameEntity = lectureNameRepository.findByLectureName(lectureName);
-            lecturePage = lectureApplyRepository.findByProfessorEntityAndLectureNameEntity(entity, lectureNameEntity, pageable);
+            lecturePage = lectureApplyRepository.findByProfessorEntityAndLectureNameEntityAndLectureScheduleEntity(entity, lectureNameEntity, dto.getYear(), pageable);
 
         } else {
             // 'lectureName'이 제공되지 않거나 빈 문자열인 경우, 모든 결과를 반환합니다.
