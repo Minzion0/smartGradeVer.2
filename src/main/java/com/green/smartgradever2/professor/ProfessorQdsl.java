@@ -59,7 +59,7 @@ public class ProfessorQdsl {
                         , lectureApply.lectureRoomEntity.buildingName))
                 .from(lectureApply)
                 .join(lectureApply.lectureScheduleEntity)
-                .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester())))
+                .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester())).and(lectureApply.openingProceudres.eq(3)))
                 .orderBy(lectureApply.lectureScheduleEntity.dayWeek.asc()).fetch();
 
         return list;
