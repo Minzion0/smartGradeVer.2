@@ -4,7 +4,6 @@ package com.green.smartgradever2.utils;
 public  class PagingUtils {
     private final int ROW ;
 
-
     private int staIdx;
     private int page;
     private int maxPage;

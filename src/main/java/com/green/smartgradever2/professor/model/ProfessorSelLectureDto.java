@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ProfessorSelLectureDto {
     private Long iprofessor;
-    private String openingProcedures;
+    private Integer openingProcedures;
     private String lectureName;
     private int year;
 }

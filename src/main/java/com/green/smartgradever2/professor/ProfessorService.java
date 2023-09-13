@@ -176,10 +176,15 @@ public class ProfessorService {
             } else if (dto.getLectureName() != null) {
                 // lectureName 파라미터만 제공된 경우, lectureName에 따라 필터링
                 return lectureEntity.getLectureNameEntity().getLectureName().equals(dto.getLectureName());
+            } else if (dto.getOpeningProcedures() != null) {
+
+                return lectureEntity.getOpeningProceudres() == dto.getOpeningProcedures();
+
             } else {
                 // year와 lectureName 파라미터가 모두 없는 경우, 모든 레코드 반환
                 return true;
             }
+
         })
                 .map(lectureEntity -> {
                     ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
@@ -207,10 +212,17 @@ public class ProfessorService {
                 })
                 .toList();
 
-//        long maxPage =lectureApplyRepository.count();
-//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
-        PagingUtils utils = new PagingUtils();
-        utils.getMaxPage();
+        // lectureApplyRepository에서 총 항목 수를 얻어옵니다.
+        long totalItems = lecturePage.getTotalElements();
+
+      // 페이지당 항목 수
+        int pageSize = pageable.getPageSize();
+
+      // 총 페이지 수 계산
+        long maxPage = (totalItems + pageSize - 1) / pageSize;
+
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
+
         return ProfessorSelLectureRes.builder()
                 .page(utils)
                 .lectureList(lectures)

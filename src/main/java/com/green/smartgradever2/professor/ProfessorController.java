@@ -80,7 +80,7 @@ public class ProfessorController {
             "delYn : 삭제 여부 <br>")
     public ProfessorSelLectureRes getLecturePro(@AuthenticationPrincipal MyUserDetails details
             , @ParameterObject @PageableDefault(sort = "ilecture", direction = Sort.Direction.DESC, size = 10) Pageable page
-            , @RequestParam(required = false) String openingProcedures
+            , @RequestParam(required = false) Integer openingProcedures
             , @RequestParam(required = false,defaultValue = "0") int year
             ,@RequestParam(required = false) String lectureName
              ) {
