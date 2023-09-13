@@ -39,22 +39,12 @@ public class EmailController {
 
     @PostMapping("/check-mail")
     @Operation(summary = "이메일 인증 전송 버튼")
-    public ResponseEntity checkEmail(@RequestBody CheckEmailParam param, @AuthenticationPrincipal MyUserDetails details, HttpServletRequest request) {
-
-        // Authorization 헤더를 가져옵니다.
-        String authorizationHeader = request.getHeader("Authorization");
-
-        // Authorization 헤더의 값을 분리합니다.
-        String[] authorizationHeaderParts = authorizationHeader.split(" ");
-
-        // 토큰을 가져옵니다.
-        String token = authorizationHeaderParts[1];
-
+    public ResponseEntity checkEmail(@RequestBody CheckEmailParam param, @AuthenticationPrincipal MyUserDetails details) {
         CheckEmailDto dto = new CheckEmailDto();
         dto.setIuser(details.getIuser());
         dto.setRole(details.getRoles().get(0));
         dto.setMail(param.getMail());
-        return SERVICE.checkEmail(dto, token);
+        return SERVICE.checkEmail(dto);
     }
 
 
