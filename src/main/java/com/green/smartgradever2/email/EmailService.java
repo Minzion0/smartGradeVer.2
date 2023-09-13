@@ -60,7 +60,7 @@ public class EmailService {
         StringBuffer msg = new StringBuffer();
         msg.append("<html>");
         msg.append("<body>");
-        msg.append("<a href='/'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
+        msg.append("<a href='http://192.168.0.144:5002'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
         msg.append("<hr>");
         msg.append("<h3>OTP 등록을 위한 메일입니다.</h3>");
         msg.append("<p>모든 등록절차는 구글 otp 검색 후 -> " + "<b>" + "Google Authenicator 어플" + "</b>" + "을 다운받으셔야 합니다.</p>");
@@ -167,7 +167,7 @@ public class EmailService {
             PROFESSOR_REP.save(professor);
             apiAddress = "?iuser=" + professor.getIprofessor() + "&role=" + professor.getRole() + "&uuid=" + professor.getEmail();
         }
-        String address = "http://192.168.0.34:8080/api/send-email/check-button" + apiAddress;
+        String address = "http://192.168.0.144:5002/api/send-email/check-button" + apiAddress;
 
         log.info("address : {}", address);
 
@@ -180,7 +180,7 @@ public class EmailService {
                 "    border-radius: 20px;\n" +
                 "    text-align: center;\n" +
                 "    margin: 50px auto;\n'>" +
-                "<a href='/'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
+                "<a href='http://192.168.0.144:5002'><img src='https://postfiles.pstatic.net/MjAyMzA5MDFfODQg/MDAxNjkzNTU1MDIzODIw.OOkMKxS_8VE4fyTJ9KBz97bOpjZJ6AED2dGplRpgaNQg.qOVC3dfhLZtF8RqSWgyKeGmpG-9jQoKgH7okuXI8Z6Ig.PNG.worud4227/Untitled-1.png?type=w966' /></a>");
         msg.append("<hr>");
         msg.append("<h1>이메일 인증을 위한 메일입니다.</h1>");
         msg.append("<p>본인이 아니시라면 메일 삭제를 해주시면 됩니다.</p>");
