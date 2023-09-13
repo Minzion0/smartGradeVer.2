@@ -1,4 +1,5 @@
 package com.green.smartgradever2.professor;
+import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +35,7 @@ public class ProfessorService {
     private final PasswordEncoder PW_ENCODER;
     private final LectureStudentRepository lectureStudentRep;
     private final ProfessorQdsl professorQdsl;
+    private final LectureNameRepository lectureNameRepository;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -70,6 +73,7 @@ public class ProfessorService {
                 .lectureEndTime(lecture.getLectureScheduleEntity().getLectureEndTime())
                 .lectureStrDate(lecture.getSemesterEntity().getSemesterStrDate())
                 .lectureEndDate(lecture.getSemesterEntity().getSemesterEndDate())
+                .dayWeek(lecture.getLectureScheduleEntity().getDayWeek())
                 .lectureName(lecture.getLectureNameEntity().getLectureName()).build()).toList();
 
 
@@ -143,28 +147,31 @@ public class ProfessorService {
     }
 
     //본인의 강의 조회
-    public ProfessorSelLectureRes selProfessorLecture(ProfessorSelLectureDto dto,Pageable pageable) {
-//        int itemsPerPage = 10; // 한 페이지당 수
-//        Pageable pageable = PageRequest.of(dto.getPage() - 1, itemsPerPage);
-//        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findAllByProfessorEntityIprofessor(dto.getIprofessor(), pageable);
-//        List<ProfessorSelAllDto> lectures = new ArrayList<>();
-//        for (LectureApplyEntity lectureEntity : lecturePage.getContent()) {
-//            ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
-//            lectureDto.setIlecture(lectureEntity.getIlecture());
-//            lectureDto.setLectureName(lectureEntity.getLectureNameEntity().getLectureName());
-//            lectureDto.setLectureRoomName(lectureEntity.getLectureRoomEntity().getLectureRoomName());
-//            lectureDto.setIsemester(lectureEntity.getSemesterEntity().getIsemester());
-//            lectureDto.setOpeningProceudres(lectureEntity.getOpeningProceudres());
-//            lectureDto.setGradeLimit(lectureEntity.getGradeLimit());
-//            lectureDto.setLectureMaxPeople(lectureEntity.getLectureMaxPeople());
-//            lectureDto.setScore(lectureEntity.getLectureNameEntity().getScore());
-//            lectureDto.setDelYn(lectureEntity.getDelYn());
-//            lectureDto.setYear(lectureEntity.getSemesterEntity().getYear());
-//            lectures.add(lectureDto);
-//        }
+    public ProfessorSelLectureRes selProfessorLecture(ProfessorSelLectureDto dto,String lectureName,Pageable pageable) {
 
-        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).get();
-        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findByProfessorEntity(entity, pageable);
+        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).orElse(null);
+
+        if (entity == null) {
+            // 해당 ID의 교수를 찾을 수 없는 경우를 처리합니다.
+            // 예를 들어 예외를 던지거나 적절한 응답을 반환할 수 있습니다.
+            return null;
+        }
+
+        Page<LectureApplyEntity> lecturePage = null;
+
+        if (lectureName != null && !lectureName.isEmpty()) {
+            // 'lectureName'이 제공된 경우, 해당 값으로 필터링합니다.
+            LectureNameEntity lectureNameEntity = lectureNameRepository.findByLectureName(lectureName);
+            lecturePage = lectureApplyRepository.findByProfessorEntityAndLectureNameEntity(entity, lectureNameEntity, pageable);
+
+        } else {
+            // 'lectureName'이 제공되지 않거나 빈 문자열인 경우, 모든 결과를 반환합니다.
+            lecturePage = lectureApplyRepository.findByProfessorEntity(entity, pageable);
+        }
+
+
+//        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).get();
+//        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findByProfessorEntity(entity,pageable);
 
         List<ProfessorSelAllDto> lectures = lecturePage.getContent().stream()
                 .map(lectureEntity -> {
@@ -193,8 +200,10 @@ public class ProfessorService {
                 })
                 .toList();
 
-        long maxPage =lectureApplyRepository.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage,10);
+//        long maxPage =lectureApplyRepository.count();
+//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage,10);
+        PagingUtils utils = new PagingUtils();
+        utils.getMaxPage();
 
         return ProfessorSelLectureRes.builder()
                 .page(utils)

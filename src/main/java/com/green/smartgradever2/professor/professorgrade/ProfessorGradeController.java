@@ -138,9 +138,12 @@ public class ProfessorGradeController {
     public ProfessorListStudentRes getProStuList(@AuthenticationPrincipal MyUserDetails details,
                                                 @RequestParam(required = false) Long ilecture,
                                                 @ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page,
-                                                @RequestParam(required = false,defaultValue = "0") int year) {
+                                                @RequestParam(required = false,defaultValue = "0") int year,
+                                                 @RequestParam(required = false) Long studentNum,
+                                                 @RequestParam(required = false) String nm
+                                   ) {
 
-        return service.getProList(details.getIuser(),ilecture,year ,page);
+        return service.getProList(details.getIuser(),ilecture,year,studentNum,nm,page);
     }
 
 

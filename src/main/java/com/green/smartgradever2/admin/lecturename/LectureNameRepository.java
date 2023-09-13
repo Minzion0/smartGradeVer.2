@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface LectureNameRepository extends JpaRepository<LectureNameEntity,Long> {
-    List<LectureNameEntity> findByLectureName(String name);
+    LectureNameEntity findByLectureName(String name);
     List<LectureNameEntity> findByLectureNameContains(String lectureName);
+
 }

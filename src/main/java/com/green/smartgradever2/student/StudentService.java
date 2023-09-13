@@ -423,7 +423,16 @@ public class StudentService {
         StudentEntity entity = studentRep.findById(dto.getStudentNum()).get();
         Page<LectureStudentEntity> studentpage = lectureStudentRep.findByStudentEntity(entity, pageable);
 
-        List<StudentHistoryDto> studentList = studentpage.getContent().stream().map(student -> {
+        List<StudentHistoryDto> studentList = studentpage.getContent().stream().filter(student -> {
+                    // 교수 이름 필터링: nm 파라미터와 교수 이름이 일치하거나 nm이 비어 있으면 모두 포함
+                    String professorName = student.getLectureApplyEntity().getProfessorEntity().getNm();
+                    return dto.getNm() == null || professorName.equals(dto.getNm());
+                })
+                .filter(student -> {
+                    // 강의 명 필터링: lectureName 파라미터와 강의 명이 일치하거나 lectureName이 비어 있으면 모두 포함
+                    String lectureName = student.getLectureApplyEntity().getLectureNameEntity().getLectureName();
+                    return dto.getLectureName() == null || lectureName.equals(dto.getLectureName());
+                }).map(student -> {
             StudentHistoryDto studentHistoryDto = new StudentHistoryDto();
             studentHistoryDto.setIsemester(student.getLectureApplyEntity().getSemesterEntity().getIsemester());
             studentHistoryDto.setYear(student.getLectureApplyEntity().getLectureScheduleEntity().getSemesterEntity().getYear());
@@ -440,15 +449,19 @@ public class StudentService {
             studentHistoryDto.setBookUrl(student.getLectureApplyEntity().getBookUrl());
             return studentHistoryDto;
         }).toList();
-        long maxpage = studentRep.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, 10);
+//        long maxpage = studentRep.count();
+//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, 10);
+        PagingUtils utils = new PagingUtils();
+        utils.getMaxPage();
 
         return StudentHistoryRes.builder().page(utils).lectureList(studentList).build();
     }
 
+
+
+
     public StudentListLectrueRes getAllProfessorsLecturesWithFilters(StudentListLectureDto dto, Pageable pageable) {
         StudentEntity entity = studentRep.findBystudentNum(dto.getStudentNum());
-
 
         Page<StudentListLectureVo> studentListLectureVos = qdsl.selStudentLectureList(dto.getOpeningProcedures(),
                 entity.getGrade(), pageable, entity.getStudentNum(), dto.getLectureName());

@@ -259,7 +259,7 @@ public class ProfessorGradeSevice {
 
 
 
-    public ProfessorListStudentRes getProList(Long iprofessor, Long ilecture, int year, Pageable pageable) {
+    public ProfessorListStudentRes getProList(Long iprofessor, Long ilecture, int year, Long studentNum,String nm, Pageable pageable) {
 
         Optional<ProfessorEntity> professorOptional = professerRep.findById(iprofessor);
         if (!professorOptional.isPresent()) {
@@ -286,6 +286,8 @@ public class ProfessorGradeSevice {
             List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findAllByLectureApplyEntity(lecture);
 
             for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
+                if ((studentNum == null || lectureStudentEntity.getStudentEntity().getStudentNum().equals(studentNum))
+                        && (nm == null || lectureStudentEntity.getStudentEntity().getNm().contains(nm))) {
                 ProStudentListVo studentLectureDto = new ProStudentListVo();
                 studentLectureDto.setIlectureStudent(lectureStudentEntity.getIlectureStudent());
                 studentLectureDto.setIlecture(lecture.getIlecture());
@@ -296,6 +298,7 @@ public class ProfessorGradeSevice {
                 studentLectureDto.setMajorName(lectureStudentEntity.getStudentEntity().getMajorEntity().getMajorName());
                 studentLectureDto.setGrade(lectureStudentEntity.getStudentEntity().getGrade());
                 studentLectures.add(studentLectureDto);
+            }
             }
         }
         Collections.sort(studentLectures, Comparator.comparing(ProStudentListVo::getIlectureStudent).reversed());

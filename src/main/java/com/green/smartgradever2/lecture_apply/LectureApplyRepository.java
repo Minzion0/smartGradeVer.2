@@ -36,7 +36,9 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
             "WHERE ls.lectureApplyEntity.ilecture = :lectureId")
     long countStudentsByIlecture(@Param("lectureId") Long lectureId);
 
+    Page<LectureApplyEntity> findByProfessorEntityAndLectureNameEntity(ProfessorEntity professorEntity, LectureNameEntity lectureNameEntity, Pageable pageable);
 
+    //Page<LectureApplyEntity> findByProfessorEntityAndLectureNameEntity(ProfessorEntity professorEntity, String lectureName, Pageable pageable);
 
 }
 
