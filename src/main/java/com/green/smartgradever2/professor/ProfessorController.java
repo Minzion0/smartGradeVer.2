@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -81,13 +82,14 @@ public class ProfessorController {
             , @ParameterObject @PageableDefault(sort = "ilecture", direction = Sort.Direction.DESC, size = 10) Pageable page
             , @RequestParam(required = false) String openingProcedures
             , @RequestParam(required = false,defaultValue = "0") int year
+            ,@RequestParam(required = false) String lectureName
              ) {
         ProfessorSelLectureDto dto = new ProfessorSelLectureDto();
         dto.setIprofessor(details.getIuser());
-
         dto.setYear(year);
         dto.setOpeningProcedures(openingProcedures);
-        return SERVICE.selProfessorLecture(dto, page);
+
+      return SERVICE.selProfessorLecture(dto,lectureName ,page);
     }
 
 
