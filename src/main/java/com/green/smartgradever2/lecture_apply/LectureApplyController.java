@@ -47,16 +47,12 @@ public class LectureApplyController {
     @Operation(summary = "신청중인 강의 리스트")
     private ResponseEntity<LectureSelAllRes> getLecture(@AuthenticationPrincipal MyUserDetails details
             ,@ParameterObject @PageableDefault(sort="ilecture", direction = Sort.Direction.DESC, size=10 ) Pageable page
-            ,@ParameterObject @RequestParam(required = false) Integer openingProcedures
-    ,@ParameterObject @RequestParam(required = false) String LectureName
+            ,@ParameterObject @RequestParam(required = false) String LectureName
+            ,@RequestParam(required = false) Integer openingProceudres
     ) {
-        if (openingProcedures != null && (openingProcedures < 0 || openingProcedures > 4)) {
-            return ResponseEntity.badRequest().build(); // 잘못된 파라미터 값일 경우 400 Bad Request 반환
-        }
+         page = PageRequest.of(page.getPageNumber(), page.getPageSize(),Sort.by(Sort.Direction.DESC, "ilecture"));
 
-        page = PageRequest.of(page.getPageNumber(), page.getPageSize(),Sort.by(Sort.Direction.DESC, "ilecture"));
-
-        LectureSelAllRes lectureSelAllRes = service.getList(details.getIuser(), openingProcedures,LectureName,page);
+        LectureSelAllRes lectureSelAllRes = service.getList(details.getIuser(),LectureName,page,openingProceudres);
 
         return ResponseEntity.ok(lectureSelAllRes);
     }

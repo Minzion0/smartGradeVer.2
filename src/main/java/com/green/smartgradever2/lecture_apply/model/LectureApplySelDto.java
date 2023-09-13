@@ -6,7 +6,7 @@ import java.time.LocalTime;
 @Data
 public class LectureApplySelDto {
     private Long ilecture;
-    private int openingProcedures;
+    private Integer openingProcedures;
     private Long ilectureName;
     private String lectureName;
     private int score;

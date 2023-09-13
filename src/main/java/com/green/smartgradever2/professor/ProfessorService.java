@@ -185,7 +185,7 @@ public class ProfessorService {
                 return true;
             }
 
-        })
+        }).filter(pro -> pro.getOpeningProceudres() == 3 || pro.getOpeningProceudres() == 4)
                 .map(lectureEntity -> {
                     ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
                     lectureDto.setIlecture(lectureEntity.getIlecture());

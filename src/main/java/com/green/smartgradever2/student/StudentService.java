@@ -438,7 +438,7 @@ public class StudentService {
                     // Year filtering: year parameter and lecture year should match or year is not provided
                     int lectureYear = student.getLectureApplyEntity().getSemesterEntity().getYear();
                     return dto.getYear() == 0 || lectureYear == dto.getYear();
-                }).map(student -> {
+                }).filter(student -> student.getLectureApplyEntity().getOpeningProceudres() == 3|| student.getLectureApplyEntity().getOpeningProceudres() ==4 ).map(student -> {
             StudentHistoryDto studentHistoryDto = new StudentHistoryDto();
             studentHistoryDto.setIsemester(student.getLectureApplyEntity().getSemesterEntity().getIsemester());
             studentHistoryDto.setYear(student.getLectureApplyEntity().getLectureScheduleEntity().getSemesterEntity().getYear());

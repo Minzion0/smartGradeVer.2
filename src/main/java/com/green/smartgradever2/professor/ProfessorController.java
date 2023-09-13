@@ -80,14 +80,13 @@ public class ProfessorController {
             "delYn : 삭제 여부 <br>")
     public ProfessorSelLectureRes getLecturePro(@AuthenticationPrincipal MyUserDetails details
             , @ParameterObject @PageableDefault(sort = "ilecture", direction = Sort.Direction.DESC, size = 10) Pageable page
-            , @RequestParam(required = false) Integer openingProcedures
+
             , @RequestParam(required = false,defaultValue = "0") int year
             ,@RequestParam(required = false) String lectureName
              ) {
         ProfessorSelLectureDto dto = new ProfessorSelLectureDto();
         dto.setIprofessor(details.getIuser());
         dto.setYear(year);
-        dto.setOpeningProcedures(openingProcedures);
         dto.setLectureName(lectureName);
 
         return SERVICE.selProfessorLecture(dto, page);

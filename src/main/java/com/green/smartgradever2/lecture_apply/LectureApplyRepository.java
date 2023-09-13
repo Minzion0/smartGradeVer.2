@@ -14,8 +14,8 @@ import java.util.Optional;
 
 public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity,Long> {
     List<LectureApplyEntity> findByProfessorEntity(ProfessorEntity professor);
+    List<LectureApplyEntity> findByProfessorEntityBetween(ProfessorEntity professor, Pageable pageable, int startopeningProceudres ,int endopeningProceudres);
     Page<LectureApplyEntity> findByProfessorEntity(ProfessorEntity professor, Pageable pageable);
-
 //    List<LectureApplyEntity> findByProfessorEntityAndLectureName(ProfessorEntity entity, String lectureName, Pageable pageable);
 
     Optional<LectureApplyEntity> findByProfessorEntityIprofessorAndIlecture(Long iprofessor, Long ilecture);
@@ -24,8 +24,8 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
   Page<LectureApplyEntity> findAllByProfessorEntityAndIlecture(ProfessorEntity professorEntity, Long ilecture ,Pageable pageable);
     Page<LectureApplyEntity> findAllByProfessorEntityAndLectureStudentEntity(ProfessorEntity professorEntity, LectureStudentEntity entity ,Pageable pageable);
   Page<LectureApplyEntity> findAllByProfessorEntity(ProfessorEntity professorEntity,Pageable pageable);
-    List<LectureApplyEntity> findByProfessorEntityAndOpeningProceudres(ProfessorEntity professorEntity, int openingProceudres, Pageable pageable);
-    List<LectureApplyEntity> findByProfessorEntityAndLectureNameEntityLectureName(ProfessorEntity professorEntity, String lecturename, Pageable pageable);
+    List<LectureApplyEntity> findByProfessorEntityAndOpeningProceudresBetween(ProfessorEntity professorEntity, Pageable pageable, int startopeningProceudres ,int endopeningProceudres );
+    List<LectureApplyEntity> findByProfessorEntityAndLectureNameEntityLectureNameBetween(ProfessorEntity professorEntity, String lecturename, Pageable pageable,int startopeningProceudres ,int endopeningProceudres  );
 
     @Query("SELECT lec FROM LectureApplyEntity lec " +
             "WHERE lec.openingProceudres = 2 " +

@@ -161,15 +161,15 @@ public class ProfessorGradeController {
                                                      @RequestParam(defaultValue = "0") int page,
                                                      @RequestParam Integer ilecture,
                                                      @RequestParam(defaultValue = "0") int studentNum,
-                                                     @RequestParam(required = false) String nm,
-                                                     @RequestParam Integer year ) {
+                                                     @RequestParam(required = false) String nm
+                                                      ) {
         ProfessorGradeMngmnSelDto dto = new ProfessorGradeMngmnSelDto();
         dto.setIprofessor(details.getIuser());
         dto.setPage(page);
         dto.setIlecture(ilecture);
         dto.setStudentNum(studentNum);
         dto.setNm(nm);
-        dto.setYear(year);
+
         return service.selStudentScore(dto);
     }
 }

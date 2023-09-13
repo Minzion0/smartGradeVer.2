@@ -222,22 +222,28 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
 
 
-    public LectureSelAllRes getList(Long iprofessor, Integer openingProcedures, String LectureName, Pageable page) {
+    public LectureSelAllRes getList(Long iprofessor,String LectureName, Pageable page, Integer openingProceudres) {
         ProfessorEntity professor = professerRep.findById(iprofessor).orElse(null);
 
         if (professor == null) {
             return null;
         }
+        LectureApplySelDto dto1 = new LectureApplySelDto();
 
         List<LectureApplyEntity> lectureApplyEntityList = null;
         if (LectureName != null ) {
-            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndLectureNameEntityLectureName(professor, LectureName,page);
-        } else if (openingProcedures != null) {
-            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudres(professor, openingProcedures,page);
-        } else if (openingProcedures == null) {
-            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntity(professor, page).stream().toList();
-
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndLectureNameEntityLectureNameBetween(professor, LectureName,page,1,2);
+        } else if (openingProceudres == null) {
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudresBetween(professor, page, 1, 2);
+        } else if (openingProceudres == 1) {
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudresBetween(professor, page, 1, openingProceudres);
+        } else {
+            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityAndOpeningProceudresBetween(professor, page, 2, openingProceudres);
         }
+//        } else if (dto1.getOpeningProcedures() == null) {
+//            lectureApplyEntityList = LECTURE_APPLY_RPS.findByProfessorEntityBetween(professor, page,1,2).stream().toList();
+//
+//        }
 
         List<LectureApplySelDto> seldto = new ArrayList<>();
 
@@ -269,10 +275,18 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
             seldto.add(dto);
         }
-//        long maxPage =LECTURE_APPLY_RPS.count();
-//        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
-        PagingUtils utils = new PagingUtils();
-        utils.getMaxPage();
+        long maxPage =LECTURE_APPLY_RPS.count();
+        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
+
+//        long totalItems = .getTotalElements();
+//
+//        // 페이지당 항목 수
+//        int pageSize = page.getPageSize();
+//
+//        // 총 페이지 수 계산
+//        long maxPage = (totalItems + pageSize - 1) / pageSize;
+//
+//        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage, page.getPageSize());
 
 
         return LectureSelAllRes.builder()
