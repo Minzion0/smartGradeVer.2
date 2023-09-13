@@ -612,13 +612,21 @@ public class StudentService {
             cell5.setCellValue(gradeUtils.totalScore());
             cell5.setCellStyle(cellCellStyle);
 
+            String rating = gradeUtils.totalStrRating(gradeUtils.totalScore());
+
             Cell cell6 = row.createCell(6);
-            cell6.setCellValue(gradeUtils.totalStrRating(gradeUtils.totalScore()));
+            cell6.setCellValue(rating);
             cell6.setCellStyle(cellCellStyle);
 
-
             Cell cell7 = row.createCell(7);
-            cell7.setCellValue(list.get(i).getLectureScore());
+            if ("F".equals(rating)){
+                cell7.setCellValue(0);
+            }else {
+                cell7.setCellValue(list.get(i).getScore());
+            }
+
+
+
             cellCellStyle.setBorderBottom(BorderStyle.THIN);
             cell7.setCellStyle(cellCellStyle);
 
