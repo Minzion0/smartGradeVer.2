@@ -135,11 +135,10 @@ public class EmailService {
 
 
     /** 이메일 인증 **/
-    public ResponseEntity checkEmail (CheckEmailDto dto, String token){
+    public ResponseEntity checkEmail (CheckEmailDto dto){
 
         String apiAddress = null;
         List<ProfessorEntity> professorMail = PROFESSOR_REP.findAll();
-        log.info("token : {}", token);
         if (dto.getRole().equals("ROLE_PROFESSOR")) {
             for (int i = 0; i < professorMail.size(); i++) {
                 if (dto.getMail().equals(professorMail.get(i).getEmail())) {
