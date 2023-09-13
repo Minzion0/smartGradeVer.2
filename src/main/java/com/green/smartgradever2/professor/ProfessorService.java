@@ -160,9 +160,6 @@ public class ProfessorService {
             return null;
         }
 
-
-
-
         Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findByProfessorEntity(entity, pageable);
 
 //        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).get();
@@ -210,9 +207,10 @@ public class ProfessorService {
                 })
                 .toList();
 
-        long maxPage =lectureApplyRepository.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
-
+//        long maxPage =lectureApplyRepository.count();
+//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
+        PagingUtils utils = new PagingUtils();
+        utils.getMaxPage();
         return ProfessorSelLectureRes.builder()
                 .page(utils)
                 .lectureList(lectures)
