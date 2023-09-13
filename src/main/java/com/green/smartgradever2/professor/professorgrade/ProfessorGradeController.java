@@ -162,7 +162,7 @@ public class ProfessorGradeController {
                                                      @RequestParam Integer ilecture,
                                                      @RequestParam(defaultValue = "0") int studentNum,
                                                      @RequestParam(required = false) String nm,
-                                                     @RequestParam(required = false) Integer year ) {
+                                                     @RequestParam Integer year ) {
         ProfessorGradeMngmnSelDto dto = new ProfessorGradeMngmnSelDto();
         dto.setIprofessor(details.getIuser());
         dto.setPage(page);
