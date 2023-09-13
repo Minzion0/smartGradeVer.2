@@ -48,7 +48,7 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
     SemesterEntity semesterEntity = getCurrentSemester();
 
-    if (LocalDate.now().isBefore(semesterEntity.getLectureApplyDeadline())){
+    if (LocalDate.now().isAfter(semesterEntity.getLectureApplyDeadline())){
             throw new Exception("강의 등록기간이 아님니다");
         }
 

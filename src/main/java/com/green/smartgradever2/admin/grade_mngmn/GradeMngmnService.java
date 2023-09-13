@@ -135,7 +135,7 @@ public class GradeMngmnService {
         GradeUtils utils = new GradeUtils();
 
         for (int i = 0; i < studentEntities.size(); i++) {
-            List<LectureStudentEntity> studentEntityList = LS_REP.findAllByStudentEntityAndFinishedYn(studentEntities.get(i), 1);
+            List<LectureStudentEntity> studentEntityList = gradeMngmnQdsl.findAllBySemester(studentEntities.get(i),1,semesterEntity);
             StudentSemesterScoreEntity entity = null;
             int temp = 0;
             int index = 0;
