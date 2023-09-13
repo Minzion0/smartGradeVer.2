@@ -2,13 +2,17 @@ package com.green.smartgradever2.professor;
 
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.professor.model.ProfessorScheduleVo;
+import com.green.smartgradever2.professor.model.ProfessorSelAllDto;
+import com.green.smartgradever2.professor.model.ProfessorSelLectureDto;
 import com.green.smartgradever2.professor.model.ProfessorStudentData;
 import com.green.smartgradever2.professor.professorgrade.model.ProStudentLectureVo;
 import com.green.smartgradever2.utils.GradeUtils;
 import com.green.smartgradever2.utils.PagingUtils;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +26,14 @@ import java.util.List;
 public class ProfessorQdsl {
 
     private final JPAQueryFactory factory;
-    QSemesterEntity semester =QSemesterEntity.semesterEntity;
+    QSemesterEntity semester = QSemesterEntity.semesterEntity;
     QStudentEntity sd = QStudentEntity.studentEntity;
     QLectureApplyEntity lectureApply = QLectureApplyEntity.lectureApplyEntity;
     QLectureStudentEntity ls = QLectureStudentEntity.lectureStudentEntity;
     QMajorEntity mj = QMajorEntity.majorEntity;
     QLectureNameEntity ne = QLectureNameEntity.lectureNameEntity;
 
-    public SemesterEntity findSemester(){
+    public SemesterEntity findSemester() {
         SemesterEntity semesterEntity = factory.selectFrom(semester)
                 .where(semester.isemester.eq(latestSemester())).fetchOne();
 
@@ -37,7 +41,7 @@ public class ProfessorQdsl {
 
     }
 
-    private Long latestSemester(){
+    private Long latestSemester() {
         Long latestSemester = factory.select(semester.isemester.max())
                 .from(semester)
                 .fetchFirst();
@@ -45,17 +49,17 @@ public class ProfessorQdsl {
     }
 
 
-    public List<ProfessorScheduleVo> professorScheduleList(Long iprofessor){
+    public List<ProfessorScheduleVo> professorScheduleList(Long iprofessor) {
         List<ProfessorScheduleVo> list = factory.select(Projections.bean(ProfessorScheduleVo.class,
                         lectureApply.lectureScheduleEntity.dayWeek
                         , lectureApply.lectureScheduleEntity.lectureStrTime.as("startTime")
                         , lectureApply.lectureScheduleEntity.lectureEndTime.as("endTime")
-                ,lectureApply.lectureNameEntity.lectureName.as("lectureName")
-                ,lectureApply.lectureRoomEntity.lectureRoomName
-                ,lectureApply.lectureRoomEntity.buildingName))
+                        , lectureApply.lectureNameEntity.lectureName.as("lectureName")
+                        , lectureApply.lectureRoomEntity.lectureRoomName
+                        , lectureApply.lectureRoomEntity.buildingName))
                 .from(lectureApply)
                 .join(lectureApply.lectureScheduleEntity)
-                .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester())))
+                .where(lectureApply.professorEntity.iprofessor.eq(iprofessor).and(lectureApply.semesterEntity.isemester.eq(latestSemester())).and(lectureApply.openingProceudres.eq(3)))
                 .orderBy(lectureApply.lectureScheduleEntity.dayWeek.asc()).fetch();
 
         return list;
@@ -69,7 +73,7 @@ public class ProfessorQdsl {
                         sd.nm.as("studentName"),
                         ls.totalScore,
                         mj.majorName,
-                        ls.ilectureStudent,ls.correctionAt,ne.lectureName,
+                        ls.ilectureStudent, ls.correctionAt, ne.lectureName,
                         ExpressionUtils.as(Expressions.constant("grade"), "grade")))
                 .from(ls)
                 .leftJoin(ls.studentEntity, sd)
@@ -96,5 +100,5 @@ public class ProfessorQdsl {
 
         return studentLectureVos;
 
-}
+    }
 }

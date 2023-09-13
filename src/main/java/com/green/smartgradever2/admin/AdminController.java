@@ -120,9 +120,4 @@ public class AdminController {
         AdminStudentYearGenderRes studentYearGender = SERVICE.findStudentYearGender();
         return ResponseEntity.ok().body(studentYearGender);
     }
-
-
-
-
-
 }

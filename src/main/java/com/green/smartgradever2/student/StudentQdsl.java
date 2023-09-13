@@ -129,7 +129,7 @@ public class StudentQdsl {
                 .from(ls)
                 .join(ls.lectureApplyEntity)
                 .join(ls.lectureApplyEntity.lectureScheduleEntity)
-                .where(ls.studentEntity.studentNum.eq(studentNum).and(ls.lectureApplyEntity.semesterEntity.isemester.eq(latestSemester())))
+                .where(ls.studentEntity.studentNum.eq(studentNum).and(ls.lectureApplyEntity.semesterEntity.isemester.eq(latestSemester())).and(ls.lectureApplyEntity.openingProceudres.eq(3)))
                 .orderBy(sd.dayWeek.asc(),sd.lectureStrTime.asc()).fetch();
 
         return fetch;
