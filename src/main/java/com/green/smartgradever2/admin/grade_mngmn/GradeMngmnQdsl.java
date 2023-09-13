@@ -85,6 +85,19 @@ public class GradeMngmnQdsl {
         return query.fetchOne();
     }
 
+    public List<LectureStudentEntity> findAllBySemester(StudentEntity entity, int finishedYn, SemesterEntity semesterEntity) {
+        JPQLQuery<LectureStudentEntity> query = jpaQueryFactory
+                .select(Projections.bean(LectureStudentEntity.class,ls.totalScore, ls.lectureApplyEntity, la.lectureNameEntity
+                        , ln.score))
+                .from(ls)
+                .leftJoin(ls.lectureApplyEntity, la)
+                .leftJoin(la.lectureNameEntity, ln)
+                .where(ls.studentEntity.eq(entity),ls.finishedYn.eq(finishedYn),la.semesterEntity.eq(semesterEntity));
+
+        return query.fetch();
+
+    }
+
     private BooleanExpression eqStudentNum(Long studentNum) {
         if (StringUtils.isNullOrEmpty(studentNum.toString())) {
             return null;
