@@ -1,5 +1,6 @@
 package com.green.smartgradever2.professor;
 import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
+import com.green.smartgradever2.admin.semester.SemesterRepository;
 import com.green.smartgradever2.config.entity.*;
 import com.green.smartgradever2.lecture_apply.LectureApplyRepository;
 import com.green.smartgradever2.lecturestudent.LectureStudentRepository;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -36,6 +38,7 @@ public class ProfessorService {
     private final LectureStudentRepository lectureStudentRep;
     private final ProfessorQdsl professorQdsl;
     private final LectureNameRepository lectureNameRepository;
+    private final SemesterRepository semesterRepository;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -147,7 +150,7 @@ public class ProfessorService {
     }
 
     //본인의 강의 조회
-    public ProfessorSelLectureRes selProfessorLecture(ProfessorSelLectureDto dto,String lectureName,Pageable pageable) {
+    public ProfessorSelLectureRes selProfessorLecture(ProfessorSelLectureDto dto,Pageable pageable) {
 
         ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).orElse(null);
 
@@ -157,18 +160,35 @@ public class ProfessorService {
             return null;
         }
 
-        Page<LectureApplyEntity> lecturePage = null;
+        Specification<LectureApplyEntity> spec = Specification.where(null);
 
-        if (lectureName != null && !lectureName.isEmpty()) {
+        if (dto.getOpeningProcedures() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("openingProcedures"), dto.getOpeningProcedures()));
+        }
+
+        if (dto.getYear() > 0) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("semesterEntity").get("year"), dto.getYear()));
+        }
+
+        if (dto.getLectureName() != null && !dto.getLectureName().isEmpty()) {
+            spec = spec.and((root, query, cb) -> cb.like(root.get("lectureNameEntity").get("lectureName"), "%" + dto.getLectureName() + "%"));
+        }
+
+        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findAll(spec, pageable);
+
+
+
+//        Page<LectureApplyEntity> lecturePage = null;
+
+        if (dto.getLectureName() != null && !dto.getLectureName().isEmpty()) {
             // 'lectureName'이 제공된 경우, 해당 값으로 필터링합니다.
-            LectureNameEntity lectureNameEntity = lectureNameRepository.findByLectureName(lectureName);
-            lecturePage = lectureApplyRepository.findByProfessorEntityAndLectureNameEntity(entity, lectureNameEntity, pageable);
+            LectureNameEntity lectureNameEntity = lectureNameRepository.findByLectureName(dto.getLectureName());
+            lecturePage = lectureApplyRepository.findByProfessorEntityAndLectureNameEntityAndSemesterEntity(entity, lectureNameEntity, dto.getYear(), pageable);
 
         } else {
             // 'lectureName'이 제공되지 않거나 빈 문자열인 경우, 모든 결과를 반환합니다.
             lecturePage = lectureApplyRepository.findByProfessorEntity(entity, pageable);
         }
-
 
 //        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).get();
 //        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findByProfessorEntity(entity,pageable);
@@ -193,17 +213,17 @@ public class ProfessorService {
                     lectureDto.setCtnt(lectureEntity.getCtnt());
                     lectureDto.setTextbook(lectureEntity.getTextbook());
                     lectureDto.setBookUrl(lectureEntity.getBookUrl());
-                    int studentCount = lectureStudentRep.countByLectureApplyEntity(lectureEntity);
-                    lectureDto.setStudentCount(studentCount);
+                    Long studentCount = lectureStudentRep.countByLectureApplyEntity(lectureEntity);
+                    lectureDto.setStudentCount(Math.toIntExact(studentCount));
 
                     return lectureDto;
                 })
                 .toList();
 
-//        long maxPage =lectureApplyRepository.count();
-//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage,10);
-        PagingUtils utils = new PagingUtils();
-        utils.getMaxPage();
+        long maxPage =lectureApplyRepository.count();
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
+//        PagingUtils utils = new PagingUtils();
+
 
         return ProfessorSelLectureRes.builder()
                 .page(utils)

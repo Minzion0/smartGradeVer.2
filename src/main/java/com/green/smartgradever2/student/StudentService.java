@@ -432,6 +432,10 @@ public class StudentService {
                     // 강의 명 필터링: lectureName 파라미터와 강의 명이 일치하거나 lectureName이 비어 있으면 모두 포함
                     String lectureName = student.getLectureApplyEntity().getLectureNameEntity().getLectureName();
                     return dto.getLectureName() == null || lectureName.equals(dto.getLectureName());
+                }).filter(student -> {
+                    // Year filtering: year parameter and lecture year should match or year is not provided
+                    int lectureYear = student.getLectureApplyEntity().getSemesterEntity().getYear();
+                    return dto.getYear() == 0 || lectureYear == dto.getYear();
                 }).map(student -> {
             StudentHistoryDto studentHistoryDto = new StudentHistoryDto();
             studentHistoryDto.setIsemester(student.getLectureApplyEntity().getSemesterEntity().getIsemester());
