@@ -77,6 +77,10 @@
             <if test="studentNum != 0">
                 AND A.student_num = #{studentNum}
             </if>
+            <if test="year != 0">
+                AND F.`year` = #{year}
+            </if>
+
         </where>
         LIMIT #{staIdx}, 10
     </select>

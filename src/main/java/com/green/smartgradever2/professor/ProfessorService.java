@@ -160,40 +160,30 @@ public class ProfessorService {
             return null;
         }
 
-        Specification<LectureApplyEntity> spec = Specification.where(null);
-
-        if (dto.getOpeningProcedures() != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("openingProcedures"), dto.getOpeningProcedures()));
-        }
-
-        if (dto.getYear() > 0) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("semesterEntity").get("year"), dto.getYear()));
-        }
-
-        if (dto.getLectureName() != null && !dto.getLectureName().isEmpty()) {
-            spec = spec.and((root, query, cb) -> cb.like(root.get("lectureNameEntity").get("lectureName"), "%" + dto.getLectureName() + "%"));
-        }
-
-        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findAll(spec, pageable);
 
 
 
-//        Page<LectureApplyEntity> lecturePage = null;
-
-        if (dto.getLectureName() != null && !dto.getLectureName().isEmpty()) {
-            // 'lectureName'이 제공된 경우, 해당 값으로 필터링합니다.
-            LectureNameEntity lectureNameEntity = lectureNameRepository.findByLectureName(dto.getLectureName());
-            lecturePage = lectureApplyRepository.findByProfessorEntityAndLectureNameEntityAndSemesterEntity(entity, lectureNameEntity, dto.getYear(), pageable);
-
-        } else {
-            // 'lectureName'이 제공되지 않거나 빈 문자열인 경우, 모든 결과를 반환합니다.
-            lecturePage = lectureApplyRepository.findByProfessorEntity(entity, pageable);
-        }
+        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findByProfessorEntity(entity, pageable);
 
 //        ProfessorEntity entity = professorRepository.findById(dto.getIprofessor()).get();
 //        Page<LectureApplyEntity> lecturePage = lectureApplyRepository.findByProfessorEntity(entity,pageable);
 
-        List<ProfessorSelAllDto> lectures = lecturePage.getContent().stream()
+        List<ProfessorSelAllDto> lectures = lecturePage.getContent().stream().filter(lectureEntity -> {
+            if (dto.getYear() != 0 && dto.getLectureName() != null) {
+                // year와 lectureName 파라미터가 모두 제공된 경우, 두 기준에 따라 필터링
+                return lectureEntity.getSemesterEntity().getYear() == dto.getYear()
+                        && lectureEntity.getLectureNameEntity().getLectureName().equals(dto.getLectureName());
+            } else if (dto.getYear() != 0) {
+                // year 파라미터만 제공된 경우, year에 따라 필터링
+                return lectureEntity.getSemesterEntity().getYear() == dto.getYear();
+            } else if (dto.getLectureName() != null) {
+                // lectureName 파라미터만 제공된 경우, lectureName에 따라 필터링
+                return lectureEntity.getLectureNameEntity().getLectureName().equals(dto.getLectureName());
+            } else {
+                // year와 lectureName 파라미터가 모두 없는 경우, 모든 레코드 반환
+                return true;
+            }
+        })
                 .map(lectureEntity -> {
                     ProfessorSelAllDto lectureDto = new ProfessorSelAllDto();
                     lectureDto.setIlecture(lectureEntity.getIlecture());
@@ -222,14 +212,19 @@ public class ProfessorService {
 
         long maxPage =lectureApplyRepository.count();
         PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
-//        PagingUtils utils = new PagingUtils();
-
 
         return ProfessorSelLectureRes.builder()
                 .page(utils)
                 .lectureList(lectures)
                 .build();
     }
+
+
+
+
+
+
+
 
     /** 교수 비밀번호 변경 (현재 비밀번호 확인 후 변경 가능(로그인 완료시 가능)) **/
     public String updPassword(ProfessorUpdPasswordDto updDto, ProfessorUpdPasswordParam param) throws Exception {
