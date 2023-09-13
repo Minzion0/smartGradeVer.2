@@ -75,7 +75,7 @@ public class ProfessorQdsl {
                 .leftJoin(ls.studentEntity, sd)
                 .leftJoin(ls.studentEntity.majorEntity, mj)
                 .leftJoin(ls.lectureApplyEntity.lectureNameEntity, ne)
-                .where(ls.objection.eq(1).and(ls.lectureApplyEntity.professorEntity.iprofessor.eq(iprofessr)));
+                .where(ls.objection.eq(1));
 
         if (ilecture != null) {
             query.where(ls.lectureApplyEntity.ilecture.eq(ilecture));
