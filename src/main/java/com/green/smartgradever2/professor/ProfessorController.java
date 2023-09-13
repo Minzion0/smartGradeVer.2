@@ -89,7 +89,9 @@ public class ProfessorController {
         dto.setYear(year);
         dto.setOpeningProcedures(openingProcedures);
         dto.setLectureName(lectureName);
-      return SERVICE.selProfessorLecture(dto,page);
+
+        return SERVICE.selProfessorLecture(dto, page);
+
     }
 
 

@@ -16,6 +16,8 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
     List<LectureApplyEntity> findByProfessorEntity(ProfessorEntity professor);
     Page<LectureApplyEntity> findByProfessorEntity(ProfessorEntity professor, Pageable pageable);
 
+//    List<LectureApplyEntity> findByProfessorEntityAndLectureName(ProfessorEntity entity, String lectureName, Pageable pageable);
+
     Optional<LectureApplyEntity> findByProfessorEntityIprofessorAndIlecture(Long iprofessor, Long ilecture);
 
 //    List<LectureApplyEntity> findByStudentEntity(StudentEntity student);
@@ -30,7 +32,7 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
             "AND lec.gradeLimit <= :grade")
     Page<LectureApplyEntity> getAllProfessorsLecturesWithFilters(@Param("grade") Optional<Integer> grade, Pageable pageable);
 
-//    List<LectureApplyEntity> findByProfessorEntity(Long studentNum);
+
 
     List<LectureApplyEntity> findAllByProfessorEntityAndSemesterEntity(ProfessorEntity professorEntity, SemesterEntity semesterEntity);
 
@@ -38,15 +40,13 @@ public interface LectureApplyRepository extends JpaRepository<LectureApplyEntity
             "WHERE ls.lectureApplyEntity.ilecture = :lectureId")
     long countStudentsByIlecture(@Param("lectureId") Long lectureId);
 
-    //Page<LectureApplyEntity> findByProfessorEntityAndLectureNameEntity(ProfessorEntity professorEntity, LectureNameEntity lectureNameEntity, Pageable pageable);
-
-    //Page<LectureApplyEntity> findByProfessorEntityAndLectureNameEntity(ProfessorEntity professorEntity, String lectureName, Pageable pageable);
 
     Page<LectureApplyEntity> findByProfessorEntityAndLectureNameEntityAndSemesterEntity(
-            ProfessorEntity professorEntity, LectureNameEntity lectureNameEntity, int year, Pageable pageable);
+     ProfessorEntity professorEntity, LectureNameEntity lectureNameEntity, int year, Pageable pageable);
     Page<LectureApplyEntity> findAll(Specification<LectureApplyEntity> spec, Pageable pageable);
 
-
+    @Query("SELECT la FROM LectureApplyEntity la WHERE la.professorEntity = :professorEntity AND la.lectureNameEntity = :lectureName")
+    Page<LectureApplyEntity> findByProfessorEntityAndLectureNameEntity(@Param("professorEntity") ProfessorEntity professorEntity, @Param("lectureName") String lectureName, Pageable pageable);
 }
 
 

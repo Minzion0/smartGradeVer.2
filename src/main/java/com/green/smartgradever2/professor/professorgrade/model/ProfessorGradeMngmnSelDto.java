@@ -10,4 +10,5 @@ public class ProfessorGradeMngmnSelDto {
     private int studentNum;
     private int staIdx;
     private String nm;
+    private int year;
 }
