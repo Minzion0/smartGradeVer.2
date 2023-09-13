@@ -13,17 +13,17 @@ import java.util.List;
 
 public interface LectureStudentRepository extends JpaRepository<LectureStudentEntity,Long> {
     List<LectureStudentEntity> findByLectureApplyEntity(LectureApplyEntity entity);
-    int countByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);
+    Long countByLectureApplyEntity(LectureApplyEntity lectureApplyEntity);
     List<LectureStudentEntity> findByStudentEntity(StudentEntity student);
     List<LectureStudentEntity> findByStudentEntityStudentNumAndFinishedYn(Long studentNum, int finishedYn);
-    List<LectureStudentEntity> findAllByLectureApplyEntity(LectureApplyEntity entity);
+    List<LectureStudentEntity> findAllByLectureApplyEntity(LectureApplyEntity entity , Pageable pageable);
     List<LectureStudentEntity> findAllByStudentEntityAndFinishedYn(StudentEntity entity, int finishedYn);
     boolean existsByStudentEntityAndLectureApplyEntity(StudentEntity student, LectureApplyEntity lectureApply);
     LectureStudentEntity findByStudentEntityStudentNumAndIlectureStudent(Long studentNum, Long ilectureStudent);
 
     LectureStudentEntity findByLectureApplyEntityAndStudentEntity(LectureApplyEntity applyEntity,StudentEntity studentEntity);
 
-
+    Page<LectureStudentEntity> findByLectureApplyEntity(LectureApplyEntity lectureApplyEntity, Pageable pageable);
     List<LectureStudentEntity> findByLectureApplyEntityIlectureAndObjection(Long ilecture, int objection);
 
     LectureStudentEntity findByLectureApplyEntityIlectureAndIlectureStudent(Long ilecture, Long ilectureStudent);

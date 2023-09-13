@@ -9,4 +9,5 @@ public class ProfessorGradeMngmnSelDto {
     private int ilecture;
     private int studentNum;
     private int staIdx;
+    private String nm;
 }

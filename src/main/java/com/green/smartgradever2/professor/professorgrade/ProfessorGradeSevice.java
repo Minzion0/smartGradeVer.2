@@ -12,6 +12,7 @@ import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -115,7 +116,7 @@ public class ProfessorGradeSevice {
         professorEntity.setIprofessor(iprofessor);
 
 
-        List<LectureApplyEntity> professorLectures= null;
+        Page<LectureApplyEntity> professorLectures= null;
         if (ilecture == null) {
             professorLectures = lectureApplyRep.findAllByProfessorEntity(professorEntity,page);
         }else{
@@ -159,7 +160,7 @@ public class ProfessorGradeSevice {
         double averageRating = ratings.isEmpty() ? 0.0 : ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
         String averageGrade = grades.isEmpty() ? "" : new GradeUtils().totalStrRating(averageRating);
 
-        paging.makePage(page.getPageNumber(), professorLectures.size());
+        paging.makePage(page.getPageNumber(), professorLectures.getTotalPages());
 
         ProfessorGradeStudentRes professorGradeStudentDto = ProfessorGradeStudentRes.builder()
                 .iprofessor(iprofessor)
@@ -265,25 +266,30 @@ public class ProfessorGradeSevice {
         if (!professorOptional.isPresent()) {
             throw new EntityNotFoundException("교수를 찾을 수 없습니다: " + iprofessor);
         }
-        ProfessorEntity professor = professorOptional.get();
+
 
         // 해당 교수의 강의 목록 가져오기
 //        List<LectureApplyEntity> professorLectures = lectureApplyRep.findAllByProfessorEntity(professor,pageable);
         ProfessorEntity professorEntity = new ProfessorEntity();
         professorEntity.setIprofessor(iprofessor);
 
-        List<LectureApplyEntity> professorLectures = null;
+        LectureStudentEntity lectureStudent = new LectureStudentEntity();
+        lectureStudent.getLectureApplyEntity().getIlecture();
+
+        Page<LectureApplyEntity> professorLectures = null;
         if (ilecture == null) {
             professorLectures=  lectureApplyRep.findAllByProfessorEntity(professorEntity, pageable);
 
         } else {
-            professorLectures = lectureApplyRep.findAllByProfessorEntityAndIlecture(professorEntity, ilecture, pageable);
+            professorLectures = lectureApplyRep.findAllByProfessorEntityAndLectureStudentEntity(professorEntity, lectureStudent, pageable);
         }
         List<ProStudentListVo> studentLectures = new ArrayList<>();
+        PagingUtils paging = null;
 
+        Page<LectureStudentEntity> list ;
         // 각 강의에 대한 학생 정보 추출
         for (LectureApplyEntity lecture : professorLectures) {
-            List<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findAllByLectureApplyEntity(lecture);
+            Page<LectureStudentEntity> attendedLectureEntities = lectureStudentRep.findByLectureApplyEntity(lecture,pageable);
 
             for (LectureStudentEntity lectureStudentEntity : attendedLectureEntities) {
                 if ((studentNum == null || lectureStudentEntity.getStudentEntity().getStudentNum().equals(studentNum))
@@ -298,17 +304,34 @@ public class ProfessorGradeSevice {
                 studentLectureDto.setMajorName(lectureStudentEntity.getStudentEntity().getMajorEntity().getMajorName());
                 studentLectureDto.setGrade(lectureStudentEntity.getStudentEntity().getGrade());
                 studentLectures.add(studentLectureDto);
+//                    long Maxpage = lectureStudentRep.countByLectureApplyEntity(lecture);
+//                   paging = new PagingUtils(pageable.getPageNumber() ,(int)Maxpage ,pageable.getPageSize());
             }
+
             }
         }
         Collections.sort(studentLectures, Comparator.comparing(ProStudentListVo::getIlectureStudent).reversed());
         // 페이징 처리
-        PagingUtils paging = new PagingUtils(pageable.getPageNumber() , pageable.getPageSize()+1);
-        paging.makePage(studentLectures.size(), pageable.getPageNumber()+1 );
+
+//        paging.makePage(studentLectures.size(), pageable.getPageNumber()+1 );
 
         return ProfessorListStudentRes.builder()
                 .page(paging)
                 .lecturelist(studentLectures)
                 .build();
     }
+
+    public  ProfessorGradeMngmnSelRES selStudentScore (ProfessorGradeMngmnSelDto dto) {
+        int maxPage = mapper.selStudentScoreCount(dto);
+        PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
+        dto.setStaIdx(utils.getStaIdx());
+
+        List<ProfessorGradeMngmnSelVo> list = mapper.selStudentScore(dto);
+
+        return ProfessorGradeMngmnSelRES .builder()
+                .list(list)
+                .page(utils)
+                .build();
+    }
+
 }
