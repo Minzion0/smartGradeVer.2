@@ -275,9 +275,11 @@ public LectureApplyRes InsApply(Long iprofessor, LectureAppllyInsParam param) th
 
             seldto.add(dto);
         }
-        long maxPage =LECTURE_APPLY_RPS.count();
-        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int)maxPage,10);
+        long totalItems = LECTURE_APPLY_RPS.count();
+        int pageSize = page.getPageSize();
+        long maxPage = (totalItems + pageSize - 1) / pageSize;
 
+        PagingUtils utils = new PagingUtils(page.getPageNumber(), (int) maxPage, 10);
 //        long totalItems = .getTotalElements();
 //
 //        // 페이지당 항목 수

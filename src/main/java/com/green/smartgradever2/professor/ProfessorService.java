@@ -221,7 +221,7 @@ public class ProfessorService {
       // 총 페이지 수 계산
         long maxPage = (totalItems + pageSize - 1) / pageSize;
 
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, 10);
 
         return ProfessorSelLectureRes.builder()
                 .page(utils)

@@ -457,8 +457,16 @@ public class StudentService {
         }).toList();
 //        long maxpage = studentRep.count();
 //        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, 10);
-        PagingUtils utils = new PagingUtils();
-        utils.getMaxPage();
+//
+        long totalItems =studentpage.getTotalElements();
+
+        // 페이지당 항목 수
+        int pageSize = pageable.getPageSize();
+
+        // 총 페이지 수 계산
+        long maxPage = (totalItems + pageSize - 1) / pageSize;
+
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage, pageable.getPageSize());
 
         return StudentHistoryRes.builder().page(utils).lectureList(studentList).build();
     }
