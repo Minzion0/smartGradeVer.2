@@ -200,7 +200,7 @@ public class GradeMngmnService {
 //    }
 
     public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto, Pageable pageable) {
-        long maxPage = GM_REP.count();
+        long maxPage = gradeMngmnQdsl.countByStudentEntity(dto);
         PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
         dto.setStaIdx(utils.getStaIdx());
 

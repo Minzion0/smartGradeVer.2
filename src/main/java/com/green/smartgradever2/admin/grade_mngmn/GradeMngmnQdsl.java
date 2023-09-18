@@ -97,6 +97,18 @@ public class GradeMngmnQdsl {
         return query.fetch();
 
     }
+    public long countByStudentEntity(GradeMngmnDto dto) {
+        JPQLQuery<Long> query = jpaQueryFactory.select(ls.totalScore.count())
+                .from(ls)
+                .join(ls.studentEntity, st)
+                .join(ls.lectureApplyEntity, la)
+                .join(la.lectureNameEntity , ln)
+                .join(st.ssscList, sssc)
+                .join(sssc.semesterEntity, sem)
+                .join(la.professorEntity, pr)
+                .where(eqStudentNum(dto.getStudentNum()),eqGrade(dto.getGrade()));
+        return query.fetchOne();
+    }
 
     private BooleanExpression eqStudentNum(Long studentNum) {
         if (StringUtils.isNullOrEmpty(studentNum.toString())) {

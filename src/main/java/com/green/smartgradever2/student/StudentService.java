@@ -498,7 +498,7 @@ public class StudentService {
         studentEntity.setStudentNum(studentNum);
         List<LectureStudentEntity> studentEntities = lectureStudentRep.findByStudentEntity(studentEntity);
 
-        List<StudentHistoryVo> list = studentEntities.stream().map(student -> StudentHistoryVo.builder()
+        List<StudentHistoryVo> list = studentEntities.stream().filter(res-> res.getFinishedAt()!=null ).map(student -> StudentHistoryVo.builder()
                 .year(student.getLectureApplyEntity().getSemesterEntity().getYear())
                 .grade(student.getStudentEntity().getGrade())
                 .semester(student.getLectureApplyEntity().getSemesterEntity().getSemester())
