@@ -4,7 +4,7 @@
 
   * 작업 인원 : FE 3명 BE 4명
 
-  * 보안성을 강화하고 정보 제공에 중점을 둔 학사관리 서비스
+  * 프로젝트 목적: 보안성을 강화하고 정보 제공에 중점을 둔 학사관리 서비스
 
   * PPT : <https://www.canva.com/design/DAFubEv0bZc/lxOl0uThZpe77yqndTmCgg/edit?utm_content=DAFubEv0bZc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton>
 
