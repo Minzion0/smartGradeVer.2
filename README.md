@@ -45,5 +45,9 @@
 15. board_pic : 공지사항의 사진을 저장한다
 
 
+### figma를 활용하여 화면구상 및 아이디어 회의 진행
+![image](https://github.com/Minzion0/smartGradeVer.2/assets/130621431/d780f87a-0605-44dc-bd19-124330922b2f)
+
+
 
  
