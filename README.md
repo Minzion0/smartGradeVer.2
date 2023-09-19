@@ -22,8 +22,6 @@
 
 3. student :학생들의 정보를 저장한다
 
-4. admin : 관리자의 정보를 저장한다
-
 5. lecture_apply : 강의 정보를 저장한다
 
 6. semester : 학기정보를 저장한다
