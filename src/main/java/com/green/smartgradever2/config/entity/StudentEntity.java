@@ -59,7 +59,6 @@ public class StudentEntity extends BaseEntity {
 
 
     @Column(length = 100)
-
     private String pic;
 
     @Column(nullable = false)
@@ -69,7 +68,7 @@ public class StudentEntity extends BaseEntity {
     @Size(min = 13)
     private String phone;
 
-    @Column(length = 50,unique = true,nullable = false)
+    @Column(length = 50,unique = true)
     private String email;
 
     @Column(length = 100)
@@ -85,6 +84,7 @@ public class StudentEntity extends BaseEntity {
 
     @Column(name = "secret_key")
     private String secretKey;
+
 
     /** Opt QR URL 저장 **/
     @Column(name = "otp_url")

@@ -86,6 +86,9 @@ public class LectureApplyEntity extends BaseEntity{
     @Column(name = "students_apply_deadline")
     private LocalDate studentsApplyDeadline;
 
+    @Column(name = "lecture_end_date")
+    private LocalDate lectureEndDate;
+
     @OneToOne(mappedBy ="lectureApplyEntity" )
     @ToString.Exclude
     private LectureScheduleEntity lectureScheduleEntity;
