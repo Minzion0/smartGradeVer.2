@@ -4,25 +4,32 @@ import com.green.smartgradever2.admin.lecturename.LectureNameRepository;
 import com.green.smartgradever2.admin.lectureroom.AdminLectureRoomRepository;
 import com.green.smartgradever2.admin.professor.AdminProfessorRepository;
 import com.green.smartgradever2.admin.semester.SemesterRepository;
-import com.green.smartgradever2.config.entity.*;
-import com.green.smartgradever2.lecture_apply.model.*;
+import com.green.smartgradever2.config.entity.LectureApplyEntity;
+import com.green.smartgradever2.config.entity.LectureNameEntity;
+import com.green.smartgradever2.config.entity.LectureRoomEntity;
+import com.green.smartgradever2.config.entity.LectureScheduleEntity;
+import com.green.smartgradever2.config.entity.ProfessorEntity;
+import com.green.smartgradever2.config.entity.SemesterEntity;
+import com.green.smartgradever2.lecture_apply.model.LectureAppllyInsParam;
+import com.green.smartgradever2.lecture_apply.model.LectureApplyRes;
+import com.green.smartgradever2.lecture_apply.model.LectureApplyScheduleRes;
+import com.green.smartgradever2.lecture_apply.model.LectureApplyScheduleVo;
+import com.green.smartgradever2.lecture_apply.model.LectureApplySelDto;
+import com.green.smartgradever2.lecture_apply.model.LectureSelAllRes;
 import com.green.smartgradever2.lectureschedule.LectureScheduleRepository;
 import com.green.smartgradever2.professor.ProfessorRepository;
 import com.green.smartgradever2.utils.PagingUtils;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
