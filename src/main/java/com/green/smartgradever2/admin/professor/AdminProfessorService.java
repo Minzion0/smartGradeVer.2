@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,16 +48,15 @@ public class AdminProfessorService {
             MajorEntity major = new MajorEntity();
             major.setImajor(param.getImajor());
 
+            // 유틸리티 클래스를 사용하여 이름과 전화번호를 검사합니다.
             CheckUtils utils = CheckUtils.builder().nm(param.getNm()).phoneNum(param.getPhone()).build();
             String msg = utils.getMsg();
             if (msg != null) {
                 String msgs = String.format("%s 오류가 있습니다", msg);
-
                 throw new AdminException(msgs);
-
             }
 
-
+            // 교수 ID를 설정합니다.
             Optional<List<ProfessorEntity>> orderByIprofessor = RPS.findAllByOrderByIprofessor();
             int size = 1;
             if (!orderByIprofessor.isEmpty()) {
@@ -66,7 +64,7 @@ public class AdminProfessorService {
             }
             long iprofessor = 100000 + size;
 
-
+            // 비밀번호를 설정합니다.
             String setPw = param.getBirthdate().toString().replaceAll("-", "");
 
             ProfessorEntity professor = new ProfessorEntity();
@@ -78,18 +76,17 @@ public class AdminProfessorService {
             professor.setBirthDate(param.getBirthdate());
             professor.setMajorEntity(major);
             try {
-
                 professorEntity = RPS.saveAndFlush(professor);
             } catch (Exception e) {
-                throw new AdminException(professor.getNm() + "등록시 오류 발생");
+                throw new AdminException(professor.getNm() + " 등록 시 오류 발생");
             }
 
             list.add(professorEntity);
         }
 
-
         EM.clear();
 
+        // 결과를 반환합니다.
         List<AdminProfessorInsVo> vo = new ArrayList<>();
         for (ProfessorEntity professor : list) {
             ProfessorEntity entity = RPS.findById(professor.getIprofessor()).get();
@@ -97,20 +94,18 @@ public class AdminProfessorService {
             String format = entity.getCreatedAt().format(formatter);
 
             AdminProfessorInsVo build = AdminProfessorInsVo.builder().iprofessor(entity.getIprofessor())
-                    .imajor(entity.getMajorEntity().getImajor())
-                    .nm(entity.getNm())
-                    .gender(entity.getGender())
-                    .birthdate(entity.getBirthDate())
-                    .phone(entity.getPhone())
-                    .createdAt(format)
-                    .delYn(entity.getDelYn())
-                    .build();
+                .imajor(entity.getMajorEntity().getImajor())
+                .nm(entity.getNm())
+                .gender(entity.getGender())
+                .birthdate(entity.getBirthDate())
+                .phone(entity.getPhone())
+                .createdAt(format)
+                .delYn(entity.getDelYn())
+                .build();
             vo.add(build);
         }
         return vo;
-
     }
-
 
     public AdminProfessorFindRes findProfessors(Pageable pageable, AdminProfessorFindParam param) {
         Page<ProfessorEntity> list = null;
@@ -134,19 +129,18 @@ public class AdminProfessorService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         List<AdminProfessorFindVo> professors = list.getContent().stream().map(item -> AdminProfessorFindVo.builder()
-                .iprofessor(item.getIprofessor())
-                .majorName(item.getMajorEntity().getMajorName())
-                .nm(item.getNm())
-                .gender(item.getGender())
-                .birthdate(item.getBirthDate())
-                .phone(item.getPhone())
-                .email(item.getEmail())
-                .address(item.getAddress())
-                .createdAt(item.getCreatedAt().format(formatter))
-                .delYn(item.getDelYn()).build()).toList();
+            .iprofessor(item.getIprofessor())
+            .majorName(item.getMajorEntity().getMajorName())
+            .nm(item.getNm())
+            .gender(item.getGender())
+            .birthdate(item.getBirthDate())
+            .phone(item.getPhone())
+            .email(item.getEmail())
+            .address(item.getAddress())
+            .createdAt(item.getCreatedAt().format(formatter))
+            .delYn(item.getDelYn()).build()).toList();
 
         return AdminProfessorFindRes.builder().professors(professors).page(pagingUtils).build();
-
     }
 
     public AdminProfessorDetailRes findProfessorDetail(Long iprofessor) {
@@ -167,15 +161,14 @@ public class AdminProfessorService {
         List<LectureApplyEntity> lectureEntityList = LECTURE_RPS.findByProfessorEntity(entity);
 
         List<AdminProfessorLectureVo> lectureList = lectureEntityList.stream().map(lecture -> AdminProfessorLectureVo.builder()
-                .ilecture(lecture.getIlecture())
-                .lectureStrTime(lecture.getLectureScheduleEntity().getLectureStrTime())
-                .lectureEndTime(lecture.getLectureScheduleEntity().getLectureEndTime())
-                .lectureStrDate(lecture.getSemesterEntity().getSemesterStrDate())
-                .lectureEndDate(lecture.getSemesterEntity().getSemesterEndDate())
-                .lectureName(lecture.getLectureNameEntity().getLectureName()).build()).toList();
+            .ilecture(lecture.getIlecture())
+            .lectureStrTime(lecture.getLectureScheduleEntity().getLectureStrTime())
+            .lectureEndTime(lecture.getLectureScheduleEntity().getLectureEndTime())
+            .lectureStrDate(lecture.getSemesterEntity().getSemesterStrDate())
+            .lectureEndDate(lecture.getSemesterEntity().getSemesterEndDate())
+            .lectureName(lecture.getLectureNameEntity().getLectureName()).build()).toList();
 
         return AdminProfessorDetailRes.builder().lectureList(lectureList).profile(profile).build();
-
     }
 
     public AdminProfessorInsVo patchProfessor(Long iprofessor, AdminProfessorPatchParam param) throws Exception {
@@ -198,29 +191,26 @@ public class AdminProfessorService {
         String format = professorEntity.getCreatedAt().format(formatter);
 
         return AdminProfessorInsVo.builder().iprofessor(professorEntity.getIprofessor())
-                .imajor(professorEntity.getMajorEntity().getImajor())
-                .nm(professorEntity.getNm())
-                .gender(professorEntity.getGender())
-                .birthdate(professorEntity.getBirthDate())
-                .phone(professorEntity.getPhone())
-                .createdAt(format)
-                .delYn(professorEntity.getDelYn())
-                .build();
-
-
+            .imajor(professorEntity.getMajorEntity().getImajor())
+            .nm(professorEntity.getNm())
+            .gender(professorEntity.getGender())
+            .birthdate(professorEntity.getBirthDate())
+            .phone(professorEntity.getPhone())
+            .createdAt(format)
+            .delYn(professorEntity.getDelYn())
+            .build();
     }
 
     public void professorListFile(HttpServletResponse response) throws IOException {
 
-
-// 엑셀 워크북 생성
+        // 엑셀 워크북 생성
         Workbook workbook = new XSSFWorkbook();
 
         // 시트 생성
-
+        Sheet sheet1 = workbook.createSheet("교수 리스트");
 
         // 제목 행 생성
-
+        Row headerRow1 = sheet1.createRow(0);
 
         // 제목 행 스타일 설정
         CellStyle headerCellStyle = workbook.createCellStyle();
@@ -234,13 +224,17 @@ public class AdminProfessorService {
         headerCellStyle.setBorderBottom(BorderStyle.THIN);
         headerCellStyle.setBorderTop(BorderStyle.THIN);
         headerCellStyle.setBorderLeft(BorderStyle.THIN);
-        headerCellStyle.setBorderRight(BorderStyle.THIN);
+        headerCellStyle.setBorderRight(BorderStyle.THIN);String[] headers1 = { "교수번호", "이름", "근속년수", "성별", "학과" };
 
+        for (int i = 0; i < headers1.length; i++) {
+            Cell cell = headerRow1.createCell(i);
+            cell.setCellValue(headers1[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
 
         // 데이터 행 생성 및 셀 스타일 설정
         CellStyle cellCellStyle = workbook.createCellStyle();
         Font cellFont = workbook.createFont();
-
         cellFont.setFontName("맑은 고딕");
         cellFont.setBold(false);
         cellFont.setFontHeight((short) 250);
@@ -251,72 +245,36 @@ public class AdminProfessorService {
         cellCellStyle.setBorderLeft(BorderStyle.THIN);
         cellCellStyle.setBorderRight(BorderStyle.THIN);
 
-
-
         CellStyle numericCellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         numericCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0")); // 숫자 형식 지정
         int rowCount = 1; // 첫 번째 행은 제목 행이므로 1부터 시작
 
-
-
-        int strIdx=0;
-        int endIdx=0;
-
-        // 시트 생성
-        Sheet sheet1 = workbook.createSheet("교수 리스트");
-        for (int i = 0; i < sheet1.getLastRowNum(); i++) {
-            sheet1.autoSizeColumn(i);
-            sheet1.setColumnWidth(i, (sheet1.getColumnWidth(i))+512);
-        }
-
-        // 제목 행 생성
-        Row headerRow1 = sheet1.createRow(0);
-
-        // 제목 행 스타일 설정
-
-        String[] headers1 = { "교수번호", "이름", "  근속년수  ", "성별", "학과" };
-
-        for (int i = 0; i < headers1.length; i++) {
-            Cell cell = headerRow1.createCell(i);
-            cell.setCellValue(headers1[i]);
-            cell.setCellStyle(headerCellStyle);
-        }
-
-
         List<ProfessorEntity> professorEntityList = RPS.findAll();
-
-        rowCount = 1;
-        for (int i = 0; i < professorEntityList.size(); i++) {
+        for (ProfessorEntity professorEntity : professorEntityList) {
             Row row = sheet1.createRow(rowCount++);
             Cell cell1 = row.createCell(0);
-            cell1.setCellValue(professorEntityList.get(i).getIprofessor());
+            cell1.setCellValue(professorEntity.getIprofessor());
             cell1.setCellStyle(cellCellStyle);
 
             Cell cell2 = row.createCell(1);
-            cell2.setCellValue(professorEntityList.get(i).getNm());
+            cell2.setCellValue(professorEntity.getNm());
             cell2.setCellStyle(cellCellStyle);
 
             Cell cell3 = row.createCell(2);
-            cell3.setCellValue(getValue(professorEntityList, i));
+            cell3.setCellValue(getValue(professorEntityList, professorEntityList.indexOf(professorEntity)));
             cell3.setCellStyle(cellCellStyle);
 
             Cell cell4 = row.createCell(3);
-            cell4.setCellValue(professorEntityList.get(i).getGender().toString());
+            cell4.setCellValue(professorEntity.getGender().toString());
             cell4.setCellStyle(numericCellStyle);
             cell4.setCellStyle(cellCellStyle);
 
             Cell cell5 = row.createCell(4);
-            cell5.setCellValue(professorEntityList.get(i).getMajorEntity().getMajorName());
-            cellCellStyle.setBorderBottom(BorderStyle.THIN);
+            cell5.setCellValue(professorEntity.getMajorEntity().getMajorName());
             cell5.setCellStyle(cellCellStyle);
-
-
-            //학년 cell에 정렬 함수 설정
         }
-        sheet1.setAutoFilter(new CellRangeAddress(0, rowCount-1, 0, headers1.length - 1));
-
-
+        sheet1.setAutoFilter(new CellRangeAddress(0, rowCount - 1, 0, headers1.length - 1));
 
         // 열 너비 자동 조정
         for (int i = 0; i < headers1.length; i++) {
@@ -324,10 +282,9 @@ public class AdminProfessorService {
         }
 
         String fileName = "GreenUniversityProfessorList.xlsx"; // 원하는 파일 이름을 지정합니다.
-        String format = String.format("attachment;filename=%s_%s",LocalDate.now().toString(), fileName);
+        String format = String.format("attachment;filename=%s_%s", LocalDate.now().toString(), fileName);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", format);
-
 
         workbook.write(response.getOutputStream());
         workbook.close();
@@ -335,10 +292,6 @@ public class AdminProfessorService {
 
     private static int getValue(List<ProfessorEntity> professorEntityList, int i) {
         int year = LocalDate.now().getYear() - professorEntityList.get(i).getCreatedAt().getYear();
-
-        if (year==0){
-            return 1;
-        }
-        return year;
+        return year == 0 ? 1 : year;
     }
 }
