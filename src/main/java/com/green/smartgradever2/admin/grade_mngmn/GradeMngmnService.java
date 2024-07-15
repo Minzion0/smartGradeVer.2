@@ -25,7 +25,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GradeMngmnService {
 
-
     private final GradeMngmnRepository GM_REP;
     private final AdminMajorRepository M_REP;
     private final AdminLectureRoomRepository ALR_REP;
@@ -38,95 +37,8 @@ public class GradeMngmnService {
     private final EntityManager EM;
     private final GradeMngmnQdsl gradeMngmnQdsl;
 
-
-//    public GradeMngmnRes postGradeMngmn(GradeMngmnInsDto dto) {
-//        GradeMngmnDto mngmnDto = new GradeMngmnDto();
-//        int result = MAPPER.insGradeMngmn(dto);
-//        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(mngmnDto);
-//        int point;
-//        double score;
-//        for (GradeMngmnVo a : voList) {
-//            point = a.getTotalScore();
-//            GradeUtils utils2 = new GradeUtils(point);
-//            score = utils2.totalScore();
-//
-//            if (result == 1) {
-//                GradeMngmnRes.builder()
-//                        .isemester(dto.getIsemester())
-//                        .studentNum(dto.getStudentNum())
-//                        .ilectureName(dto.getIlectureName())
-//                        .semester(dto.getSemester())
-//                        .avgScore(point)
-//                        .rating(score)
-//                        .build();
-//            }
-//
-//        }
-//        return null;
-//    }
-
-//    //  수정이 필요함
-//    public GradeMngmnUpdRes updGradeMngmn(GradeMngmnUpdParam p) {
-//        GradeMngmnUpdDto dto = new GradeMngmnUpdDto();
-//        dto.setIsemester(p.getIsemester());
-//        dto.setStudentNum(p.getStudentNum());
-//
-//        GradeAvgVo vo = MAPPER.selAvgScore(dto);
-//        if (vo == null) {
-//            throw new RuntimeException("불러올 데이터가 존재하지 않습니다.");
-//        } else {
-//            dto.setAvgScore(vo.getAvgScore());
-//        }
-//
-//        GradeUtils utils = new GradeUtils();
-//        int score = vo.getAvgScore();
-//        double v = utils.totalScore2(score);
-//        p.setAvgScore(score);
-//
-//        dto.setAvgRating(v);
-//        int result = MAPPER.updAvgScore(dto);
-//
-//        return GradeMngmnUpdRes.builder()
-//                .studentNum(p.getStudentNum())
-//                .isemester(p.getIsemester())
-//                .avgScore(p.getAvgScore())
-//                .avgRating(p.getAvgRating())
-//                .build();
-//    }
-
+    // 성적 수정 메소드
     public GradeMngmnUpdRes updGradeMngmn2(GradeMngmnUpdParam p) {
-//        StudentSemesterScoreEntity entity = new StudentSemesterScoreEntity();
-//        SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
-//        StudentEntity studentEntity = ST_REP.findById(p.getStudentNum()).get();
-//        GradeUtils utils = new GradeUtils();
-//
-//        entity.setSemesterEntity(semesterEntity);
-//        entity.setStudentEntity(studentEntity);
-//        List<StudentSemesterScoreEntity> allBy = GM_REP.findAllByStudentEntityAndSemesterEntity(entity.getStudentEntity(),entity.getSemesterEntity());
-//        if (allBy == null) {
-//            throw new RuntimeException("불러올 데이터가 존재하지 않습니다.");
-//        } else {
-//            for (StudentSemesterScoreEntity scoreEntity : allBy) {
-//                entity.setAvgScore(scoreEntity.getAvgScore());
-//                double v = utils.totalScore2(entity.getAvgScore());
-//                entity.setRating(v);
-//            }
-//        }
-//        StudentSemesterScoreEntity save = GM_REP.save(entity);
-//
-//        return GradeMngmnUpdRes.builder()
-//                .studentNum(studentEntity.getStudentNum())
-//                .isemester(semesterEntity.getIsemester())
-//                .avgScore(entity.getAvgScore())
-//                .avgRating(entity.getRating())
-//                .build();
-
-//        LectureApplyEntity applyEntity = APPLY_REP.findById(semesterEntity.getIsemester()).get();
-//        log.info("applyEntity.get().getIlecture() : {}", applyEntity.getIlecture());
-
-//        LectureStudentEntity lectureStudentEntity = LS_REP.findById(applyEntity.getIlecture()).get();
-//        List<LectureStudentEntity> list = LS_REP.findAllByLectureApplyEntity(applyEntity);
-//        log.info("list.size() : {}", list.size());
 
         SemesterEntity semesterEntity = SM_REP.findById(p.getIsemester()).get();
         log.info("semesterEntity.getIlectureStudent() : {}", semesterEntity.getIsemester());
@@ -135,7 +47,7 @@ public class GradeMngmnService {
         GradeUtils utils = new GradeUtils();
 
         for (int i = 0; i < studentEntities.size(); i++) {
-            List<LectureStudentEntity> studentEntityList = gradeMngmnQdsl.findAllBySemester(studentEntities.get(i),1,semesterEntity);
+            List<LectureStudentEntity> studentEntityList = gradeMngmnQdsl.findAllBySemester(studentEntities.get(i), 1, semesterEntity);
             StudentSemesterScoreEntity entity = null;
             int temp = 0;
             int index = 0;
@@ -151,13 +63,13 @@ public class GradeMngmnService {
             if (studentEntityList.size() != 0) {
                 log.info("avg : {}", avg);
                 entity = StudentSemesterScoreEntity.builder()
-                        .grade(studentEntities.get(i).getGrade()) // 학년
-                        .rating(utils.setDouRating(avg,index)) // 평점
-                        .score(score) // 학점
-                        .avgScore(temp / index) // 평균 총점
-                        .semesterEntity(semesterEntity) // semester pk
-                        .studentEntity(studentEntities.get(i)) // studentEntities pk
-                        .build();
+                    .grade(studentEntities.get(i).getGrade()) // 학년
+                    .rating(utils.setDouRating(avg, index)) // 평점
+                    .score(score) // 학점
+                    .avgScore(temp / index) // 평균 총점
+                    .semesterEntity(semesterEntity) // semester pk
+                    .studentEntity(studentEntities.get(i)) // studentEntities pk
+                    .build();
                 long stop1 = System.currentTimeMillis();
                 log.info("stop1 : {}", stop1);
                 try {
@@ -170,38 +82,10 @@ public class GradeMngmnService {
         return null;
     }
 
-
-//    public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto) {
-//        int maxPage = MAPPER.countStudent();
-//        PagingUtils utils = new PagingUtils(dto.getPage(), maxPage);
-//        dto.setStaIdx(utils.getStaIdx());
-//
-//        List<GradeMngmnAvgVo> avg = MAPPER.GradeMngmnAvg(dto);
-//        GradeMngmnStudentVo vo = MAPPER.selGradeMngmnStudent(dto);
-//        List<GradeMngmnVo> voList = MAPPER.selGradeFindStudent(dto);
-//
-//        int point;
-//        double score;
-//        String rate;
-//        for (GradeMngmnVo a : voList) {
-//            point = a.getTotalScore();
-//            GradeUtils utils2 = new GradeUtils(point);
-//            score = utils2.totalScore();
-//            rate = utils2.totalRating(score);
-//            a.setRating(rate);
-//        }
-//
-//        return GradeMngmnFindRes.builder()
-//                .voList(voList)
-//                .student(vo)
-//                .avgVo(avg)
-//                .page(utils)
-//                .build();
-//    }
-
+    // 성적 조회 메소드
     public GradeMngmnFindRes selGradeMngmn(GradeMngmnDto dto, Pageable pageable) {
         long maxPage = gradeMngmnQdsl.countByStudentEntity(dto);
-        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+        PagingUtils utils = new PagingUtils(dto.getPage(), (int) maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
         List<GradeMngmnVo> voList = gradeMngmnQdsl.studentVo(dto, pageable);
@@ -218,28 +102,21 @@ public class GradeMngmnService {
         GradeMngmnStudentVo studentVo = gradeMngmnQdsl.mngmnStudentVo(dto);
         List<GradeMngmnAvgVo> avg = gradeMngmnQdsl.avgVo(dto);
 
-
-
         return GradeMngmnFindRes.builder()
-                .voList(voList)
-                .student(studentVo)
-                .avgVo(avg)
-                .page(utils)
-                .build();
-
+            .voList(voList)
+            .student(studentVo)
+            .avgVo(avg)
+            .page(utils)
+            .build();
     }
 
-
-//    public GradeMngmnDetailVo selStudentDetail(GradeMngmnDetailSelDto dto) {
-//        return MAPPER.selGradeFindStudentDetail(dto);
-//    }
-
+    // 학생 성적 세부 조회 메소드
     public Optional<GradeMngmnDetailVo> selStudentDetail(GradeMngmnDetailSelDto dto) throws NullPointerException {
         Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = gradeMngmnQdsl.studentDetail(dto);
         return gradeMngmnDetailVo;
-        
     }
 
+    // 학생 성적 세부 조회 메소드
     public GradeMngmnDetailVo selStudentDetail2(GradeMngmnDetailSelDto dto) {
         Optional<GradeMngmnDetailVo> gradeMngmnDetailVo = GM_REP.selStudentDetail(dto.getStudentNum());
         return gradeMngmnDetailVo.orElse(new GradeMngmnDetailVo()); // 기본값으로 객체 생성
