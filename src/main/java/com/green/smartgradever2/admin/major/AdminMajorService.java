@@ -44,60 +44,35 @@ public class AdminMajorService {
 
             MajorEntity save = MAJOR_REP.save(majorEntity);
             return AdminMajorVo.builder()
-                    .delYn(save.getDelYn())
-                    .build();
+                .delYn(save.getDelYn())
+                .build();
         } else {
             throw new EntityNotFoundException("not found");
         }
     }
-//    public ResponseEntity<AdminMajorFindRes> selMajor(AdminMajorDto dto, Pageable pageable) {
-//        long maxPage = MAJOR_REP.count();
-//        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int)maxPage);
-//        dto.setStaIdx(utils.getStaIdx());
-//
-//        List<AdminMajorVo> major = MAPPER.selMajor(dto);
-//        AdminMajorFindRes build = AdminMajorFindRes.builder()
-//                .vo(major)
-//                .page(utils)
-//                .build();
-//        return ResponseEntity.ok(build);
-//    }
 
     /** 전공 SELECT **/
     public ResponseEntity<AdminMajorFindRes> selMajor(AdminMajorDto dto, Pageable pageable) {
         long maxPage = MAJOR_REP.count();
-        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+        PagingUtils utils = new PagingUtils(dto.getPage(), (int) maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
         List<AdminMajorVo> list = adminMajorQdsl.majorVos(dto, pageable);
 
         AdminMajorFindRes build = AdminMajorFindRes.builder()
-                .page(utils)
-                .vo(list.stream().map(item -> AdminMajorVo.builder()
-                        .majorName(item.getMajorName())
-                        .graduationScore(item.getGraduationScore())
-                        .imajor(item.getImajor())
-                        .delYn(item.getDelYn())
-                        .remarks(item.getRemarks())
-                        .build()).toList())
-                .build();
+            .page(utils)
+            .vo(list.stream().map(item -> AdminMajorVo.builder()
+                .majorName(item.getMajorName())
+                .graduationScore(item.getGraduationScore())
+                .imajor(item.getImajor())
+                .delYn(item.getDelYn())
+                .remarks(item.getRemarks())
+                .build()).toList())
+            .build();
         return ResponseEntity.ok(build);
     }
 
-//    public AdminMajorFindRes selMajor2(AdminMajorDto dto, Pageable pageable) {
-//        long maxPage = MAJOR_REP.count();
-//        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
-//        dto.setStaIdx(utils.getStaIdx());
-//
-//        List<AdminMajorVo> list = adminMajorQdsl.majorVos(dto, pageable);
-//
-//        return AdminMajorFindRes.builder()
-//                .paging(utils)
-//                .vo(list)
-//                .build();
-//    }
-
-
+    /** 전공 UPDATE **/
     public AdminMajorVo updMajor(MajorEntity entity) {
         Optional<MajorEntity> byId = MAJOR_REP.findById(entity.getImajor());
 
@@ -112,20 +87,20 @@ public class AdminMajorService {
                 save = MAJOR_REP.save(majorEntity);
 
                 return AdminMajorVo.builder()
-                        .imajor(entity.getImajor())
-                        .majorName(save.getMajorName())
-                        .remarks(entity.getMajorName())
-                        .graduationScore(entity.getGraduationScore())
-                        .build();
+                    .imajor(entity.getImajor())
+                    .majorName(save.getMajorName())
+                    .remarks(entity.getMajorName())
+                    .graduationScore(entity.getGraduationScore())
+                    .build();
             } else {
                 majorEntity.setGraduationScore(entity.getGraduationScore());
                 save = MAJOR_REP.save(majorEntity);
                 return AdminMajorVo.builder()
-                        .majorName(entity.getMajorName())
-                        .remarks(entity.getRemarks())
-                        .imajor(entity.getImajor())
-                        .graduationScore(save.getGraduationScore())
-                        .build();
+                    .majorName(entity.getMajorName())
+                    .remarks(entity.getRemarks())
+                    .imajor(entity.getImajor())
+                    .graduationScore(save.getGraduationScore())
+                    .build();
             }
 
         } else {
@@ -133,13 +108,13 @@ public class AdminMajorService {
         }
     }
 
-
-    public List<MajorListVo> getMajorList(){
+    /** 전공 목록 조회 **/
+    public List<MajorListVo> getMajorList() {
         List<MajorEntity> majorEntityList = MAJOR_REP.findAll();
 
         return majorEntityList.stream().map(list -> MajorListVo.builder()
-                .imajor(list.getImajor())
-                .majorName(list.getMajorName())
-                .build()).toList();
+            .imajor(list.getImajor())
+            .majorName(list.getMajorName())
+            .build()).toList();
     }
 }
