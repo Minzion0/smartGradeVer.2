@@ -22,6 +22,7 @@ public class AdminMajorController {
 
     private final AdminMajorService SERVICE;
 
+    // 전공 INSERT
     @PostMapping("/admin/major")
     @Operation(summary = "전공 INSERT")
     public Long postMajor(@RequestBody AdminMajorSaveDto dto) {
@@ -32,28 +33,30 @@ public class AdminMajorController {
         return SERVICE.insMajor(entity);
     }
 
+    // 전공 리스트 SELECT
     @GetMapping("/admin/major")
     @Operation(summary = "전공 리스트 SELECT")
     public ResponseEntity<AdminMajorFindRes> getMajor(@ParameterObject @PageableDefault(sort = "imajor", direction = Sort.Direction.ASC) Pageable pageable,
-                                      @RequestParam (required = false) String majorName,
-                                      @RequestParam (required = false) Integer delYn) {
+        @RequestParam(required = false) String majorName,
+        @RequestParam(required = false) Integer delYn) {
         AdminMajorDto dto = new AdminMajorDto();
         dto.setMajorName(majorName);
         dto.setDelYn(delYn);
         dto.setPage(pageable.getPageNumber());
         dto.setSize(pageable.getPageSize());
-        return SERVICE.selMajor(dto,pageable);
+        return SERVICE.selMajor(dto, pageable);
     }
 
-
+    // 전공 DELETE (del_yn 0에서 1로 변경)
     @DeleteMapping("/admin/major")
-    @Operation(summary = "전공 폐지 ( del_yn 0 1 변경 )")
+    @Operation(summary = "전공 폐지 (del_yn 0에서 1로 변경)")
     public AdminMajorVo delMajor(@RequestParam Long imajor) {
         MajorEntity entity = new MajorEntity();
         entity.setImajor(imajor);
         return SERVICE.delMajor(entity);
     }
 
+    // 전공 이름 수정
     @PatchMapping("/admin/major")
     @Operation(summary = "전공 이름 수정")
     public AdminMajorVo patchMajor(@RequestBody AdminMajorPatchDto dto) {
@@ -64,9 +67,10 @@ public class AdminMajorController {
         return SERVICE.updMajor(entity);
     }
 
+    // 페이징 없이 전공 리스트 조회
     @GetMapping("/major/list")
-    @Operation(summary = "전공 x페이징")
-    public ResponseEntity<List<MajorListVo>> getMajorList(){
+    @Operation(summary = "전공 페이징 없이 조회")
+    public ResponseEntity<List<MajorListVo>> getMajorList() {
         List<MajorListVo> majorList = SERVICE.getMajorList();
         return ResponseEntity.ok().body(majorList);
     }
